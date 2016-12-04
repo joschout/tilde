@@ -87,8 +87,6 @@ def refine_add_literal(conjunction, literal, variable_id_counter):
                     2. create a new Term for the literal
                     3. add the new term to the conjunction
                     4. return the conjunction
-
-
     """
 
     # get the functor of the Term, which we assume is a literal
@@ -102,3 +100,7 @@ def refine_add_literal(conjunction, literal, variable_id_counter):
 
     return literal_new_vars
 
+
+def get_possible_substitutions(variables_from_conj, variables_from_literal):
+    possible_substitutions = []
+    for 

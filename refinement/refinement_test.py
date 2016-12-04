@@ -33,6 +33,8 @@ literal = Term('test')(X, Y, Z)
 
 print(literal)
 
+print(literal.signature)
+
 counter = VariableIDCounter()
 
 literal_new_vars = refine_add_literal("bla", literal, counter)
