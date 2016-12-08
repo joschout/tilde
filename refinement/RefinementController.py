@@ -101,6 +101,6 @@ def refine_add_literal(conjunction, literal, variable_id_counter):
     return literal_new_vars
 
 
-def get_possible_substitutions(variables_from_conj, variables_from_literal):
-    possible_substitutions = []
-    for 
+# def get_possible_substitutions(variables_from_conj, variables_from_literal):
+#     possible_substitutions = []
+#     for

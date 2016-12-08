@@ -1,5 +1,6 @@
-from problog.program import SimpleProgram
 from problog.logic import *
+from problog.program import SimpleProgram
+from mach_tests.test_get_label import get_label
 
 # defining the terms
 sendback, fix, ok, worn, replaceable = \
@@ -13,6 +14,7 @@ gear, engine, chain, wheel, control_unit = \
 
 X = Var('X')
 
+# defining clauses, TILDE paper page 289 figure 4
 rules = SimpleProgram()
 rules += (p0 << worn(X))
 rules += (p1 << (worn(X) & ~replaceable(X)))
@@ -42,3 +44,10 @@ ex9 += worn(chain)
 
 ex10 += worn(engine)
 ex10 += worn(chain)
+
+examples = [ex1, ex2, ex3, ex4, ex5, ex6, ex7, ex8, ex9, ex10]
+
+
+def test_get_labels():
+    labels = get_label(examples, rules)
+    print(labels)

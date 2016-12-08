@@ -104,15 +104,32 @@ class TypeModeLanguage(BaseLanguage):
             self._values[typename].add(value)
 
     def refine(self, rule):
-        """Generate one refinement for the given rule.
+        """Generate ONE refinement for the given rule.
+
+            We refine a rule by adding LITERALS to the BODY of the rule.
+
+
 
         :param rule: rule for which to generate refinements
-        :return: generator of literals that can be added to the rule
+        :return: GENERATOR of literals that can be added to the rule
         :rtype: collections.Iterable[Term]
         """
+
+        # 1. we need to know how many variables are in the already existing rule.
+        #    We also need to know the types of these variables.
+        #    This is important information when adding new literals.
         varcount = len(rule.get_variables())
         variables = self.get_variable_types(*rule.get_literals())
 
+        # We check the most recently added body literal.
+        # If there is a most recently added body literal,
+        #   then we check whether its functor is '_recursive'
+        #   If its most recently added body literal is '_recursive',
+        #       we cannot extend the body any further,
+        #       so the function returns.
+        #   Else, we get the set of already generated literals from the last added literal
+        # If there is no recently added body literal,
+        #       we will have to start from scratch, from an empty set
         if rule.get_literal():
             if rule.get_literal().functor == '_recursive':
                 return  # can't extend after recursive
@@ -120,11 +137,46 @@ class TypeModeLanguage(BaseLanguage):
         else:
             generated = set()
 
+        # We need to generate a literal to refine the body of the clause
+        # There are three possible ways we can add a literal
+        # 1. as a positive refinement
+        # 2. as a negative refinement
+        # 3. as a recursive refinement
+
         # 1) a positive refinement
+        # We have defined which literals can be added in MODES,
+        # as their functor and the mode of each of the arguments.
+        # We will consider each functor as a possible candidate for refinement
+        #
+        # SO for each functor in MODES
         for functor, modestr in self._modes:
+            # We have defined which literals can be added in MODES,
+            # as their functor and the mode of each of the arguments.
+            # We will consider each functor as a possible candidate for refinement
+
+            # we will collect the possible arguments for the current functor in a list
             arguments = []
             arity = len(modestr)
+            # get the types of the arguments of the given predicate
             types = self.get_argument_types(functor, arity)
+
+            # a functor has multiple variables,
+            #       each with their own modes.
+            # We have to consider each variable with its mode separately
+            # There are three different modes for an argument:
+            #       '+': the variable must be unified with an existing variable
+            #           --> use an existing variable
+            #       '-': create a new variable, do not reuse an old one
+            #       'c': insert a constant
+            # for each argument of functor:
+            #   check its mode
+            #       '+' --> add to arguments
+            #                   a list of the variables in the rule with the same type as the current argument
+            #                   e.g. arguments = [ ..., [X,Y], ...]
+            #       '-' --> add to arguments
+            #                   a list containing 1 new Var #
+            #       'c' --> add to arguments
+            #                   a list of all possible constants for the type of the argument
             for argmode, argtype in zip(modestr, types):
                 if argmode == '+':
                     # All possible variables of the given type
@@ -138,6 +190,29 @@ class TypeModeLanguage(BaseLanguage):
                     pass
                 else:
                     raise ValueError("Unknown mode specifier '%s'" % argmode)
+
+            # arguments is a list of lists.
+            # It contains as many lists as the arity of the functor.
+            # Each list corresponds to the possible values in the refined literal of the corresponding variable.
+            # To generate all possible combinations,
+            # we take the carthesian product of the elements in the lists.
+            #
+            # SO for each possible combination of arguments:
+            #   create a term using the functor and the arguments.
+            #   IF the term hasn't already been generated in the past:
+            #       IF we want to break symmetries
+            #            add the term to the set of already generated terms
+            #       Substitute each of the '#'-vars for a new variable
+            #       add the term t as the prototype of the substuted term
+            # We know want to be return the substituted term
+            # But before returning,
+            # we want to save the state of this function,
+            # so we can generate new terms next time we call this function.
+            # To do this, we add the set of generated terms to the new literal.
+            # IF we want to break symmetry,
+            #   save a shallow copy of the set of generated literals
+            # ELSE
+            #   save the UNION of the seg of generated literals and {t, -t, t_i, -t_i}
             for args in product(*arguments):
                 t = Term(functor, *args)
                 if t not in generated:

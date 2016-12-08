@@ -42,10 +42,10 @@ def main():
           + ', fix: ' + str(bool(eng.query(db2, fix)))
           + ', ok: ' + str(bool(eng.query(db2, ok))))
 
-    print(getLabel([ex1], rules))
+    print(get_label([ex1], rules))
 
 
-def getLabel(example_list, rules):
+def get_label(example_list, rules):
     label_list = []
     for example in example_list:
         eng = DefaultEngine()
