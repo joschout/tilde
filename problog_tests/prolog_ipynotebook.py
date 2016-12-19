@@ -18,7 +18,7 @@ parent_child(X, Y) :- mother_child(X, Y).
 
 from problog.program import SimpleProgram
 
-# Define the language of terms
+# Define the representation of terms
 mother_child = Term('mother_child')
 father_child = Term('father_child')
 sibling = Term('sibling')
