@@ -1,0 +1,39 @@
+import math
+
+import trees.scoring
+from mach_tests.mach_definitions_TILDE_paper import examples, background_knowledge, possible_targets, language_machines
+from representation.rule import TILDEQuery
+
+tilde_query = TILDEQuery(None, None)
+
+refinement_generator = language_machines.refine_conjunction_one_literal(tilde_query)
+
+# =================================
+
+refined_queries = []
+for refinement in refinement_generator:
+    refined_queries.append(TILDEQuery(tilde_query, refinement))
+
+best_query = None
+score_best_query = - math.inf
+
+
+for q in refined_queries:
+    # compute the score of the queries
+    examples_set = set(examples)
+    conj_ofQuery = q.to_conjunction()
+    examples_satisfying_query = trees.scoring.get_examples_satisfying_query(examples, conj_ofQuery, background_knowledge)
+    score = trees.scoring.information_gain(examples_set, examples_satisfying_query, examples_set - examples_satisfying_query, possible_targets)
+    if score > score_best_query:
+        best_query = q
+        score_best_query = score
+    print(score)
+# =========================================
+
+refinement_generator2 = language_machines.refine_conjunction_one_literal(best_query)
+refined_queries2 = []
+for refinement in refinement_generator2:
+    refined_queries2.append(TILDEQuery(best_query, refinement))
+
+for q in refined_queries2:
+    print(q)

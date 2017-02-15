@@ -1,6 +1,5 @@
-from problog.engine import DefaultEngine
 import trees.scoring
-from trees.tilde_paper_machines_example import *
+from mach_tests.mach_definitions_TILDE_paper import *
 
 # Testing the four examples from the problog paper using the following queries:
 # <- replaceable(X)
@@ -12,7 +11,8 @@ query1 = replaceable(X)
 query2 = not_replaceable(X)
 query3 = worn(X)
 
-queries = [query1, query2, query3]
+query4 = And(worn(X), not_replaceable(X))
+queries = [query1, query2, query3, query4]
 
 # a dictionary of sets, one for each query
 results_of_queries = {}

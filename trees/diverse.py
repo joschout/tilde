@@ -5,7 +5,7 @@ def learn_FOLDT(example_list):
     foldt = FOLDecisitionTree()
 
 
-def is_current_example_set_sufficiently_homogenous():
+def is_current_example_set_sufficiently_homogenous(examples):
     """
     Test to decide whether to turn a node into a leaf
     :return:

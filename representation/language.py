@@ -322,6 +322,7 @@ class TypeModeLanguage(BaseLanguage):
             #           --> use an existing variable
             #       '-': create a new variable, do not reuse an old one
             #       'c': insert a constant
+            #  NEW: '+-': the variable can be a new variable, OR it can be unified with an existing on
             # for each argument of functor:
             #   check its mode
             #       '+' --> add to arguments
@@ -401,6 +402,12 @@ class TypeModeLanguage(BaseLanguage):
         :rtype: tuple[str]
         """
         return self._types[(functor, arity)]
+
+    def does_predicate_exist(self, functor, arity):
+        if self._types.get((functor, arity)) is None:
+            return False
+        else:
+            return True
 
     def get_variable_types(self, *literals):
         """Get the types of all variables that occur in the given literals.
