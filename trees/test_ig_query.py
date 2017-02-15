@@ -1,3 +1,5 @@
+from problog.logic import And
+import classification
 import trees.scoring
 from mach_tests.mach_definitions_TILDE_paper import *
 
@@ -5,12 +7,12 @@ from mach_tests.mach_definitions_TILDE_paper import *
 # <- replaceable(X)
 # <- not_replaceable(X)
 # <- worn(X)
+# <- worn(X), replacable(X)
 
 X = Var('X')
 query1 = replaceable(X)
 query2 = not_replaceable(X)
 query3 = worn(X)
-
 query4 = And(worn(X), not_replaceable(X))
 queries = [query1, query2, query3, query4]
 
@@ -18,7 +20,7 @@ queries = [query1, query2, query3, query4]
 results_of_queries = {}
 
 for query in queries:
-    examples_satisfying_query = trees.scoring.get_examples_satisfying_query(examples, query, background_knowledge)
+    examples_satisfying_query = classification.get_examples_satisfying_query(labeled_examples, query, background_knowledge)
     results_of_queries[query] = examples_satisfying_query
 
 print(results_of_queries)
@@ -35,7 +37,7 @@ l_q1_l, l_q1_r = [ex1, ex2, ex3], [ex4]
 l_q2_l, l_q2_r = [ex1, ex2, ex3, ex4], []
 l_q3_l, l_q3_r = [ex1, ex2, ex3, ex4], []
 
-print(trees.scoring.information_gain(examples, l_q1_l, l_q1_r, possible_targets))
-print(trees.scoring.information_gain(examples, l_q2_l, l_q2_r, possible_targets))
-print(trees.scoring.information_gain(examples, l_q3_l, l_q3_r, possible_targets))
+print(trees.scoring.information_gain(labeled_examples, l_q1_l, l_q1_r, possible_targets))
+print(trees.scoring.information_gain(labeled_examples, l_q2_l, l_q2_r, possible_targets))
+print(trees.scoring.information_gain(labeled_examples, l_q3_l, l_q3_r, possible_targets))
 

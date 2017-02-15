@@ -1,14 +1,9 @@
-import math
-from typing import List, Iterable, Set
-
-from problog.engine import DefaultEngine
+from typing import List, Iterable, Sequence, Collection, Sized
 from problog.logic import *
-from problog.program import SimpleProgram
-
 from representation.example import Example
 
 
-def entropy_binary(list_of_bools: List[bool]) -> float:
+def entropy_binary(list_of_bools: Sequence[bool]) -> float:
     """Calculate the entropy of a list of booleans.
 
         entropy([]) = 0
@@ -29,7 +24,7 @@ def entropy_binary(list_of_bools: List[bool]) -> float:
            - nb_of_negatives / len(list_of_bools) * math.log2(nb_of_negatives / len(list_of_bools))
 
 
-def entropy(list_of_examples: List[Example], list_of_possible_labels: List[str]) -> float:
+def entropy(list_of_examples, list_of_possible_labels: Iterable[str]) -> float:
     """Calculates the entropy of a list of examples. Entropy is also known as information.
 
     An example is an object containing a label, e.g. an instance of representation.example
@@ -49,16 +44,15 @@ def entropy(list_of_examples: List[Example], list_of_possible_labels: List[str])
     for label in list_of_possible_labels:
         nb_of_elements_with_label = len([example for example in list_of_examples if example.label == label])
         if nb_of_elements_with_label != 0:
-            entropy_value -= nb_of_elements_with_label / nb_of_examples * math.log2(
-                nb_of_elements_with_label / nb_of_examples)
+            entropy_value -= nb_of_elements_with_label / nb_of_examples\
+                             * math.log2(nb_of_elements_with_label / nb_of_examples)
     return entropy_value
 
 
-def information_gain(example_list: List[Example], sublist_left: List[Example], sublist_right: List[Example],
+def information_gain(example_list, sublist_left, sublist_right,
                      list_of_possible_labels: List[str]) -> float:
-    """Calculates the information gain of splitting a set of examples into two subsets.
-
-
+    """
+    Calculates the information gain of splitting a set of examples into two subsets.
     """
     if len(example_list) == 0:
         return 0
@@ -69,19 +63,3 @@ def information_gain(example_list: List[Example], sublist_left: List[Example], s
     ig -= len(sublist_right) / len(example_list) * entropy(sublist_right, list_of_possible_labels)
     return ig
 
-
-def get_examples_satisfying_query(examples: Iterable[Example], query, background_knowledge: SimpleProgram) -> Set[Example]:
-    engine = DefaultEngine()
-    engine.unknown = 1
-    query_results = set()
-    for example in examples:
-        db = engine.prepare(example)
-        for knowledge in background_knowledge:
-            db += knowledge
-        to_query = Term('to_query')
-        db += (to_query << query)
-        # example_satisfies_query = engine.query(db, query)
-        example_satisfies_query = engine.query(db, to_query)
-        if bool(example_satisfies_query):
-            query_results.add(example)
-    return query_results

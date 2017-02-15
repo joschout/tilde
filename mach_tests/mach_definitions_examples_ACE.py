@@ -26,5 +26,3 @@ ex10 += worn(engine)
 ex10 += worn(chain)
 
 examples = [ex1, ex2, ex3, ex4, ex5, ex6, ex7, ex8, ex9, ex10]
-
-

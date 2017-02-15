@@ -1,9 +1,12 @@
+from typing import Optional
+
 from problog.program import SimpleProgram
 
 from representation.example import Example
 from representation.language import TypeModeLanguage
 from representation.rule import TILDEQuery
 import trees.scoring
+import classification
 import math
 from trees.TreeNode import TreeNode
 from typing import Iterable, Set, List
@@ -49,7 +52,7 @@ class TreeBuilder:
         for q in refined_queries:
             # compute the score of the queries
             conj_of_tilde_query = q.to_conjunction()
-            examples_satisfying_q = trees.scoring.get_examples_satisfying_query(examples, conj_of_tilde_query,
+            examples_satisfying_q = classification.get_examples_satisfying_query(examples, conj_of_tilde_query,
                                                                                 self.background_knowledge)
             examples_not_satisfying_q = examples - examples_satisfying_q
             score = trees.scoring.information_gain(examples, examples_satisfying_q,
@@ -83,8 +86,6 @@ class TreeBuilder:
 
     def get_tree(self) -> TreeNode:
         return self.tree_root
-
-
 
     @staticmethod
     def calculate_majority_class(examples: Iterable[Example]) -> str:

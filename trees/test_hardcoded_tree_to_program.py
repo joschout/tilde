@@ -9,12 +9,12 @@
 #
 
 
-from classification import get_label_single_example
+from classification import get_label_single_example, get_label
 from trees.TreeNode import *
 from mach_tests.mach_definitions_examples_ACE import examples
-from mach_tests.test_get_label import get_label
-from problog.engine import DefaultEngine
 from mach_tests.mach_definitions_logic import *
+from mach_tests.mach_definitions_TILDE_paper import language_machines
+
 
 # === creating the decision tree ===============
 tree_node_n3 = TreeNode()
@@ -38,21 +38,16 @@ tree_node_n0.conj = worn(X)
 
 # === converting the decision tree to prolog ==========
 program = SimpleProgram()
+
 decision_tree_to_simple_program(tree_node_n0, program)
 
+possible_labels =[sendback, fix, ok]
+
 ex1 = examples[0]
-labels = get_label([ex1], program)
+labels = get_label([ex1], program, possible_labels)
 print(labels)
 
-engine = DefaultEngine()
-engine.unknown = 1
-db = engine.prepare(ex1)
-for clause in program:
-    db += clause
-result = engine.query(db, sendback)
-print(result)
-
-result2 = get_label_single_example(ex1, program, [sendback, fix, ok])
+result2 = get_label_single_example(ex1, program, possible_labels)
 print(result2)
 
 

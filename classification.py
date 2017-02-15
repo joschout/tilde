@@ -1,8 +1,11 @@
-from typing import Iterable, List, Tuple
+from typing import Iterable, List, Tuple, Set
 
 from problog.engine import ClauseDB
 from problog.engine import DefaultEngine
 from problog.program import SimpleProgram
+from problog.program import Term
+
+from representation.example import Example
 
 
 def get_label_old(examples: Iterable[SimpleProgram], rules: SimpleProgram, possible_labels: Iterable[str]) -> List[str]:
@@ -71,3 +74,24 @@ def get_label_single_example(example: SimpleProgram, rules: SimpleProgram, possi
         if result_ex == [()]:
             labels_ex.append(label)
     return labels_ex
+
+
+def get_examples_satisfying_query(examples: Iterable[Example], query, background_knowledge: SimpleProgram) -> Set[Example]:
+    engine = DefaultEngine()
+    engine.unknown = 1
+
+    db = engine.prepare(background_knowledge)
+    to_query = Term('to_query')
+    db += (to_query << query)
+
+    query_results = set()
+
+    for example in examples:
+        db_example = db.extend()
+        for statement in example:
+            db_example += statement
+
+        example_satisfies_query = engine.query(db_example, to_query)
+        if bool(example_satisfies_query):
+            query_results.add(example)
+    return query_results

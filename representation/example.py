@@ -1,5 +1,6 @@
 from problog.program import SimpleProgram
 
+
 class Example(SimpleProgram):
     """Wrapper class for an example.
     An example  consists of a prolog program (e.g. facts and/or clauses)

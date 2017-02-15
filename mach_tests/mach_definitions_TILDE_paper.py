@@ -22,7 +22,7 @@ ex3.label = sendback
 
 ex4.label = ok
 
-examples = [ex1, ex2, ex3, ex4]
+labeled_examples = [ex1, ex2, ex3, ex4]
 
 possible_targets = [fix, sendback, ok]
 
