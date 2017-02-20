@@ -1,5 +1,9 @@
+from typing import Optional, List
+
 from problog.logic import Term, Var, Clause, And, Constant
 from problog.engine_builtin import StructSort
+from problog.util import OrderedSet
+
 
 class Rule(object):
     """Generic class for rules."""
@@ -42,12 +46,12 @@ class TILDEQuery(Rule):
     """Represents a query as used in tilde.
     """
 
-    def __init__(self, parent_query, new_literal):
+    def __init__(self, parent_query: Optional['TILDEQuery'], new_literal: Optional[Term]):
         Rule.__init__(self)
-        self.parent = parent_query
-        self.literal = new_literal
+        self.parent = parent_query  # type: Optional['TILDEQuery']
+        self.literal = new_literal  # type: Optional[Term]
 
-    def get_literals(self):
+    def get_literals(self) -> List[Term]:
         """Get literals in the rule.
 
         :return: list of literals including target
@@ -60,7 +64,7 @@ class TILDEQuery(Rule):
         else:
             return self.parent.get_literals() + [self.literal]
 
-    def get_literal(self):
+    def get_literal(self) -> Term:
         """Get most recently added body literal.
 
         :return: None (the body is empty for this type of rule)
@@ -68,17 +72,17 @@ class TILDEQuery(Rule):
         """
         return self.literal
 
-    def __and__(self, literal):
+    def __and__(self, literal: Term) -> 'TILDEQuery':
         """Add a literal to the body of the rule.
 
         :param literal: literal to add
         :type literal: Term
         :return: new rule
-        :rtype: FOILRuleB
+        :rtype: TILDEQuery
         """
         return TILDEQuery(self, literal)
 
-    def to_conjunction(self, functor=None):
+    def to_conjunction(self, functor=None) -> And:
         """Transform query into ProbLog conjunction
 
         :param functor: override rule functor (set to None to keep original)
@@ -97,14 +101,14 @@ class TILDEQuery(Rule):
         literals = [rename_recursive(lit, functor) for lit in literals]
         return And.from_list(literals)
 
-    def has_new_variables(self):
+    def has_new_variables(self) -> OrderedSet:
         # if I am the first query literal
         if self.parent is None:
             return self.get_literal().variables()
         else:
             return self.get_literal().variables() - self.parent.get_variables()
 
-    def __str__(self):
+    def __str__(self) -> str:
         literals = self.get_literals()
         head = Term('false')
         if len(literals) == 0:
@@ -112,11 +116,12 @@ class TILDEQuery(Rule):
         else:
             return '%s :- %s' % (head, ', '.join(map(str, literals)))
 
-    def __len__(self):
+    def __len__(self) -> int:
         if self.parent is not None:
             return len(self.parent) + 1
         else:
             return 1
+
 
 class FOILRuleB(Rule):
     """A FOIL rule is a rule with a specified target literal.

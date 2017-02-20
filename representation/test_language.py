@@ -1,8 +1,9 @@
 import math
 
+import classification
 import trees.scoring
 from mach_tests.mach_definitions_TILDE_paper import labeled_examples, background_knowledge, possible_targets, language_machines
-from representation.rule import TILDEQuery
+from representation.TILDE_query import TILDEQuery
 
 tilde_query = TILDEQuery(None, None)
 
@@ -22,7 +23,7 @@ for q in refined_queries:
     # compute the score of the queries
     examples_set = set(labeled_examples)
     conj_ofQuery = q.to_conjunction()
-    examples_satisfying_query = trees.scoring.get_examples_satisfying_query(labeled_examples, conj_ofQuery, background_knowledge)
+    examples_satisfying_query = classification.get_examples_satisfying_query(labeled_examples, conj_ofQuery, background_knowledge)
     score = trees.scoring.information_gain(examples_set, examples_satisfying_query, examples_set - examples_satisfying_query, possible_targets)
     if score > score_best_query:
         best_query = q

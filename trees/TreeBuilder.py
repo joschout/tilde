@@ -1,13 +1,16 @@
-from typing import Optional
+from typing import Optional, Tuple
 
+from problog.logic import And
+from problog.logic import Term
 from problog.program import SimpleProgram
 
 from representation.example import Example
 from representation.language import TypeModeLanguage
-from representation.rule import TILDEQuery
+from representation.TILDE_query import TILDEQuery
 import trees.scoring
 import classification
 import math
+
 from trees.TreeNode import TreeNode
 from typing import Iterable, Set, List
 
@@ -33,35 +36,15 @@ class TreeBuilder:
     def build_tree_recursive(self, examples: Set[Example], tilde_query: TILDEQuery, tree_node: TreeNode):
         """"
         MAKE SURE EXAMPLES IS A SET
-
         """
 
         # generating the refined queries to test
-        refinement_generator = self.language.refine_conjunction_one_literal(tilde_query)
-        refined_queries = []
-        for refinement in refinement_generator:
-            refined_queries.append(TILDEQuery(tilde_query, refinement))
+        refined_queries = get_refined_queries_of(tilde_query, self.language)
 
         # computing which query provides the optimal split
 
-        best_query = None
-        score_best_query = - math.inf
-        examples_satisfying_best_query = None
-        examples_not_satisfying_best_query = None
-
-        for q in refined_queries:
-            # compute the score of the queries
-            conj_of_tilde_query = q.to_conjunction()
-            examples_satisfying_q = classification.get_examples_satisfying_query(examples, conj_of_tilde_query,
-                                                                                self.background_knowledge)
-            examples_not_satisfying_q = examples - examples_satisfying_q
-            score = trees.scoring.information_gain(examples, examples_satisfying_q,
-                                                   examples_not_satisfying_q, self.possible_targets)
-            if score > score_best_query:
-                best_query = q
-                score_best_query = score
-                examples_satisfying_best_query = examples_satisfying_q
-                examples_not_satisfying_best_query = examples_not_satisfying_q
+        best_query, score_best_query, examples_satisfying_best_query, examples_not_satisfying_best_query \
+            = get_best_refined_query(refined_queries, examples, self.background_knowledge, self.possible_targets)
 
         # check whether to turn a node into a leaf
         # a node has to be turned into a leaf node when the set of current examples is sufficiently homogeneous
@@ -99,3 +82,37 @@ class TreeBuilder:
                 label_counts[example.label] = 1
         label_with_max_count = max(label_counts, key=(lambda key: label_counts[key]))
         return label_with_max_count
+
+
+def get_refined_queries_of(tilde_query: TILDEQuery, language: TypeModeLanguage) -> Iterable[TILDEQuery]:
+    # generating the refined queries to test
+    refinement_generator = language.refine_conjunction_one_literal(tilde_query)
+    refined_queries = []  # type: List[TILDEQuery]
+    for refinement in refinement_generator:  # type: Term
+        refined_query = TILDEQuery(tilde_query, refinement)
+        refined_queries.append(refined_query)
+    return refined_queries
+
+
+def get_best_refined_query(refined_queries: Iterable[TILDEQuery], examples: Set[Example],
+                           background_knowledge: SimpleProgram, possible_targets: List[str]) -> Tuple[Optional[TILDEQuery], float, Optional[Set[Example]], Optional[Set[Example]]]:
+    best_query = None  # type: Optional[TILDEQuery]
+    score_best_query = - math.inf  # type: float
+    examples_satisfying_best_query = None  # type: Optional[Set[Example]]
+    examples_not_satisfying_best_query = None  # type: Optional[Set[Example]]
+
+    for q in refined_queries:  # type: TILDEQuery
+        # compute the score of the queries
+        conj_of_tilde_query = q.to_conjunction()  # type: And
+        examples_satisfying_q = classification.get_examples_satisfying_query(examples, conj_of_tilde_query,
+                                                                             background_knowledge)  # type: Set[Example]
+        examples_not_satisfying_q = examples - examples_satisfying_q
+        score = trees.scoring.information_gain(examples, examples_satisfying_q,
+                                               examples_not_satisfying_q, possible_targets)
+        if score > score_best_query:
+            best_query = q
+            score_best_query = score
+            examples_satisfying_best_query = examples_satisfying_q
+            examples_not_satisfying_best_query = examples_not_satisfying_q
+
+    return best_query, score_best_query, examples_satisfying_best_query, examples_not_satisfying_best_query

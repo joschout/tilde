@@ -5,7 +5,7 @@ from problog.program import SimpleProgram
 
 from representation.example import Example
 from mach_tests.mach_definitions_logic import *
-
+from representation.language_types import TypeSignature
 
 ex1, ex2, ex3, ex4 = Example(), Example(), Example(), Example()
 
@@ -33,12 +33,13 @@ background_knowledge += not_replaceable(engine)
 background_knowledge += not_replaceable(wheel)
 
 # Machine language
-from representation.language import TypeModeLanguage
+from representation.language import *
+
 language_machines = TypeModeLanguage(False)
 
 # manually adding the types
 worn_type_sign = 'worn'
-worn_type_args = ['part']
+worn_type_args = ['part']  # type: TypeArguments
 language_machines.add_types(worn_type_sign, worn_type_args)
 
 replaceable_type_sign = 'replaceable'

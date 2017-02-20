@@ -1,7 +1,11 @@
 from collections import defaultdict
 from itertools import product
+from typing import Iterable, Iterator
 
 from problog.logic import Term, is_variable, Var, Clause, And
+
+from representation.TILDE_query import Rule, TILDEQuery
+from representation.language_types import *
 
 
 class BaseLanguage(object):
@@ -10,7 +14,7 @@ class BaseLanguage(object):
     def __init__(self):
         pass
 
-    def refine(self, rule):
+    def refine(self, rule: Rule):
         """Generate one refinement for the given rule.
 
         :param rule: rule for which to generate refinements
@@ -21,47 +25,18 @@ class BaseLanguage(object):
 class TypeModeLanguage(BaseLanguage):
     """Typed and Mode-based representation."""
 
-    MODE_EXIST = '+'     # use existing variable
-    MODE_NEW = '-'       # create new variable (do not reuse existing)
-    MODE_CONSTANT = 'c'  # insert constant
-
     def __init__(self, symmetry_breaking=True, **kwargs):
         BaseLanguage.__init__(self)
 
-        self._types = {}
-        # dict[tuple[str,int],tuple[str]]: signature / argument types
-        # e.g.
-        #       {('mother', 2): ['person', 'person'],
-        #        ('grandmother', 2): ['person', 'person'],
-        #        ('female', 1): ['person'],
-        #        ('father', 2): ['person', 'person'],
-        #        ('male', 1): ['person'],
-        #        ('male_ancestor', 2): ['person', 'person'],
-        #        ('parent', 2): ['person', 'person'],
-        #        ('female_ancestor', 2): ['person', 'person']
-        #       }
-
-        self._values = defaultdict(set)
-        # dict[str, set[Term]]: values in data for given type
-        # e.g.
-        #       {
-        #        'person': {katleen, yvonne, lucy, rene, stijn, luc, etienne, prudent, esther,
-        #                    lieve, laura, willem, an, soetkin, leon, rose, alice, bart, pieter}
-        #       }
-
-        self._modes = []
-        # list[tuple] : list of functor, modestr pairs
-        # e.g.
-        #      < class 'list'>: [('male', ['+']),
-        #                        ('parent', ['+', '+']),
-        #                        ('parent', ['+', '-']),
-        #                        ('parent', ['-', '+'])]
+        self._types = {}  # type: TypeDict
+        self._values = defaultdict(set)  # type: ValuesDict
+        self._refinement_modes = []  # type: ModeList
 
         self._symmetry_breaking = symmetry_breaking
         self._allow_negation = True
         self._allow_recursion = False
 
-    def add_types(self, functor, argtypes):
+    def add_types(self, functor: TypeName, argtypes: TypeArguments) -> None:
         """Add type information for a predicate.
 
         Type information has to be unique for a functor/arity combination.
@@ -72,14 +47,14 @@ class TypeModeLanguage(BaseLanguage):
         :type argtypes: list[str]
         :raise ValueError: duplicate type definition is given
         """
-        key = (functor, len(argtypes))
+        key = (functor, len(argtypes))  # type: TypeSignature
         if key in self._types:
             raise ValueError("A type definition already exists for '%s/%s'."
                              % (functor, len(argtypes)))
         else:
             self._types[key] = argtypes
 
-    def add_modes(self, functor, argmodes):
+    def add_modes(self, functor: ModeName, argmodes: ModeIndicators) -> None:
         """Add mode information for a predicate.
 
         :param functor: functor of the predicate
@@ -87,9 +62,9 @@ class TypeModeLanguage(BaseLanguage):
         :param argmodes: modes of the arguments (arity is length of this list)
         :type argmodes: list[str]
         """
-        self._modes.append((functor, argmodes))
+        self._refinement_modes.append((functor, argmodes))
 
-    def add_values(self, typename, *values):
+    def add_values(self, typename: TypeName, *values: Iterable[str]) -> None:
         """Add a value for a predicate.
 
         :param typename: name of the type
@@ -100,8 +75,8 @@ class TypeModeLanguage(BaseLanguage):
         for value in values:
             self._values[typename].add(value)
 
-    def refine(self, rule):
-        """Generate ONE refinement for the given rule.
+    def refine(self, rule: Rule):
+        """ORIGINAL: generate ONE refinement for the given rule.
 
             We refine a rule by adding LITERALS to the BODY of the rule.
 
@@ -146,7 +121,7 @@ class TypeModeLanguage(BaseLanguage):
         # We will consider each functor as a possible candidate for refinement
         #
         # SO for each functor in MODES
-        for functor, modestr in self._modes:
+        for functor, modestr in self._refinement_modes:
             # We have defined which literals can be added in MODES,
             # as their functor and the mode of each of the arguments.
             # We will consider each functor as a possible candidate for refinement
@@ -225,7 +200,7 @@ class TypeModeLanguage(BaseLanguage):
 
         # 2) a negative refinement
         if self._allow_negation:
-            for functor, modestr in self._modes:
+            for functor, modestr in self._refinement_modes:
                 if '-' in modestr:
                     # No new variables allowed for negative literals
                     continue
@@ -274,7 +249,7 @@ class TypeModeLanguage(BaseLanguage):
                     t.refine_state = generated | {t}
                 yield t
 
-    def refine_conjunction_one_literal(self, query):
+    def refine_conjunction_one_literal(self, query: TILDEQuery) -> Iterator[Term]:
         # 1. we need to know how many variables are in the already existing rule.
         #    We also need to know the types of these variables.
         #    This is important information when adding new literals.
@@ -303,16 +278,16 @@ class TypeModeLanguage(BaseLanguage):
         # We will consider each functor as a possible candidate for refinement
         #
         # SO for each functor in MODES
-        for functor, modestr in self._modes:  # e.g. 'parent', ['+', '+']
+        for functor, argument_mode_indicators in self._refinement_modes:  # e.g. 'parent', ['+', '+']
             # We have defined which literals can be added in MODES,
             # as their functor and the mode of each of the arguments.
             # We will consider each functor as a possible candidate for refinement
 
             # we will collect the possible arguments for the current functor in a list
             arguments = []
-            arity = len(modestr)
+            arity = len(argument_mode_indicators)
             # get the types of the arguments of the given predicate
-            types = self.get_argument_types(functor, arity)
+            argument_types = self.get_argument_types(functor, arity)  # type: TypeArguments
 
             # a functor has multiple variables,
             #       each with their own modes.
@@ -332,7 +307,7 @@ class TypeModeLanguage(BaseLanguage):
             #                   a list containing 1 new Var #
             #       'c' --> add to arguments
             #                   a list of all possible constants for the type of the argument
-            for argmode, argtype in zip(modestr, types):
+            for argmode, argtype in zip(argument_mode_indicators, argument_types):
                 if argmode == '+':
                     # All possible variables of the given type
                     arguments.append(variables.get(argtype, []))
@@ -381,7 +356,7 @@ class TypeModeLanguage(BaseLanguage):
                         t_i.refine_state = generated | {t, -t, t_i, -t_i}
                     yield t_i
 
-    def get_type_values(self, typename):
+    def get_type_values(self, typename: TypeName) -> ValueSet:
         """Get all values that occur in the data for a given type.
 
         :param typename: name of type
@@ -391,7 +366,7 @@ class TypeModeLanguage(BaseLanguage):
         """
         return self._values.get(typename, [])
 
-    def get_argument_types(self, functor, arity):
+    def get_argument_types(self, functor: TypeName, arity: int) -> TypeArguments:
         """Get the types of the arguments of the given predicate.
 
         :param functor: functor of the predicate
@@ -403,13 +378,13 @@ class TypeModeLanguage(BaseLanguage):
         """
         return self._types[(functor, arity)]
 
-    def does_predicate_exist(self, functor, arity):
+    def does_predicate_exist(self, functor: TypeName, arity: int) -> bool:
         if self._types.get((functor, arity)) is None:
             return False
         else:
             return True
 
-    def get_variable_types(self, *literals):
+    def get_variable_types(self, *literals: Iterable[Term]) -> Dict[TypeName, List[Term]]:
         """Get the types of all variables that occur in the given literals.
 
         :param literals: literals to extract variables from
@@ -418,7 +393,7 @@ class TypeModeLanguage(BaseLanguage):
         :rtype: dict[str, list[Term]]
         """
         result = defaultdict(set)
-        for lit in literals:
+        for lit in literals:  # type: Term
             if lit is None:
                 pass
             else:
@@ -429,8 +404,8 @@ class TypeModeLanguage(BaseLanguage):
                     # Don't need to process this, variables will occur somewhere else
                     #  because _recursive has mode + on all arguments.
                     continue
-                types = self.get_argument_types(lit.functor, lit.arity)
-                for arg, argtype in zip(lit.args, types):
+                argument_types = self.get_argument_types(lit.functor, lit.arity)  # type: TypeArguments
+                for arg, argtype in zip(lit.args, argument_types):  # type: Term, TypeName
                     if is_variable(arg) or arg.is_var():
                         result[argtype].add(arg)
         return result
