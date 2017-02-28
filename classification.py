@@ -54,7 +54,7 @@ def get_label(examples: Iterable[SimpleProgram], rules: SimpleProgram, possible_
     return labeled_examples
 
 
-def get_label_single_example(example: SimpleProgram, rules: SimpleProgram, possible_labels: Iterable[str]) -> List[str]:
+def get_label_single_example(example: SimpleProgram, rules: SimpleProgram, possible_labels: Iterable[str], background_knowledge=None, debug_printing=False) -> List[str]:
     """
     Classifies a single example and returns a list of its labels
     :param example:
@@ -64,15 +64,34 @@ def get_label_single_example(example: SimpleProgram, rules: SimpleProgram, possi
     """
     eng = DefaultEngine()
     eng.unknown = 1
-    db = eng.prepare(rules)
-    for statement in example:
-        db += statement
+
+    if background_knowledge is not None:
+        db = eng.prepare(background_knowledge)
+        for statement in example:
+            db += statement
+        for rule in rules:
+            db += rule
+    else:
+        db = eng.prepare(rules)
+        for statement in example:
+            db += statement
+
+    if debug_printing:
+        print('\nQueried database:')
+        for statement in db:
+            print('\t' + str(statement))
+        #print('\n')
+
     result_list = [eng.query(db, x) for x in possible_labels]
     zipped = zip(result_list, possible_labels)
     labels_ex = []
+    if debug_printing:
+        print('\nQueries on the database:')
     for result_ex, label in zipped:
         if result_ex == [()]:
             labels_ex.append(label)
+        if debug_printing:
+            print('\tquery: ' + str(label) + ', result: ' + str(bool(result_ex)))
     return labels_ex
 
 

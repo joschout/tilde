@@ -23,11 +23,8 @@ identifier, and properties of a single example are given by listing facts that r
 import re
 from typing import Optional, Iterable
 
-from problog.engine import ClauseDB
-from problog.program import PrologString
-from problog.engine import DefaultEngine
+from problog.program import PrologString, LogicProgram
 
-from representation.example import Example
 
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.kb'
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'
@@ -36,17 +33,26 @@ testnr_regex = r'testnr\('
 begin_pattern = re.compile(begin_model_regex)
 end_pattern = re.compile(end_model_regex)
 
-
 class ExampleParseException(Exception):
     pass
 
+def parse_examples_model_format(possible_labels=None) -> Iterable[LogicProgram]:
 
-def test():
+    examples_found = []
+
+    # getting regex patterns for all possible labels
+    label_patterns = []
+
+    if possible_labels is not None:
+        for possible_label in possible_labels:
+            label_patterns.append((possible_label, re.compile(str(possible_label) + '.\n')))
+
     with open(file_name_labeled_examples, 'r') as f:
         parsing_example = False
         digit = None  # type: Optional(int)
 
         prolog_string_accumulator = ''
+        example_labels = set()
 
         for line in f:
             result_of_pattern_matching = None
@@ -59,6 +65,7 @@ def test():
                     digit = result_of_pattern_matching.group(1)
                     parsing_example = True
                     prolog_string_accumulator = ''
+                    example_labels = set()
                 else:
                     pass
             else:  # parsing an example, i.e. an open begin(model(digit)). is still unclosed
@@ -70,40 +77,29 @@ def test():
                     else:
                         parsing_example = False
 
-                        example = parse_example_string(prolog_string_accumulator)
+                        example = parse_example_string(prolog_string_accumulator, example_labels)
                         # TODO: do something with the example
+                        examples_found.append(example)
 
                 else:
-                    prolog_string_accumulator = prolog_string_accumulator + line
+                    current_line_is_label = False
+                    matches_label = None
+                    for label, label_pattern in label_patterns:
+                        matches_label = label_pattern.search(line)
+                        if matches_label is not None:
+                            example_labels.add(label)
+                            current_line_is_label = True
+                    if current_line_is_label is False:
+                        prolog_string_accumulator = prolog_string_accumulator + line
+    return examples_found
 
 
-# TODO: highly inefficient to do this here
-# recompiling the regices of the labels for each example is not good
-# also, might be able to check this already while iterating over the lines
-def parse_example_string(prolog_string: str, possible_labels: Optional[Iterable[str]] = None) -> Example:
-    labeled = (possible_labels is not None)
-    if labeled:
-        example_labels = set()
+def parse_example_string(prolog_string_unlabeled: str, example_labels=None) -> LogicProgram:
 
-        for possible_label in possible_labels:
-            label_pattern = re.compile(possible_label)
-            # TODO: this might be wrong
-
-            pattern_matched = label_pattern.search(prolog_string + r'\.\n')
-
-            if pattern_matched is not None:
-                example_labels.add(possible_label)
-
-        if len(example_labels) == 1:
-            label = example_labels.pop()
-            prolog_str_without_label = prolog_string.replace(label + '.\n')
-            example = PrologString(prolog_str_without_label)
-            example.label = label
-            return example
-    else:
-        pass
-
-
-
-if __name__ == '__main__':
-    test()
+    example = PrologString(prolog_string_unlabeled)
+    if example_labels is not None:
+         if len(example_labels) == 1:
+            example.label = example_labels.pop()
+         else:
+            example.label = example_labels
+    return example

@@ -23,28 +23,60 @@ class TreeBuilder:
     background_knowledge = None  # type: Optional[SimpleProgram]
     possible_targets = None  # type: List[str]
     tree_root = TreeNode()  # type: TreeNode
+    DEBUG_PRINTING = False
 
     def __init__(self, language: TypeModeLanguage, background_knowledge: SimpleProgram, possible_targets: List[str]):
         self.language = language
         self.background_knowledge = background_knowledge
         self.possible_targets = possible_targets
 
+    def debug_printing(self, should_print: bool):
+        self.DEBUG_PRINTING = should_print
+
     def build_tree(self, examples: Iterable[Example]):
         initial_tilde_query = TILDEQuery(None, None)
+        if self.DEBUG_PRINTING:
+            print("\n=== START recursive tree building ===")
+            print('total number of examples: ', len(examples))
         self.build_tree_recursive(set(examples), initial_tilde_query, self.tree_root)
+        if self.DEBUG_PRINTING:
+            print("=== END recursive tree building ===\n")
 
-    def build_tree_recursive(self, examples: Set[Example], tilde_query: TILDEQuery, tree_node: TreeNode):
+    def build_tree_recursive(self, examples: Set[Example], tilde_query: TILDEQuery, tree_node: TreeNode, recursion_level=0):
         """"
         MAKE SURE EXAMPLES IS A SET
         """
-
+        if self.DEBUG_PRINTING:
+            print('\nrecursion level', recursion_level)
         # generating the refined queries to test
         refined_queries = get_refined_queries_of(tilde_query, self.language)
+        if self.DEBUG_PRINTING:
+            print('generating refined queries of: ', str(tilde_query))
+            print('refined queries:', list(map(str, refined_queries)))
 
         # computing which query provides the optimal split
 
         best_query, score_best_query, examples_satisfying_best_query, examples_not_satisfying_best_query \
             = get_best_refined_query(refined_queries, examples, self.background_knowledge, self.possible_targets)
+        if self.DEBUG_PRINTING:
+            print('best query: ', str(best_query))
+            print('# examples satisfying best query: ', len(examples_satisfying_best_query))
+            label_counts_sat = {}
+            for example in examples_satisfying_best_query:
+                if example.label in label_counts_sat:
+                    label_counts_sat[example.label] += 1
+                else:
+                    label_counts_sat[example.label] = 1
+            print('\tlabel counts:'+str(label_counts_sat))
+
+            print('# examples not satisfying best query: ', len(examples_not_satisfying_best_query))
+            label_counts_not_sat = {}
+            for example in examples_not_satisfying_best_query:
+                if example.label in label_counts_not_sat:
+                    label_counts_not_sat[example.label] += 1
+                else:
+                    label_counts_not_sat[example.label] = 1
+            print('\tlabel counts:' + str(label_counts_not_sat))
 
         # check whether to turn a node into a leaf
         # a node has to be turned into a leaf node when the set of current examples is sufficiently homogeneous
@@ -61,11 +93,15 @@ class TreeBuilder:
             tree_node.query = best_query
             # left child node
             tree_node.left_subtree = TreeNode()
-            self.build_tree_recursive(examples_satisfying_best_query, best_query, tree_node.left_subtree)
+            self.build_tree_recursive(examples_satisfying_best_query, best_query, tree_node.left_subtree, recursion_level + 1)
+            if self.DEBUG_PRINTING:
+                print(self.tree_root.to_string2())
 
             # right child node
             tree_node.right_subtree = TreeNode()
-            self.build_tree_recursive(examples_not_satisfying_best_query, tilde_query, tree_node.right_subtree)
+            self.build_tree_recursive(examples_not_satisfying_best_query, tilde_query, tree_node.right_subtree, recursion_level + 1)
+            if self.DEBUG_PRINTING:
+                print(self.tree_root.to_string2())
 
     def get_tree(self) -> TreeNode:
         return self.tree_root

@@ -28,12 +28,19 @@ from trees.TreeNode import get_predicate_generator
 
 
 def decision_tree_to_simple_program2(node: TreeNode, simple_program: SimpleProgram,
-                                     predicate_generator, previous_conjunction=Term('true')):
+                                     predicate_generator, previous_conjunction=Term('true'),
+                                     debug_printing=False):
     if node.left_subtree is not None and node.left_subtree is not None:
         # assign a new predicate to this node
         p = next(predicate_generator)
-        conj_left = And(previous_conjunction, node.query.get_literal())
-        conj_right = And(previous_conjunction, ~p)
+
+        # the following if-else is only necessary to remove an unnecessary 'true' term in the head
+        if previous_conjunction.functor == 'true':
+            conj_left = node.query.get_literal()
+            conj_right = ~p
+        else:
+            conj_left = And(previous_conjunction, node.query.get_literal())
+            conj_right = And(previous_conjunction, ~p)
         clause = (p << conj_left)
         simple_program += clause
 
@@ -49,10 +56,19 @@ def decision_tree_to_simple_program2(node: TreeNode, simple_program: SimpleProgr
             raise InvalidTreeNodeError()
 
 
-def convert_tree_to_simple_program(tree: TreeNode, language: TypeModeLanguage) -> SimpleProgram:
+def convert_tree_to_simple_program(tree: TreeNode, language: TypeModeLanguage, debug_printing=False) -> SimpleProgram:
+    if debug_printing:
+        print('\n=== START conversion of tree to program ===')
+        print('tree to be converted:')
+        print(tree.to_string2())
     predicate_generator = get_predicate_generator(language)
     program = SimpleProgram()
-    decision_tree_to_simple_program2(tree, program, predicate_generator)
+    decision_tree_to_simple_program2(tree, program, predicate_generator, debug_printing=debug_printing)
+    if debug_printing:
+        print('resulting program:')
+        for statement in program:
+            print(statement)
+        print('=== END conversion of tree to program ===\n')
     return program
 
 

@@ -2,7 +2,6 @@ from typing import Optional, Iterator
 
 from problog.logic import *
 
-
 # class PredicateGenerator:
 #     count = 0
 #
@@ -61,5 +60,50 @@ class TreeNode:
         #     else:
         #         refined_query = get_best_refined_query(self.query, example_list)
 
+    def to_string(self, level=0):
+        """
+        Represents the tree as a string without fancy layouting
+        :param level:
+        :return:
+        """
+        if self.get_left_child_node() is None and self.get_right_child_node() is None:
+            result = '\t' * level + "Leaf, classlabel: " + str(self.classification) + '\n'
+            return result
+        else:
+            result = '\t' * level + 'INode\n'
+            if self.get_left_child_node() is not None:
+                result = result + self.get_left_child_node().to_string(level + 1)
+            if self.get_right_child_node() is not None:
+                result = result + self.get_right_child_node().to_string(level + 1)
+            return result
 
+    def to_string2(self, indentation='', currentNodeNumber=0):
+        """
+        Represents the tree as a string using some layouting
+        :param indentation:
+        :param currentNodeNumber:
+        :return:
+        """
+        node_indentation = indentation
+        child_indentation = indentation
 
+        if currentNodeNumber == 0:
+            child_indentation = '\t'
+        elif currentNodeNumber == 1:
+            node_indentation += '|-'
+            child_indentation += '|\t'
+        else:
+            node_indentation += '\-'
+            child_indentation += '\t'
+
+        if self.get_left_child_node() is None and self.get_right_child_node() is None:
+            result = node_indentation + "Leaf, class label: " + str(self.classification) + '\n'
+            return result
+        else:
+            result = node_indentation + 'INode, query: ' + str(self.query) + '\n'
+
+            if self.get_left_child_node() is not None:
+                result = result + self.get_left_child_node().to_string2(child_indentation, 1)
+            if self.get_right_child_node() is not None:
+                result = result + self.get_right_child_node().to_string2(child_indentation, 2)
+            return result
