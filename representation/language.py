@@ -253,8 +253,8 @@ class TypeModeLanguage(BaseLanguage):
         # 1. we need to know how many variables are in the already existing rule.
         #    We also need to know the types of these variables.
         #    This is important information when adding new literals.
-        varcount = len(query.get_variables())
-        variables = self.get_variable_types(*query.get_literals())
+        nb_of_vars_in_query = len(query.get_variables())
+        variables_in_query_by_type = self.get_variable_types(*query.get_literals())  # type: Dict[TypeName, List[Term]]
 
         # We check the most recently added body literal.
         # If there is a most recently added body literal,
@@ -284,42 +284,7 @@ class TypeModeLanguage(BaseLanguage):
             # We will consider each functor as a possible candidate for refinement
 
             # we will collect the possible arguments for the current functor in a list
-            arguments = []
-            arity = len(argument_mode_indicators)
-            # get the types of the arguments of the given predicate
-            argument_types = self.get_argument_types(functor, arity)  # type: TypeArguments
-
-            # a functor has multiple variables,
-            #       each with their own modes.
-            # We have to consider each variable with its mode separately
-            # There are three different modes for an argument:
-            #       '+': the variable must be unified with an existing variable
-            #           --> use an existing variable
-            #       '-': create a new variable, do not reuse an old one
-            #       'c': insert a constant
-            #  NEW: '+-': the variable can be a new variable, OR it can be unified with an existing on
-            # for each argument of functor:
-            #   check its mode
-            #       '+' --> add to arguments
-            #                   a list of the variables in the rule with the same type as the current argument
-            #                   e.g. arguments = [ ..., [X,Y], ...]
-            #       '-' --> add to arguments
-            #                   a list containing 1 new Var #
-            #       'c' --> add to arguments
-            #                   a list of all possible constants for the type of the argument
-            for argmode, argtype in zip(argument_mode_indicators, argument_types):
-                if argmode == '+':
-                    # All possible variables of the given type
-                    arguments.append(variables.get(argtype, []))
-                elif argmode == '-':
-                    # A new variable
-                    arguments.append([Var('#')])  # what about adding a term a(X,X) where X is new?
-                elif argmode == 'c':
-                    # Add a constant
-                    arguments.append(self.get_type_values(argtype))
-                    pass
-                else:
-                    raise ValueError("Unknown mode specifier '%s'" % argmode)
+            arguments = self.get_possible_arguments_for(functor, argument_mode_indicators, variables_in_query_by_type)
 
             # arguments is a list of lists.
             # It contains as many lists as the arity of the functor.
@@ -348,13 +313,129 @@ class TypeModeLanguage(BaseLanguage):
                 if t not in generated:
                     if self._symmetry_breaking:
                         generated.add(t)
-                    t_i = t.apply(TypeModeLanguage.ReplaceNew(varcount))
+                    t_i = t.apply(TypeModeLanguage.ReplaceNew(nb_of_vars_in_query))
                     t_i.prototype = t
                     if self._symmetry_breaking:
                         t_i.refine_state = generated.copy()
                     else:
                         t_i.refine_state = generated | {t, -t, t_i, -t_i}
                     yield t_i
+
+    def get_possible_arguments_for(self, functor, argument_mode_indicators, variables_in_query_by_type):
+        # we will collect the possible arguments for the current functor in a list
+        arguments = []
+        arity = len(argument_mode_indicators)
+        # get the types of the arguments of the given predicate
+        argument_types = self.get_argument_types(functor, arity)  # type: TypeArguments
+
+        # a functor has multiple variables,
+        #       each with their own modes.
+        # We have to consider each variable with its mode separately
+        # There are three different modes for an argument:
+        #       '+': the variable must be unified with an existing variable
+        #           --> use an existing variable
+        #       '-': create a new variable, do not reuse an old one
+        #       'c': insert a constant
+        #  NEW: '+-': the variable can be a new variable, OR it can be unified with an existing on
+        # for each argument of functor:
+        #   check its mode
+        #       '+' --> add to arguments
+        #                   a list of the variables in the rule with the same type as the current argument
+        #                   e.g. arguments = [ ..., [X,Y], ...]
+        #       '-' --> add to arguments
+        #                   a list containing 1 new Var #
+        #       'c' --> add to arguments
+        #                   a list of all possible constants for the type of the argument
+        for argmode, argtype in zip(argument_mode_indicators, argument_types):
+            if argmode == '+':
+                # All possible variables of the given type
+                arguments.append(variables_in_query_by_type.get(argtype, []))
+            elif argmode == '-':
+                # A new variable
+                arguments.append([Var('#')])  # what about adding a term a(X,X) where X is new?
+            elif argmode == 'c':
+                # Add a constant
+                arguments.append(self.get_type_values(argtype))
+                pass
+            else:
+                raise ValueError("Unknown mode specifier '%s'" % argmode)
+        return arguments
+
+    # TODO: verwijder dit
+    refinement_bags = []
+
+    def refine_conjunction_one_literal_experimental(self, query: TILDEQuery) -> Iterator[Term]:
+        # 1. we need to know how many variables are in the already existing rule.
+        #    We also need to know the types of these variables.
+        #    This is important information when adding new literals.
+        nb_of_vars_in_query = len(query.get_variables())
+        variables_in_query_by_type = self.get_variable_types(*query.get_literals())  # type: Dict[TypeName, List[Term]]
+
+        # We check the most recently added body literal.
+        # If there is a most recently added body literal,
+        #   then we check whether its functor is '_recursive'
+        #   If its most recently added body literal is '_recursive',
+        #       we cannot extend the body any further,
+        #       so the function returns.
+        #   Else, we get the set of already generated literals from the last added literal
+        # If there is no recently added body literal,
+        #       we will have to start from scratch, from an empty set
+        if query.get_literal() is not None:
+            generated = query.get_literal().refine_state
+        else:
+            generated = set()
+
+        # We need to generate a literal to refine the body of the clause
+        #
+        # 1) a positive refinement
+        # We have defined which literals can be added in _refinement_modes,
+        # as their functor and the mode of each of the arguments.
+        # We will consider each functor as a possible candidate for refinement
+        #
+        # SO for each functor in MODES
+        for refinement_bag in self.refinement_bags:  # e.g. 'parent', ['+', '+']
+            # We have defined which literals can be added in MODES,
+            # as their functor and the mode of each of the arguments.
+            # We will consider each functor as a possible candidate for refinement
+
+            # we will collect the possible arguments for the current functor in a list
+            possible_arguments_of_literal_to_add = self.get_possible_arguments_for(functor, argument_mode_indicators, variables_in_query_by_type)
+
+            # arguments is a list of lists.
+            # It contains as many lists as the arity of the functor.
+            # Each list corresponds to the possible values in the refined literal of the corresponding variable.
+            # To generate all possible combinations,
+            # we take the carthesian product of the elements in the lists.
+            #
+            # SO for each possible combination of arguments:
+            #   create a term using the functor and the arguments.
+            #   IF the term hasn't already been generated in the past:
+            #       IF we want to break symmetries
+            #            add the term to the set of already generated terms
+            #       Substitute each of the '#'-vars for a new variable
+            #       add the term t as the prototype of the substuted term
+            # We know want to be return the substituted term
+            # But before returning,
+            # we want to save the state of this function,
+            # so we can generate new terms next time we call this function.
+            # To do this, we add the set of generated terms to the new literal.
+            # IF we want to break symmetry,
+            #   save a shallow copy of the set of generated literals
+            # ELSE
+            #   save the UNION of the seg of generated literals and {t, -t, t_i, -t_i}
+            for args in product(*possible_arguments_of_literal_to_add):
+                t = Term(functor, *args)
+                if t not in generated:
+                    if self._symmetry_breaking:
+                        generated.add(t)
+                    t_i = t.apply(TypeModeLanguage.ReplaceNew(nb_of_vars_in_query))
+                    t_i.prototype = t
+                    if self._symmetry_breaking:
+                        t_i.refine_state = generated.copy()
+                    else:
+                        t_i.refine_state = generated | {t, -t, t_i, -t_i}
+                    yield t_i
+
 
     def get_type_values(self, typename: TypeName) -> ValueSet:
         """Get all values that occur in the data for a given type.

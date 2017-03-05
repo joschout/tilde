@@ -7,7 +7,6 @@ from IO.parsing_settings import SettingParser
 from trees.tree_converter import convert_tree_to_simple_program
 
 
-
 settings_file_path = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.s'
 
 # === DEFINING TEST ====
@@ -17,14 +16,14 @@ settings = setting_parser.settings
 language = settings.language
 possible_targets = settings.possible_labels
 
-#background_knw = background_knowledge
+# background_knw = background_knowledge
 background_knw = parse_background_knowledge()
 
 test_examples = parse_examples_model_format(possible_targets)
 
 # ======================
 
-#tree_builder = TreeBuilder(language_machines, background_knw, possible_targets)
+# tree_builder = TreeBuilder(language_machines, background_knw, possible_targets)
 tree_builder = TreeBuilder(language, background_knw, possible_targets)
 
 tree_builder.debug_printing(True)
