@@ -1,6 +1,8 @@
+from itertools import product
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from representation.TILDE_query import TILDEQuery
 from representation.language import TypeModeLanguage
@@ -28,14 +30,20 @@ class RefinementConjunction:
             for var in literal.refinement_var_list:
                 if var.name not in variables_in_conjunction:
                     variables_already_in_query[var.name] = var
-        var_mode_combos = []
+
+        # list of list
+        all_var_mode_combos = []  # type: List[List[Tuple[str, str]]]
 
         for var in variables_in_conjunction:
+            var_mode_combos = []  # type: List[Tuple[str, str]]
             for mode_of_var in variables_in_conjunction[var].modes:
                 var_mode_combos.append((var, mode_of_var))
+            all_var_mode_combos.append(var_mode_combos)
+
+        for combo in product(*all_var_mode_combos):
 
 
- 
+
         # TODO: types for unification
         # TODO: unification with variables in query
 

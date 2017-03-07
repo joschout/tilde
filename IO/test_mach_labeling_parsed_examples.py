@@ -8,6 +8,8 @@ from trees.tree_converter import convert_tree_to_simple_program
 
 
 settings_file_path = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.s'
+file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.bg'
+file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.kb'
 
 # === DEFINING TEST ====
 setting_parser = SettingParser()
@@ -17,9 +19,9 @@ language = settings.language
 possible_targets = settings.possible_labels
 
 # background_knw = background_knowledge
-background_knw = parse_background_knowledge()
+background_knw = parse_background_knowledge(file_name_background)
 
-test_examples = parse_examples_model_format(possible_targets)
+test_examples = parse_examples_model_format(file_name_labeled_examples, possible_targets)
 
 # ======================
 

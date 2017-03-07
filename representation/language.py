@@ -341,7 +341,7 @@ class TypeModeLanguage(BaseLanguage):
         #                   a list containing 1 new Var #
         #       'c' --> add to arguments
         #                   a list of all possible constants for the type of the argument
-        for argmode, argtype in zip(argument_mode_indicators, argument_types):
+        for index, (argmode, argtype) in enumerate(zip(argument_mode_indicators, argument_types)):
             if argmode == '+':
                 # All possible variables of the given type
                 arguments.append(variables_in_query_by_type.get(argtype, []))
@@ -350,8 +350,10 @@ class TypeModeLanguage(BaseLanguage):
                 arguments.append([Var('#')])  # what about adding a term a(X,X) where X is new?
             elif argmode == 'c':
                 # Add a constant
-                arguments.append(self.get_type_values(argtype))
-                pass
+                type = functor + '_' + str(index)
+                arguments.append(self.get_type_values(type))
+                # arguments.append(self.get_type_values(argtype))
+                # pass
             else:
                 raise ValueError("Unknown mode specifier '%s'" % argmode)
         return arguments
@@ -423,7 +425,7 @@ class TypeModeLanguage(BaseLanguage):
                         result[argtype].add(arg)
         return result
 
-    def load(self, data):
+    def __load(self, data):
         """Load from data.
 
         :param data: datafile

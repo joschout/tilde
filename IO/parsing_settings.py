@@ -25,12 +25,12 @@ from typing import Pattern
 
 from problog.program import PrologFile
 from problog.engine import DefaultEngine
-from problog.logic import Term
+from problog.logic import Term, Constant
 
 from representation.language import TypeModeLanguage
 
 
-settings_file_path = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.s'
+settings_file_path = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\bongard\\examples\\bongard.s'
 
 
 class SettingsParsingError(Exception):
@@ -93,11 +93,11 @@ class SettingTokenParser:
 
 
 class ClassesTokenParser(SettingTokenParser):
-    classes_regex = r'classes\(\[(.*)\]\)\.\n'
+    classes_regex = r'classes\(\[(.*)\]\)\.'
     classes_pattern = re.compile(classes_regex) # type: Pattern[str]
 
     def can_parse_pre(self, line: str) -> Match[str]:
-        return self.classes_pattern.search(line)
+        return self.classes_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match:Match[str]):
         classes = match.group(1)  # type: str
@@ -108,14 +108,14 @@ class ClassesTokenParser(SettingTokenParser):
 
 
 class TypeTokenParser(SettingTokenParser):
-    type_regex = r'type\((.*)\).\n'
+    type_regex = r'type\((.*)\).'
     type_pattern = re.compile(type_regex)
 
     conjunction_regex = r'(\w*)\((.*)\)'
     conjunction_pattern = re.compile(conjunction_regex)
 
     def can_parse_pre(self, line: str) -> Match[str]:
-        return self.type_pattern.search(line)
+        return self.type_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
         conjunction_definition = match.group(1)
@@ -129,17 +129,20 @@ class TypeTokenParser(SettingTokenParser):
 
 
 class RmodeTokenParser(SettingTokenParser):
-    rmode_regex = r'rmode\((.*)\).\n'
-    conjunction_regex = r'(\w*)\((.*)\)'
-
+    rmode_regex = r'rmode\((.*)\).'
     rmode_pattern = re.compile(rmode_regex)
+
+    conjunction_regex = r'(\w*)\((.*)\)'
     conjunction_pattern = re.compile(conjunction_regex)
 
-    arg_regex = r'([+-]{1,3})[A-Z]\w*'
-    arg_pattern = re.compile(arg_regex)
+    moded_var_regex = r'([+-]{1,3})[A-Z]\w*'
+    moded_var_pattern = re.compile(moded_var_regex)
+
+    const_gen_regex = r'#\[(.*)\]'
+    const_gen_pattern = re.compile(const_gen_regex)
 
     def can_parse_pre(self, line: str) -> Match[str]:
-        return self.rmode_pattern.search(line)
+        return self.rmode_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
         conjunction_definition = match.group(1)
@@ -149,21 +152,55 @@ class RmodeTokenParser(SettingTokenParser):
             functor = conjunction_pattern_match.group(1)
             arguments = conjunction_pattern_match.group(2)
             arguments.replace(' ', '')
-            arguments = arguments.split(',')
+            arguments = self.__parse_args(arguments)
 
             all_args_mode_indicators = []
-            for argument in arguments:
-                arg_match = self.arg_pattern.search(argument)
-                if arg_match is not None:
-                    mode_indicators = arg_match.group(1)
+            for argument_index, argument in enumerate(arguments):
+                moded_var_match = self.moded_var_pattern.search(argument)
+                if moded_var_match is not None:
+                    mode_indicators = moded_var_match.group(1)
                     mode_indicators = list(mode_indicators)
                     all_args_mode_indicators.append(mode_indicators)
+                else:
+                    const_gen_match = self.const_gen_pattern.search(argument)
+                    if const_gen_match is not None:
+                        constants_str = const_gen_match.group(1)  # type: str
+                        constants_str = constants_str.split(',')
+                        constants = map(Constant, constants_str)
+                        # add a special mode indicator, cfr 'c'
+                        # add the constants to the language
+                        all_args_mode_indicators.append(['c'])
+                        type = functor + '_' + str(argument_index)
+                        settings.language.add_values(type, *constants)
 
             total_nb_of_combos = reduce(operator.mul, (list(map(len, all_args_mode_indicators))), 1)
             product = list(itertools.product(*all_args_mode_indicators))
             for combo in product:
                 settings.language.add_modes(functor, list(combo))
            # settings.language.add_modes(functor,mode_indicators)
+
+    def __parse_args(self, args):
+        if args == '':
+            return []
+        open_bracket_index = args.find('#[')
+        if open_bracket_index == -1: # no open bracket found
+            arguments = args.split(',')
+        else:
+            if open_bracket_index == 0:
+                arguments = []
+            else:
+                arguments = args[0:open_bracket_index-1].split(',')
+
+            close_bracket_index = args.index(']')
+            arguments.append(args[open_bracket_index:close_bracket_index+1])
+
+            if close_bracket_index+2 <= len(args):
+                args_after = self.__parse_args(args[close_bracket_index+2:])
+                arguments.extend(args_after)
+        return arguments
+
+    def parse_token_experimental(self, line: str, settings: Settings, match: Match[str]):
+        pass
 
 
 def get_rmode_from_query():

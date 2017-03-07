@@ -26,7 +26,6 @@ from typing import Optional, Iterable
 from problog.program import PrologString, LogicProgram
 
 
-file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.kb'
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'
 end_model_regex = r'end\(model\((\d+)\)\)\.\n'
 testnr_regex = r'testnr\('
@@ -36,7 +35,7 @@ end_pattern = re.compile(end_model_regex)
 class ExampleParseException(Exception):
     pass
 
-def parse_examples_model_format(possible_labels=None) -> Iterable[LogicProgram]:
+def parse_examples_model_format(file_name_labeled_examples:str, possible_labels=None) -> Iterable[LogicProgram]:
 
     examples_found = []
 
