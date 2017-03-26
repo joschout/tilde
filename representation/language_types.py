@@ -38,5 +38,3 @@ ModeList = List[Mode]
 #                        ('parent', ['+', '-']),
 #                        ('parent', ['-', '+'])]
 
-
-

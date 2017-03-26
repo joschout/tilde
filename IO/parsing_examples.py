@@ -21,14 +21,15 @@ identifier, and properties of a single example are given by listing facts that r
 
 """
 import re
+from typing import Dict
 from typing import Optional, Iterable
 
-from problog.program import PrologString, LogicProgram
-
+from problog.program import PrologString, LogicProgram, PrologFile
+from representation.example import Example
 
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'
 end_model_regex = r'end\(model\((\d+)\)\)\.\n'
-testnr_regex = r'testnr\('
+# testnr_regex = r'testnr\('
 begin_pattern = re.compile(begin_model_regex)
 end_pattern = re.compile(end_model_regex)
 
@@ -77,7 +78,6 @@ def parse_examples_model_format(file_name_labeled_examples:str, possible_labels=
                         parsing_example = False
 
                         example = parse_example_string(prolog_string_accumulator, example_labels)
-                        # TODO: do something with the example
                         examples_found.append(example)
 
                 else:
@@ -93,8 +93,44 @@ def parse_examples_model_format(file_name_labeled_examples:str, possible_labels=
     return examples_found
 
 
-def parse_example_string(prolog_string_unlabeled: str, example_labels=None) -> LogicProgram:
+def parse_examples_key_format_without_key(file_name_labeled_examples: str, possible_labels=None) -> Iterable[LogicProgram]:
+    examples_found = {}  # type: Dict[str, LogicProgram]
+    # with open(file_name_labeled_examples, 'r') as f:
+    #     for line in f:
+    file = PrologFile(file_name_labeled_examples)
+    for prolog_statement in file:
+            # prolog_term = PrologString(line)
+            example_key = prolog_statement.args[0]
+            prolog_statement_without_key = prolog_statement(*prolog_statement.args[1:])
+            if example_key not in examples_found:
+                new_example = Example()
+                new_example.key = example_key
+                new_example += prolog_statement_without_key
+                examples_found[example_key] = new_example
+            else:
+                examples_found[example_key] += prolog_statement_without_key
+    return list(examples_found.values())
 
+def parse_examples_key_format_with_key(file_name_labeled_examples: str, possible_labels=None) -> Iterable[LogicProgram]:
+    examples_found = {}  # type: Dict[str, LogicProgram]
+
+    file = PrologFile(file_name_labeled_examples)
+    for prolog_statement in file:
+            example_key = prolog_statement.args[0]
+            # prolog_statement_without_key = prolog_statement(*prolog_statement.args[1:])
+            if example_key not in examples_found:
+                new_example = Example()
+                new_example.key = example_key
+                new_example += prolog_statement
+                examples_found[example_key] = new_example
+            else:
+                examples_found[example_key] += prolog_statement
+    return list(examples_found.values())
+
+
+
+
+def parse_example_string(prolog_string_unlabeled: str, example_labels=None) -> LogicProgram:
     example = PrologString(prolog_string_unlabeled)
     if example_labels is not None:
          if len(example_labels) == 1:
@@ -102,3 +138,10 @@ def parse_example_string(prolog_string_unlabeled: str, example_labels=None) -> L
          else:
             example.label = example_labels
     return example
+
+def test():
+    file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\muta\\muta.kb'
+    parse_examples_key_format_with_key(file_name_labeled_examples)
+
+if __name__ == "__main__":
+    test()

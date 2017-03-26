@@ -312,8 +312,18 @@ class TypeModeLanguage(BaseLanguage):
                         t_i.refine_state = already_generated_literals | {t, -t, t_i, -t_i}
                     yield t_i
 
-    def __get_possible_arguments_for(self, functor, argument_mode_indicators, variables_in_query_by_type):
-        # INPUT e.g. 'parent', ['+', '+'], [A}
+    def __get_possible_term_arguments_for(self, functor, argument_mode_indicators, variables_in_query_by_type: Dict[TypeName, List[Term]]):
+        """
+        Returns the possible arguments of the term with the given functor and as arity the length of the given list of
+        mode indicators.
+        These arguments are generated using the modes of the term, unifying if necessary with the variables of 
+        the same type already in the query.
+        :param functor: 
+        :param argument_mode_indicators: 
+        :param variables_in_query_by_type: 
+        :return: 
+        """
+        # INPUT e.g. 'parent', ['+', '+'], {person: A}
 
         # we will collect the possible arguments for the current functor in a list
         arguments = []
@@ -358,8 +368,18 @@ class TypeModeLanguage(BaseLanguage):
                 raise ValueError("Unknown mode specifier '%s'" % argmode)
         return arguments
 
-    def __get_possible_terms_for(self, functor, argument_mode_indicators, variables_in_query_by_type):
-        arguments = self.__get_possible_arguments_for(functor, argument_mode_indicators, variables_in_query_by_type)
+    def __get_possible_terms_for(self, functor, argument_mode_indicators, variables_in_query_by_type: Dict[TypeName, List[Term]]):
+        """
+        Creates a generator which produces terms for the given functor
+        according to the given modes for its arguments
+        and a list of variables with which can be unified
+        
+        :param functor: 
+        :param argument_mode_indicators: 
+        :param variables_in_query_by_type: 
+        :return: 
+        """
+        arguments = self.__get_possible_term_arguments_for(functor, argument_mode_indicators, variables_in_query_by_type)
         # arguments is a list of lists.
         # It contains as many lists as the arity of the functor.
         # Each list corresponds to the possible values in the refined literal of the corresponding variable.

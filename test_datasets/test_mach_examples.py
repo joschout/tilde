@@ -12,7 +12,7 @@ file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples\\mach.kb'
 
 # === DEFINING TEST ====
-setting_parser = SettingParser()
+setting_parser = SettingParser.get_models_settings_parser()
 setting_parser.parse(settings_file_path)
 settings = setting_parser.settings
 language = settings.language
