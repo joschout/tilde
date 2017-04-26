@@ -256,6 +256,10 @@ class TypeModeLanguage(BaseLanguage):
         nb_of_vars_in_query = len(query.get_variables())
         variables_in_query_by_type = self.get_variable_types(*query.get_literals())  # type: Dict[TypeName, List[Term]]
 
+        #TODO: check if this is okay
+        # if key_output:
+        #     add variables of head to variables_in_query_by_type
+
         # We check the most recently added body literal.
         # If there is a most recently added body literal,
         #   then we check whether its functor is '_recursive'
@@ -354,6 +358,9 @@ class TypeModeLanguage(BaseLanguage):
         for index, (argmode, argtype) in enumerate(zip(argument_mode_indicators, argument_types)):
             if argmode == '+':
                 # All possible variables of the given type
+                #TODO: this is were key output file needs to be adapted
+
+
                 arguments.append(variables_in_query_by_type.get(argtype, []))
             elif argmode == '-':
                 # A new variable

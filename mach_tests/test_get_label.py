@@ -3,7 +3,7 @@ Simple ProbLog code for a classifying a machine example using Problog code to en
 """
 from problog.program import SimpleProgram
 
-from classification import get_label_old, get_label, get_label_single_example
+from classification import get_label_old, get_label, get_labels_single_example_models
 from representation.example import Example
 
 from mach_tests.mach_definitions_logic import *
@@ -27,4 +27,4 @@ possible_labels = [sendback, fix, ok]
 
 print(get_label_old([ex1], rules, possible_labels))
 print(get_label([ex1], rules, possible_labels))
-print(get_label_single_example(ex1, rules, possible_labels))
+print(get_labels_single_example_models(ex1, rules, possible_labels))

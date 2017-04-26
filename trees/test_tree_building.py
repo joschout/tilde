@@ -1,4 +1,4 @@
-from classification import get_label_single_example
+from classification import get_labels_single_example_models
 from mach_tests.mach_definitions_TILDE_paper import labeled_examples, background_knowledge, possible_targets, language_machines
 from mach_tests.mach_definitions_examples_ACE import ex1
 from mach_tests.mach_definitions_logic import sendback, fix, ok
@@ -18,5 +18,5 @@ print(tree.to_string2())
 
 program = convert_tree_to_simple_program(tree, language_machines, debug_printing=True)
 
-labels_ex1 = get_label_single_example(ex1, program, [sendback, fix, ok], debug_printing=True)
+labels_ex1 = get_labels_single_example_models(ex1, program, [sendback, fix, ok], debug_printing=True)
 print(labels_ex1)

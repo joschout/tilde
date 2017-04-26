@@ -9,7 +9,7 @@
 #
 
 
-from classification import get_label_single_example, get_label
+from classification import get_labels_single_example_models, get_label
 from trees.TreeNode import *
 from mach_tests.mach_definitions_examples_ACE import examples
 from mach_tests.mach_definitions_logic import *
@@ -47,7 +47,7 @@ ex1 = examples[0]
 labels = get_label([ex1], program, possible_labels)
 print(labels)
 
-result2 = get_label_single_example(ex1, program, possible_labels)
+result2 = get_labels_single_example_models(ex1, program, possible_labels)
 print(result2)
 
 

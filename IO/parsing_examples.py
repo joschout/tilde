@@ -25,6 +25,8 @@ from typing import Dict
 from typing import Optional, Iterable
 
 from problog.program import PrologString, LogicProgram, PrologFile
+
+from IO.label_collector import LabelCollector
 from representation.example import Example
 
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'
@@ -111,7 +113,7 @@ def parse_examples_key_format_without_key(file_name_labeled_examples: str, possi
                 examples_found[example_key] += prolog_statement_without_key
     return list(examples_found.values())
 
-def parse_examples_key_format_with_key(file_name_labeled_examples: str, possible_labels=None) -> Iterable[LogicProgram]:
+def parse_examples_key_format_with_key(file_name_labeled_examples: str) -> Iterable[LogicProgram]:
     examples_found = {}  # type: Dict[str, LogicProgram]
 
     file = PrologFile(file_name_labeled_examples)
@@ -126,8 +128,6 @@ def parse_examples_key_format_with_key(file_name_labeled_examples: str, possible
             else:
                 examples_found[example_key] += prolog_statement
     return list(examples_found.values())
-
-
 
 
 def parse_example_string(prolog_string_unlabeled: str, example_labels=None) -> LogicProgram:

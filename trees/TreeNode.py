@@ -37,12 +37,12 @@ class TreeNode:
     """A node in a First-Order Logical Decision Tree.
 
     There are two kinds of nodes: decision nodes and leaf nodes"""
-    left_subtree = None  # type: Optional(TreeNode)
-    right_subtree = None  # type: Optional(TreeNode)
+    left_subtree = None  # type: Optional[TreeNode]
+    right_subtree = None  # type: Optional[TreeNode]
+    nb_of_examples_with_label = None  # type: Optional[int]
+    nb_of_examples_in_this_node = None # type: Optional[int]
 
-    # conj = True  # DEPRECATED
-
-    query = None  # type: Optional(TILDEQuery)
+    query = None  # type: Optional[TILDEQuery]
     classification = None
 
     def get_left_child_node(self) -> 'TreeNode':
@@ -60,22 +60,28 @@ class TreeNode:
         #     else:
         #         refined_query = get_best_refined_query(self.query, example_list)
 
-    def to_string(self, level=0):
-        """
-        Represents the tree as a string without fancy layouting
-        :param level:
-        :return:
-        """
-        if self.get_left_child_node() is None and self.get_right_child_node() is None:
-            result = '\t' * level + "Leaf, classlabel: " + str(self.classification) + '\n'
-            return result
-        else:
-            result = '\t' * level + 'INode\n'
-            if self.get_left_child_node() is not None:
-                result = result + self.get_left_child_node().to_string(level + 1)
-            if self.get_right_child_node() is not None:
-                result = result + self.get_right_child_node().to_string(level + 1)
-            return result
+    def has_both_children(self) -> bool:
+        return self.left_subtree is not None and self.right_subtree is not None
+
+    def is_leaf_node(self) -> bool:
+        return self.left_subtree is None and self.right_subtree is None
+
+    # def to_string(self, level=0):
+    #     """
+    #     Represents the tree as a string without fancy layouting
+    #     :param level:
+    #     :return:
+    #     """
+    #     if self.get_left_child_node() is None and self.get_right_child_node() is None:
+    #         result = '\t' * level + "Leaf, classlabel: " + str(self.classification) + '\n'
+    #         return result
+    #     else:
+    #         result = '\t' * level + 'INode\n'
+    #         if self.get_left_child_node() is not None:
+    #             result = result + self.get_left_child_node().to_string(level + 1)
+    #         if self.get_right_child_node() is not None:
+    #             result = result + self.get_right_child_node().to_string(level + 1)
+    #         return result
 
     def to_string2(self, indentation='', currentNodeNumber=0):
         """
@@ -96,8 +102,8 @@ class TreeNode:
             node_indentation += '\-'
             child_indentation += '\t'
 
-        if self.get_left_child_node() is None and self.get_right_child_node() is None:
-            result = node_indentation + "Leaf, class label: " + str(self.classification) + '\n'
+        if self.is_leaf_node():
+            result = node_indentation + "Leaf, class label: " + str(self.classification) + ", [" + str(self.nb_of_examples_with_label) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
             return result
         else:
             result = node_indentation + 'INode, query: ' + str(self.query) + '\n'

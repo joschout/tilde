@@ -2,7 +2,7 @@ from problog.program import SimpleProgram
 
 from IO.parsing_examples import parse_examples_model_format
 from IO.parsing_settings import SettingParser
-from classification import get_label_single_example
+from classification.classification_helper import do_labeled_examples_get_correctly_classified_models
 from trees.TreeBuilder import TreeBuilder
 from trees.tree_converter import convert_tree_to_simple_program
 
@@ -29,19 +29,5 @@ print(tree)
 
 program = convert_tree_to_simple_program(tree, language, debug_printing=True)
 print(program)
-for example in test_examples:
-    true_label = example.label
-    found_label = get_label_single_example(example, program, possible_targets, background_knw)[0]
-    label_is_correct = ( true_label == found_label)
-    if label_is_correct:
-        pass
-        # output = 'correct\treal label: ' + str(true_label) + '\tfound label: ' + str(found_label)
-        # print(output)
-    else:
-        output = 'incorrect\n\treal label: ' + str(true_label) + '\n\tfound label: ' + str(found_label)
-        print(output)
-        print('\tincorrectly labeled example:')
-        for statement in example:
-            print('\t\t'+str(statement))
-        get_label_single_example(example, program, possible_targets, background_knw, debug_printing=True)
-        print('----------------')
+
+do_labeled_examples_get_correctly_classified_models(test_examples, program, possible_targets, background_knw)

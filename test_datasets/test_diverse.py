@@ -20,7 +20,7 @@ if prediction_match is not None:
         # TODO: change this from literal to conjunction
         functor = conjunction_match.group(1)
         arguments = conjunction_match.group(2)
-        arguments.replace(' ', '')
+        arguments = arguments.replace(' ', '')
         arguments = arguments.split(',')
         modes = []
         types = []

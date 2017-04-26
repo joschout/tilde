@@ -16,7 +16,7 @@ way in which the program traverses the search space but is more complicated.
 import re
 import operator
 from functools import reduce
-from typing import List
+from typing import List, Tuple
 from typing import Optional
 from typing import Match
 
@@ -25,15 +25,67 @@ from typing import Pattern
 
 from problog.program import PrologFile
 from problog.engine import DefaultEngine
-from problog.logic import Term, Constant
+from problog.logic import Term, Constant, Var
 
+from problog_helper.problog_helper import apply_substitution_to_term
 from representation.language import TypeModeLanguage
-
-settings_file_path = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\bongard\\examples\\bongard.s'
 
 
 class SettingsParsingError(Exception):
     pass
+
+
+class ConstantBuilder:
+    @staticmethod
+    def parse_constant_str(constant_str: str) -> Constant:
+        if ConstantBuilder.is_int(constant_str):
+            return Constant(int(constant_str))
+        elif ConstantBuilder.is_float(constant_str):
+            return Constant(float(constant_str))
+        else:
+            return Constant(constant_str)
+
+    @staticmethod
+    def is_float(x: str) -> bool:
+        try:
+            a = float(x)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def is_int(x: str) -> bool:
+        try:
+            a = float(x)
+            b = int(a)
+        except ValueError:
+            return False
+        else:
+            return a == b
+
+
+class KeysPredictionGoalHandler:
+    def __init__(self, functor, modes, types):
+        self.functor = functor  # type: str
+        self.modes = modes  # type: List[str]
+        self.types = types  # type: List[str]
+
+    def get_prediction_goal(self) -> Term:
+        prediction_goal_term = Term(self.functor)
+
+        nb_of_args = len(self.modes)
+        arguments = [Var('#')] * nb_of_args
+        prediction_goal_term = prediction_goal_term(*arguments)
+
+        prediction_goal_term = prediction_goal_term.apply(TypeModeLanguage.ReplaceNew(0))
+        return prediction_goal_term
+
+    def get_predicate_goal_index_of_label_var(self) -> int:
+        for index, arg_mode in enumerate(self.modes):
+            if arg_mode == "-":
+                return index
+        raise SettingsParsingError("predicate to predict has no argument with arg_mode '-'")
 
 
 class Settings:
@@ -41,12 +93,16 @@ class Settings:
         self.possible_labels = []  # type: List[Term]
         self.language = TypeModeLanguage(False)
         self.is_typed = None  # type: Optional[bool]
+        self.prediction_goal_handler = None  # type: KeysPredictionGoalHandler
 
     def add_labels(self, labels: List[Term]):
         self.possible_labels.extend(labels)
 
     def add_label(self, label: Term):
         self.possible_labels.append(label)
+
+    def get_prediction_goal_handler(self) -> KeysPredictionGoalHandler:
+        return self.prediction_goal_handler
 
 
 class SettingParser:
@@ -96,10 +152,11 @@ class SettingTokenParser:
     def set_successor(self, successor_parser: 'SettingTokenParser'):
         self.successor = successor_parser
 
-    def can_parse_pre(self, line) -> Match[str]:
+    def can_parse_pre(self, line) -> Optional[Match[str]]:
         raise NotImplementedError('abstract method')
 
-    def can_parse(self, match: Match[str]) -> bool:
+    @staticmethod
+    def can_parse(match: Optional[Match[str]]) -> bool:
         return match is not None
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
@@ -117,12 +174,12 @@ class ClassesTokenParser(SettingTokenParser):
     classes_regex = r'classes\(\[(.*)\]\)\.'
     classes_pattern = re.compile(classes_regex)  # type: Pattern[str]
 
-    def can_parse_pre(self, line: str) -> Match[str]:
+    def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.classes_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
         classes = match.group(1)  # type: str
-        classes.replace(' ', '')
+        classes = classes.replace(' ', '')
         classes = classes.split(',')
         possible_classes = list(map(Term, classes))  # type: List[Term]
         settings.add_labels(possible_classes)
@@ -132,12 +189,12 @@ class TypedLanguageTokenParser(SettingTokenParser):
     typed_language_regex = r'typed_language\((\s*yes\s*|\s*no\s*)\).'
     typed_language_pattern = re.compile(typed_language_regex)
 
-    def can_parse_pre(self, line: str) -> Match[str]:
+    def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.typed_language_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
         typed = match.group(1)
-        typed.replace(' ', '')
+        typed = typed.replace(' ', '')
         if typed == 'yes':
             settings.is_typed = True
         elif typed == 'no':
@@ -156,7 +213,7 @@ class PredictionTokenParser(SettingTokenParser):
     argument_regex = '([+-])(\w*)'
     argument_pattern = re.compile(argument_regex)
 
-    def can_parse_pre(self, line: str) -> Match[str]:
+    def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.predict_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
@@ -169,7 +226,7 @@ class PredictionTokenParser(SettingTokenParser):
             # TODO: change this from literal to conjunction
             functor = conjunction_match.group(1)
             arguments = conjunction_match.group(2)
-            arguments.replace(' ', '')
+            arguments = arguments.replace(' ', '')
             arguments = arguments.split(',')
             modes = []
             types = []
@@ -187,13 +244,15 @@ class PredictionTokenParser(SettingTokenParser):
 
             # some might be typed, some might not be
             # check if all args are typed or untyped
-            list_args_is_typed = list(map(lambda type: True if type is not '' else False, types))
+            list_args_is_typed = list(map(lambda arg_type: True if arg_type is not '' else False, types))
             have_all_args_type_specified = all(list_args_is_typed)
             have_some_args_type_specified = any(list_args_is_typed)
             if not have_all_args_type_specified and have_some_args_type_specified:
                 raise SettingsParsingError('the predicted conjunction has to be completely typed or completely untyped')
             settings.language.add_types(functor, types)
-            settings.language.add_modes(functor, modes)
+            # TODO: think about this, I don't think it needs to be added to the possible refinement conjunctions
+            # settings.language.add_modes(functor, modes)
+            settings.prediction_goal_handler = KeysPredictionGoalHandler(functor, modes, types)
         else:
             raise SettingsParsingError("invalid setting line: " + line)
 
@@ -205,7 +264,7 @@ class TypeTokenParser(SettingTokenParser):
     conjunction_regex = r'(\w*)\((.*)\)'
     conjunction_pattern = re.compile(conjunction_regex)
 
-    def can_parse_pre(self, line: str) -> Match[str]:
+    def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.type_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
@@ -214,7 +273,7 @@ class TypeTokenParser(SettingTokenParser):
         if conjunction_match is not None:
             functor = conjunction_match.group(1)
             arguments = conjunction_match.group(2)
-            arguments.replace(' ', '')
+            arguments = arguments.replace(' ', '')
             arguments = arguments.split(',')
             settings.language.add_types(functor, arguments)
 
@@ -232,7 +291,7 @@ class RmodeTokenParser(SettingTokenParser):
     const_gen_regex = r'#\[(.*)\]'
     const_gen_pattern = re.compile(const_gen_regex)
 
-    def can_parse_pre(self, line: str) -> Match[str]:
+    def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.rmode_pattern.match(line)
 
     def parse_token(self, line: str, settings: Settings, match: Match[str]):
@@ -242,35 +301,48 @@ class RmodeTokenParser(SettingTokenParser):
         if conjunction_pattern_match is not None:
             functor = conjunction_pattern_match.group(1)
             arguments = conjunction_pattern_match.group(2)
-            arguments.replace(' ', '')
-            arguments = self.__parse_args(arguments)
+            arguments = arguments.replace(' ', '')
+            arguments = self.__tokenize_rmode_argument_string(arguments)
 
-            all_args_mode_indicators = []
-            for argument_index, argument in enumerate(arguments):
-                moded_var_match = self.moded_var_pattern.search(argument)
-                if moded_var_match is not None:
-                    mode_indicators = moded_var_match.group(1)
-                    mode_indicators = list(mode_indicators)
-                    all_args_mode_indicators.append(mode_indicators)
-                else:
-                    const_gen_match = self.const_gen_pattern.search(argument)
-                    if const_gen_match is not None:
-                        constants_str = const_gen_match.group(1)  # type: str
-                        constants_str = constants_str.split(',')
-                        constants = map(Constant, constants_str)
-                        # add a special mode indicator, cfr 'c'
-                        # add the constants to the language
-                        all_args_mode_indicators.append(['c'])
-                        type = functor + '_' + str(argument_index)
-                        settings.language.add_values(type, *constants)
+            self._parse_rmode_arguments(arguments, functor, settings)
 
-            total_nb_of_combos = reduce(operator.mul, (list(map(len, all_args_mode_indicators))), 1)
-            product = list(itertools.product(*all_args_mode_indicators))
-            for combo in product:
-                settings.language.add_modes(functor, list(combo))
-                # settings.language.add_modes(functor,mode_indicators)
+    def _parse_rmode_arguments(self, arguments: List[str], functor: str, settings: Settings):
+        all_args_mode_indicators = []
+        for argument_index, argument in enumerate(arguments):
+            moded_var_match = self.moded_var_pattern.search(argument)
+            # checking if the current argument is a moded variable
+            if moded_var_match is not None:
+                mode_indicators = moded_var_match.group(1)
+                mode_indicators = list(mode_indicators)
+                all_args_mode_indicators.append(mode_indicators)
+            else:
+                const_gen_match = self.const_gen_pattern.search(argument)
+                # checking of the current argument is a list defining the possible values for this arg
+                if const_gen_match is not None:
+                    constants_str = const_gen_match.group(1)  # type: str
+                    constants_str = constants_str.split(',')
+                    constants = [ConstantBuilder.parse_constant_str(const_str) for const_str in constants_str]
+                    # add a special mode indicator, cfr 'c'
+                    # add the constants to the language
+                    all_args_mode_indicators.append(['c'])
+                    const_type = functor + '_' + str(argument_index)
+                    settings.language.add_values(const_type, *constants)
 
-    def __parse_args(self, args):
+        # total_nb_of_combos = reduce(operator.mul, (list(map(len, all_args_mode_indicators))), 1)
+        product = list(itertools.product(*all_args_mode_indicators))
+        for combo in product:
+            settings.language.add_modes(functor, list(combo))
+            # settings.language.add_modes(functor,mode_indicators)
+
+    def __tokenize_rmode_argument_string(self, args: str) -> List[str]:
+        """
+        Breaks the arguments of an rmode line into substrings. This has to handle the case where there is a list of possible values.
+        For example:    rmode(5: config(+P,+S,#[up,down])).    
+        --> input of this method: '+P,+S,#[up,down]'
+            output:     ['+P', '+S', '#[up,down]']   
+        :param args: 
+        :return: 
+        """
         if args == '':
             return []
         open_bracket_index = args.find('#[')
@@ -286,7 +358,7 @@ class RmodeTokenParser(SettingTokenParser):
             arguments.append(args[open_bracket_index:close_bracket_index + 1])
 
             if close_bracket_index + 2 <= len(args):
-                args_after = self.__parse_args(args[close_bracket_index + 2:])
+                args_after = self.__tokenize_rmode_argument_string(args[close_bracket_index + 2:])
                 arguments.extend(args_after)
         return arguments
 
@@ -294,25 +366,15 @@ class RmodeTokenParser(SettingTokenParser):
         pass
 
 
-def get_rmode_from_query():
-    settings_prolog = PrologFile(settings_file_path)
-    # for statement in settings_prolog:
-    #     print(statement)
-    engine = DefaultEngine()
-    # try:
-    settings_db = engine.prepare(settings_prolog)
-    for statement in settings_db:
-        print(statement)
-    # except ParseError as perr:
-    #     print('ParseError thrown')
-    print(engine.query(settings_db, Term('rmode', 'replaceable(+V_0)')))
-
-
-def main():
-    settings_parser = SettingParser()
-    settings_parser.parse(settings_file_path)
-    print(settings_parser.settings)
-
-
-if __name__ == "__main__":
-    main()
+# def get_rmode_from_query():
+#     settings_prolog = PrologFile(settings_file_path)
+#     # for statement in settings_prolog:
+#     #     print(statement)
+#     engine = DefaultEngine()
+#     # try:
+#     settings_db = engine.prepare(settings_prolog)
+#     for statement in settings_db:
+#         print(statement)
+#     # except ParseError as perr:
+#     #     print('ParseError thrown')
+#     print(engine.query(settings_db, Term('rmode', 'replaceable(+V_0)')))
