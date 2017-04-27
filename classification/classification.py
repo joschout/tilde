@@ -1,7 +1,7 @@
 from typing import Iterable, List, Tuple, Set
 
-from problog.engine import ClauseDB
-from problog.engine import DefaultEngine
+from problog import get_evaluatable
+from problog.engine import DefaultEngine, ClauseDB
 from problog.program import SimpleProgram
 from problog.program import Term
 
@@ -80,7 +80,7 @@ def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgra
         print('\nQueried database:')
         for statement in db:
             print('\t' + str(statement))
-        #print('\n')
+        # print('\n')
 
     result_list = [eng.query(db, x) for x in possible_labels]
     zipped = zip(result_list, possible_labels)
@@ -133,41 +133,65 @@ def get_labels_single_example_keys(example: SimpleProgram, rules: SimpleProgram,
 
 class ExamplePartitioner:
 
-    def __init__(self, background_knowledge):
+    def __init__(self):
         self.engine = DefaultEngine()
         self.engine.unknown = 1
 
-        self.db = self.engine.prepare(background_knowledge)
+        # self.db = self.engine.prepare(background_knowledge)
         self.to_query = Term('to_query')
 
-    def get_examples_satisfying_query(self, examples: Iterable[Example], query) -> Set[Example]:
-        db_query = self.db.extend()
-        db_query += (self.to_query << query)
+    # def get_examples_satisfying_query(self, examples: Iterable[Example], query) -> Set[Example]:
+    #     # db_query = self.db.extend()
+    #     # db_query += (self.to_query << query)
+    #
+    #     query_results = set()
+    #
+    #     # print("\n================")
+    #
+    #     for example in examples:
+    #         # db_example = db_query.extend()
+    #         # for statement in example:
+    #         #     db_example += statement
+    #         db_example = self.db.extend()
+    #         for statement in example:
+    #             db_example += statement
+    #
+    #         db_example += (self.to_query << query)
+    #
+    #         # if example.key == Constant(1) and "27" in str(query):
+    #         #     for statement in db:
+    #         #         print(str(statement) + ".")
+    #         #     for statement in db_example:
+    #         #         print(str(statement) + ".")
+    #
+    #         example_satisfies_query = self.engine.query(db_example, self.to_query)
+    #         if bool(example_satisfies_query):
+    #             query_results.add(example)
+    #             # print("--------------\n")
+    #
+    #     # print("================\n")
+    #     return query_results
 
-        query_results = set()
+    def get_examples_satisfying_query(self, example_dbs: Iterable[ClauseDB], query) -> Set[ClauseDB]:
+        examples_satisfying_query = set()
 
-        # print("\n================")
+        for example_db in example_dbs:
+            db_to_query = example_db.extend()
+            to_query = Term('to_query')
+            db_to_query += Term('query')(to_query)
+            db_to_query += (self.to_query << query)
+            example_satisfies_query = get_evaluatable().create_from(db_to_query).evaluate()
 
-        for example in examples:
-            db_example = db_query.extend()
-            for statement in example:
-                db_example += statement
-            # if example.key == Constant(1) and "27" in str(query):
-            #     for statement in db:
-            #         print(str(statement) + ".")
-            #     for statement in db_example:
-            #         print(str(statement) + ".")
-
-            example_satisfies_query = self.engine.query(db_example, self.to_query)
-            if bool(example_satisfies_query):
-                query_results.add(example)
-                # print("--------------\n")
-
-        # print("================\n")
-        return query_results
+            # example_satisfies_query = self.engine.query(db_to_query, self.to_query)
+            if example_satisfies_query[to_query] > 0:
+                examples_satisfying_query.add(example_db)
+            # if bool(example_satisfies_query):
+            #     examples_satisfying_query.add(example_db)
+        return examples_satisfying_query
 
 
-# def get_examples_satisfying_query(examples: Iterable[Example], query, background_knowledge: SimpleProgram) -> Set[Example]:
+# def get_examples_satisfying_query(examples: Iterable[Example], query, background_knowledge: SimpleProgram)
+#                                    -> Set[Example]:
 #     engine = DefaultEngine()
 #     engine.unknown = 1
 #

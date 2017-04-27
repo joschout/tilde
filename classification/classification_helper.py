@@ -1,5 +1,6 @@
-from typing import Iterable
+from typing import Iterable, List
 
+from problog.engine import ClauseDB, DefaultEngine
 from problog.logic import Term
 from problog.program import SimpleProgram
 
@@ -84,3 +85,25 @@ def do_labeled_examples_get_correctly_classified_keys(labeled_examples, rules_as
     print("examples labeled incorrectly: " + str(nb_of_incorrecty_labeled_examples) + "/" + str(
         nb_of_examples) + ", " + str(
         nb_of_incorrecty_labeled_examples / nb_of_examples * 100) + "%")
+
+
+def get_example_databases(examples, background_knowledge=None) -> List[ClauseDB]:
+    engine = DefaultEngine()
+    engine.unknown = 1
+
+    example_dbs = []  # type: List[ClauseDB]
+
+    if background_knowledge is not None:
+        db = engine.prepare(background_knowledge)  # type: ClauseDB
+        for example in examples:
+            db_example = db.extend()  # type: ClauseDB
+            for statement in example:
+                db_example += statement
+            db_example.label = example.label
+            example_dbs.append(db_example)
+    else:
+        for example in examples:
+            db_example = engine.prepare(example)  # type: ClauseDB
+            db_example.label = example.label
+            example_dbs.append(db_example)
+    return example_dbs

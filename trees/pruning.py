@@ -18,6 +18,8 @@ def prune_leaf_nodes_with_same_label(node: TreeNode):
                 --> prune    
     """
 
+    # TODO: fails when given None
+
     left_child_node = node.get_left_child_node()
     right_child_node = node.get_right_child_node()
 

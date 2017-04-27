@@ -33,5 +33,15 @@ class LabelCollector:
         for example in examples:
             self.extract_label(example)
 
+    def extract_labels_dbs(self, example_dbs):
+        for db_example in example_dbs:
+            list_of_answers = self.engine.query(db_example, self.predicate_to_query)
+            if len(list_of_answers) is 0:
+                raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
+            for answer in list_of_answers:
+                label = answer[self.index_of_label_var]
+                self.labels.add(label)
+                db_example.label = label
+
     def get_labels(self):
         return self.labels
