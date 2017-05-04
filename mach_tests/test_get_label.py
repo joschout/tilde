@@ -9,7 +9,7 @@ from representation.example import Example
 from mach_tests.mach_definitions_logic import *
 
 
-ex1 = Example()
+ex1 = SimpleProgamExample()
 
 ex1 += worn(gear)
 ex1 += worn(engine)

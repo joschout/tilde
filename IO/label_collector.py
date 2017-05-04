@@ -1,4 +1,9 @@
+from typing import Iterable, Set
+
 from problog.engine import DefaultEngine
+from problog.logic import Term
+
+from representation.example import SimpleProgramExample, ClauseDBExample
 
 
 class LabelCollector:
@@ -10,10 +15,15 @@ class LabelCollector:
         else:
             self.db = None
         self.predicate_to_query = predicate_to_query
-        self.labels = set()
+        self.labels = set()  # type: Set[Term]
         self.index_of_label_var = index_of_label_var
 
-    def extract_label(self, example):
+    def get_labels(self) -> Set[Term]:
+        return self.labels
+
+
+class SimpleProgramLabelCollector(LabelCollector):
+    def extract_label(self, example: SimpleProgramExample):
         if self.db is not None:
             db_example = self.db.extend()
             for statement in example:
@@ -29,12 +39,14 @@ class LabelCollector:
             self.labels.add(label)
             example.label = label
 
-    def extract_labels(self, examples):
+    def extract_labels(self, examples: Iterable[SimpleProgramExample]):
         for example in examples:
             self.extract_label(example)
 
-    def extract_labels_dbs(self, example_dbs):
-        for db_example in example_dbs:
+
+class ClauseDBLabelCollector(LabelCollector):
+    def extract_labels(self, example_dbs: Iterable[ClauseDBExample]):
+        for db_example in example_dbs:  # type: ClauseDBExample
             list_of_answers = self.engine.query(db_example, self.predicate_to_query)
             if len(list_of_answers) is 0:
                 raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
@@ -42,6 +54,3 @@ class LabelCollector:
                 label = answer[self.index_of_label_var]
                 self.labels.add(label)
                 db_example.label = label
-
-    def get_labels(self):
-        return self.labels

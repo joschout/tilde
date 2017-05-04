@@ -1,10 +1,15 @@
-from problog.logic import Term
+from typing import List, Set
 
-from IO.label_collector import LabelCollector
+from problog.logic import Term
+from problog.program import PrologFile
+
+from IO.label_collector import LabelCollector, ClauseDBLabelCollector
 from IO.parsing_background_knowledge import parse_background_knowledge
 from IO.parsing_examples import parse_examples_key_format_with_key
 from IO.parsing_settings import Settings, SettingParser, KeysPredictionGoalHandler
 from classification.classification_helper import do_labeled_examples_get_correctly_classified_keys, get_example_databases
+from classification.example_partitioning import ClauseDBExamplePartitioner
+from representation.example import SimpleProgramExample, ClauseDBExample
 from representation.language import TypeModeLanguage
 from trees.TreeBuilder import TreeBuilder
 from trees.pruning import prune_leaf_nodes_with_same_label
@@ -57,20 +62,20 @@ prediction_goal = prediction_goal_handler.get_prediction_goal()  # type: Term
 
 language = settings.language  # type: TypeModeLanguage
 
-background_knw = parse_background_knowledge(file_name_background)
+background_knw = parse_background_knowledge(file_name_background)  # type: PrologFile
 
-examples = parse_examples_key_format_with_key(file_name_labeled_examples)
+examples = parse_examples_key_format_with_key(file_name_labeled_examples)  # type: List[SimpleProgramExample]
 
-example_dbs = get_example_databases(examples, background_knw)
+example_dbs = get_example_databases(examples, background_knw)  # type: List[ClauseDBExample]
 
 # === getting the labels ===
 index_of_label_var = prediction_goal_handler.get_predicate_goal_index_of_label_var()  # type: int
-label_collector = LabelCollector(prediction_goal, index_of_label_var, background_knw)
-label_collector.extract_labels_dbs(example_dbs)
-possible_labels = label_collector.get_labels()
+label_collector = ClauseDBLabelCollector(prediction_goal, index_of_label_var, background_knw)
+label_collector.extract_labels(example_dbs)
+possible_labels = label_collector.get_labels()  # type: Set[Term]
 # =================================
 
-tree_builder = TreeBuilder(language, background_knw, possible_labels, StopCriterionMinimalCoverage(4))
+tree_builder = TreeBuilder(language, list(possible_labels), ClauseDBExamplePartitioner(), StopCriterionMinimalCoverage(4))
 tree_builder.debug_printing(True)
 tree_builder.build_tree(example_dbs, prediction_goal)
 

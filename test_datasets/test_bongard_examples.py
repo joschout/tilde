@@ -1,8 +1,9 @@
 from problog.program import SimpleProgram
 
 from IO.parsing_examples import parse_examples_model_format
-from IO.parsing_settings import SettingParser
+from IO.parsing_settings import SettingParser, Settings
 from classification.classification_helper import do_labeled_examples_get_correctly_classified_models
+from representation.language import TypeModeLanguage
 from trees.TreeBuilder import TreeBuilder
 from trees.tree_converter import convert_tree_to_simple_program
 
@@ -10,10 +11,10 @@ settings_file_path = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\bongard\\examples
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\bongard\\examples\\bongard.kb'
 
 # === DEFINING TEST ====
-setting_parser = SettingParser.get_models_settings_parser()
+setting_parser = SettingParser.get_models_settings_parser()  # type: SettingParser
 setting_parser.parse(settings_file_path)
-settings = setting_parser.settings
-language = settings.language
+settings = setting_parser.settings  # type: Settings
+language = settings.language  # type: TypeModeLanguage
 possible_targets = settings.possible_labels
 
 background_knw = SimpleProgram()

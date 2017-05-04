@@ -1,15 +1,13 @@
 from typing import Optional, Tuple
 
-from problog.engine import ClauseDB
 from problog.logic import And
 from problog.logic import Term
-from problog.program import SimpleProgram
 
 from representation.example import Example
 from representation.language import TypeModeLanguage
 from representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
 import trees.scoring
-from classification.classification import ExamplePartitioner
+from classification.example_partitioning import ExamplePartitioner
 import math
 
 from trees.TreeNode import TreeNode
@@ -28,17 +26,18 @@ class TreeBuilder:
     DEBUG_PRINTING = False
     stop_criterion_handler = None  # type: StopCriterionHandler
 
-    def __init__(self, language: TypeModeLanguage, background_knowledge: SimpleProgram, possible_targets: List[str],
+    def __init__(self, language: TypeModeLanguage, possible_targets: List[str],
+                 example_partitioner: ExamplePartitioner,
                  stop_criterion_handler: StopCriterionHandler = StopCriterionMinimalCoverage()):
         self.language = language
-        self.example_partitioner = ExamplePartitioner()
+        self.example_partitioner = example_partitioner
         self.possible_targets = possible_targets
         self. stop_criterion_handler = stop_criterion_handler
 
     def debug_printing(self, should_print: bool):
         self.DEBUG_PRINTING = should_print
 
-    def build_tree(self, examples: Iterable[ClauseDB], query_head_if_keys_format: Optional[Term] = None):
+    def build_tree(self, examples: Iterable[Example], query_head_if_keys_format: Optional[Term] = None):
 
         if query_head_if_keys_format is not None:
             initial_tilde_query = TILDEQueryHiddenLiteral(query_head_if_keys_format)
@@ -52,7 +51,7 @@ class TreeBuilder:
         if self.DEBUG_PRINTING:
             print("=== END recursive tree building ===\n")
 
-    def build_tree_recursive(self, examples: Set[ClauseDB], tilde_query: TILDEQuery, tree_node: TreeNode,
+    def build_tree_recursive(self, examples: Set[Example], tilde_query: TILDEQuery, tree_node: TreeNode,
                              recursion_level=0):
         """"
         MAKE SURE EXAMPLES IS A SET

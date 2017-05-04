@@ -18,7 +18,7 @@ class FOILRuleB(Rule):
 
     def __init__(self, parent: Optional['FOILRuleB'], literal: Optional[Term], target, previous, correct):
         Rule.__init__(self)
-        self.parent: Optional[FOILRuleB] = parent
+        self.parent: Optional['FOILRuleB'] = parent
         self.literal: Optional[Term] = literal
         self.target = target
         self.previous = previous
