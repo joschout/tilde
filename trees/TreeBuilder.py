@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 from problog.logic import And
 from problog.logic import Term
 
+from classification.classification_helper import Label
 from representation.example import Example
 from representation.language import TypeModeLanguage
 from representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
@@ -21,12 +22,12 @@ class TreeBuilder:
     Builds a tree out of Examples using a Typed Mode Language and a background knowledge
 
     """
-    possible_targets = None  # type: List[str]
+    possible_targets = None  # type: List[Label]
     tree_root = TreeNode()  # type: TreeNode
-    DEBUG_PRINTING = False
+    DEBUG_PRINTING = False  # type: bool
     stop_criterion_handler = None  # type: StopCriterionHandler
 
-    def __init__(self, language: TypeModeLanguage, possible_targets: List[str],
+    def __init__(self, language: TypeModeLanguage, possible_targets: List[Label],
                  example_partitioner: ExamplePartitioner,
                  stop_criterion_handler: StopCriterionHandler = StopCriterionMinimalCoverage()):
         self.language = language
@@ -145,7 +146,7 @@ def get_refined_queries_of(tilde_query: TILDEQuery, language: TypeModeLanguage) 
 
 
 def get_best_refined_query(refined_queries: Iterable[TILDEQuery], examples: Set[Example],
-                           example_partitioner: ExamplePartitioner, possible_targets: List[str]) -> Tuple[
+                           example_partitioner: ExamplePartitioner, possible_targets: List[Label]) -> Tuple[
                             Optional[TILDEQuery], float, Optional[Set[Example]], Optional[Set[Example]]]:
     best_query = None  # type: Optional[TILDEQuery]
     score_best_query = - math.inf  # type: float

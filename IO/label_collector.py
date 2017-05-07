@@ -1,8 +1,8 @@
 from typing import Iterable, Set
 
 from problog.engine import DefaultEngine
-from problog.logic import Term
 
+from classification.classification_helper import Label
 from representation.example import SimpleProgramExample, ClauseDBExample
 
 
@@ -15,10 +15,10 @@ class LabelCollector:
         else:
             self.db = None
         self.predicate_to_query = predicate_to_query
-        self.labels = set()  # type: Set[Term]
+        self.labels = set()  # type: Set[Label]
         self.index_of_label_var = index_of_label_var
 
-    def get_labels(self) -> Set[Term]:
+    def get_labels(self) -> Set[Label]:
         return self.labels
 
 

@@ -1,11 +1,13 @@
-from typing import Iterable, List
+from typing import Iterable, List, Union, Optional
 
 from problog.engine import ClauseDB, DefaultEngine
 from problog.logic import Term
-from problog.program import SimpleProgram
+from problog.program import SimpleProgram, LogicProgram
 
 from classification.classification import get_labels_single_example_models, get_labels_single_example_keys
-from representation.example import ClauseDBExample
+from representation.example import ClauseDBExample, Example
+
+Label = Union[Term, str]
 
 
 def do_labeled_examples_get_correctly_classified_models(labeled_examples, rules_as_program, possible_labels,
@@ -88,7 +90,7 @@ def do_labeled_examples_get_correctly_classified_keys(labeled_examples, rules_as
         nb_of_incorrecty_labeled_examples / nb_of_examples * 100) + "%")
 
 
-def get_example_databases(examples, background_knowledge=None) -> List[ClauseDBExample]:
+def get_example_databases(examples:Iterable[Example], background_knowledge: Optional[LogicProgram]=None) -> List[ClauseDBExample]:
     engine = DefaultEngine()
     engine.unknown = 1
 

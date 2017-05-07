@@ -1,5 +1,7 @@
 from typing import List, Iterable, Sequence, Collection, Sized
 from problog.logic import *
+
+from classification.classification_helper import Label
 from representation.example import Example
 
 
@@ -50,7 +52,7 @@ def entropy(list_of_examples, list_of_possible_labels: Iterable[str]) -> float:
 
 
 def information_gain(example_list, sublist_left, sublist_right,
-                     list_of_possible_labels: List[str]) -> float:
+                     list_of_possible_labels: List[Label]) -> float:
     """
     Calculates the information gain of splitting a set of examples into two subsets.
     """

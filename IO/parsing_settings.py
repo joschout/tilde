@@ -27,6 +27,7 @@ from problog.program import PrologFile
 from problog.engine import DefaultEngine
 from problog.logic import Term, Constant, Var
 
+from classification.classification_helper import Label
 from problog_helper.problog_helper import apply_substitution_to_term
 from representation.language import TypeModeLanguage
 
@@ -90,15 +91,15 @@ class KeysPredictionGoalHandler:
 
 class Settings:
     def __init__(self):
-        self.possible_labels = []  # type: List[Term]
+        self.possible_labels = []  # type: List[Label]
         self.language = TypeModeLanguage(False)
         self.is_typed = None  # type: Optional[bool]
         self.prediction_goal_handler = None  # type: KeysPredictionGoalHandler
 
-    def add_labels(self, labels: List[Term]):
+    def add_labels(self, labels: List[Label]):
         self.possible_labels.extend(labels)
 
-    def add_label(self, label: Term):
+    def add_label(self, label: Label):
         self.possible_labels.append(label)
 
     def get_prediction_goal_handler(self) -> KeysPredictionGoalHandler:
@@ -141,6 +142,18 @@ class SettingParser:
         prediction_token_parser.set_successor(type_token_parser)
         type_token_parser.set_successor(rmode_token_parser)
         return setting_parser
+
+    @staticmethod
+    def get_settings_keys_format( file_path:str) -> Settings:
+        setting_parser = SettingParser.get_key_settings_parser()
+        setting_parser.parse(file_path)
+        return setting_parser.settings
+
+    @staticmethod
+    def get_settings_models_format(file_path: str) -> Settings:
+        setting_parser = SettingParser.get_models_settings_parser()
+        setting_parser.parse(file_path)
+        return setting_parser.settings
 
 
 class SettingTokenParser:

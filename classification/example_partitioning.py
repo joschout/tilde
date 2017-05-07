@@ -1,9 +1,11 @@
-from typing import Iterable, Set
+from typing import Iterable, Set, Dict, Optional
 
-from problog import get_evaluatable
 from problog.engine import DefaultEngine, ClauseDB
-from problog.program import SimpleProgram
+from problog.program import SimpleProgram, LogicProgram
 from problog.program import Term
+from problog.cnf_formula import CNF
+from problog.ddnnf_formula import  DDNNF
+from problog.formula import LogicDAG, LogicFormula
 
 from representation.example import Example, SimpleProgramExample, ClauseDBExample
 
@@ -18,11 +20,21 @@ class ExamplePartitioner:
     def get_examples_satisfying_query(self, examples: Iterable[Example], query) -> Set[Example]:
         raise NotImplementedError("abstract method")
 
+    def _query(self, db_to_query: ClauseDB) -> Dict[Term, float]:
+        lf = self.engine.ground_all(db_to_query)  # type: LogicFormula
+        dag = LogicDAG.create_from(lf)  # break cycles in the ground program
+        cnf = CNF.create_from(dag)  # convert to CNF
+        ddnnf = DDNNF.create_from(cnf)
+        return ddnnf.evaluate()
+
 
 class SimpleProgramExamplePartitioner(ExamplePartitioner):
-    def __init__(self, background_knowledge=SimpleProgram()):
+    def __init__(self, background_knowledge: Optional[LogicProgram]=None):
         super().__init__()
-        self.db = self.engine.prepare(background_knowledge)
+        if background_knowledge is None:
+            self.db = self.engine.prepare(SimpleProgram())
+        else:
+            self.db = self.engine.prepare(background_knowledge)
 
     def get_examples_satisfying_query(self, examples: Iterable[SimpleProgramExample], query) -> Set[SimpleProgramExample]:
         examples_satisfying_query = set()
@@ -34,7 +46,7 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
             db_to_query += Term('query')(self.to_query)
             db_to_query += (self.to_query << query)
 
-            query_result = get_evaluatable().create_from(db_to_query).evaluate()
+            query_result = self._query(db_to_query)
             if query_result[self.to_query] > 0:
                 examples_satisfying_query.add(example)
 
@@ -52,7 +64,7 @@ class ClauseDBExamplePartitioner(ExamplePartitioner):
             db_to_query = example_db.extend()
             db_to_query += Term('query')(self.to_query)
             db_to_query += (self.to_query << query)
-            query_result = get_evaluatable().create_from(db_to_query).evaluate()
+            query_result = self._query(db_to_query)
 
             if query_result[self.to_query] > 0:
                 examples_satisfying_query.add(example_db)
