@@ -1,5 +1,6 @@
 from typing import Iterable, Set, Dict, Optional
 
+import problog
 from problog.engine import DefaultEngine, ClauseDB
 from problog.program import SimpleProgram, LogicProgram
 from problog.program import Term
@@ -20,12 +21,12 @@ class ExamplePartitioner:
     def get_examples_satisfying_query(self, examples: Iterable[Example], query) -> Set[Example]:
         raise NotImplementedError("abstract method")
 
-    def _query(self, db_to_query: ClauseDB) -> Dict[Term, float]:
-        lf = self.engine.ground_all(db_to_query)  # type: LogicFormula
-        dag = LogicDAG.create_from(lf)  # break cycles in the ground program
-        cnf = CNF.create_from(dag)  # convert to CNF
-        ddnnf = DDNNF.create_from(cnf)
-        return ddnnf.evaluate()
+    # def _query(self, db_to_query: ClauseDB) -> Dict[Term, float]:
+    #     lf = self.engine.ground_all(db_to_query)  # type: LogicFormula
+    #     dag = LogicDAG.create_from(lf)  # break cycles in the ground program
+    #     cnf = CNF.create_from(dag)  # convert to CNF
+    #     ddnnf = DDNNF.create_from(cnf)
+    #     return ddnnf.evaluate()
 
 
 class SimpleProgramExamplePartitioner(ExamplePartitioner):
@@ -46,7 +47,8 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
             db_to_query += Term('query')(self.to_query)
             db_to_query += (self.to_query << query)
 
-            query_result = self._query(db_to_query)
+            query_result = problog.get_evaluatable().create_from(db_to_query, engine=self.engine).evaluate()
+            # query_result = self._query(db_to_query)
             if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(example)
 
@@ -64,7 +66,8 @@ class ClauseDBExamplePartitioner(ExamplePartitioner):
             db_to_query = example_db.extend()
             db_to_query += Term('query')(self.to_query)
             db_to_query += (self.to_query << query)
-            query_result = self._query(db_to_query)
+            query_result = problog.get_evaluatable().create_from(db_to_query, engine=self.engine).evaluate()
+            # query_result = self._query(db_to_query)
 
             if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(example_db)
