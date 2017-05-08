@@ -29,17 +29,17 @@ def run_keys_clausedb(fname_labeled_examples: str, fname_settings: str, fname_ba
 
     # BACKGROUND KNOWLEDGE
     if fname_background_knowledge is not None:
-        background_knw = parse_background_knowledge(fname_background_knowledge)  # type: PrologFile
+        background_knowledge = parse_background_knowledge(fname_background_knowledge)  # type: PrologFile
     else:
-        background_knw = None
+        background_knowledge = None
 
     # EXAMPLES
     examples = parse_examples_key_format_with_key(fname_labeled_examples)  # type: List[SimpleProgramExample]
-    example_dbs = get_example_databases(examples, background_knw)  # type: List[ClauseDBExample]
+    example_dbs = get_example_databases(examples, background_knowledge)  # type: List[ClauseDBExample]
 
     # LABELS
     index_of_label_var = prediction_goal_handler.get_predicate_goal_index_of_label_var()  # type: int
-    label_collector = ClauseDBLabelCollector(prediction_goal, index_of_label_var, background_knw)
+    label_collector = ClauseDBLabelCollector(prediction_goal, index_of_label_var, background_knowledge)
     label_collector.extract_labels(example_dbs)
     possible_labels = label_collector.get_labels()  # type: Set[Label]
     # =================================
@@ -57,7 +57,6 @@ def run_keys_clausedb(fname_labeled_examples: str, fname_settings: str, fname_ba
 
     tree_to_program_converter = KeyTreeToProgramConverter(prediction_goal, index_of_label_var, debug_printing=True)
     program = tree_to_program_converter.convert_tree_to_simple_program(tree, language)
-    print(program)
 
     # do_labeled_examples_get_correctly_classified_keys(examples, program, prediction_goal, index_of_label_var, possible_labels, background_knw)
 
@@ -73,9 +72,9 @@ def run_keys_simpleprogram(fname_labeled_examples: str, fname_settings: str, fna
 
     # BACKGROUND KNOWLEDGE
     if fname_background_knowledge is not None:
-        background_knw = parse_background_knowledge(fname_background_knowledge)  # type: PrologFile
+        background_knowledge = parse_background_knowledge(fname_background_knowledge)  # type: PrologFile
     else:
-        background_knw = None
+        background_knowledge = None
 
     # EXAMPLES
     examples = parse_examples_key_format_with_key(fname_labeled_examples)  # type: List[SimpleProgramExample]
@@ -87,7 +86,7 @@ def run_keys_simpleprogram(fname_labeled_examples: str, fname_settings: str, fna
     possible_labels = label_collector.get_labels()
     # =================================
 
-    tree_builder = TreeBuilder(language, possible_labels, SimpleProgramExamplePartitioner(background_knw))
+    tree_builder = TreeBuilder(language, possible_labels, SimpleProgramExamplePartitioner(background_knowledge))
     tree_builder.debug_printing(True)
     tree_builder.build_tree(examples, prediction_goal)
 
@@ -96,7 +95,6 @@ def run_keys_simpleprogram(fname_labeled_examples: str, fname_settings: str, fna
 
     tree_to_program_converter = KeyTreeToProgramConverter(prediction_goal, index_of_label_var, debug_printing=True)
     program = tree_to_program_converter.convert_tree_to_simple_program(tree, language)
-    print(program)
 
     do_labeled_examples_get_correctly_classified_keys(examples, program, prediction_goal, index_of_label_var,
-                                                      possible_labels, background_knw)
+                                                      possible_labels, background_knowledge)

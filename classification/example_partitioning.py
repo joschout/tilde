@@ -47,7 +47,7 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
             db_to_query += (self.to_query << query)
 
             query_result = self._query(db_to_query)
-            if query_result[self.to_query] > 0:
+            if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(example)
 
         return examples_satisfying_query
@@ -66,7 +66,7 @@ class ClauseDBExamplePartitioner(ExamplePartitioner):
             db_to_query += (self.to_query << query)
             query_result = self._query(db_to_query)
 
-            if query_result[self.to_query] > 0:
+            if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(example_db)
 
         return examples_satisfying_query

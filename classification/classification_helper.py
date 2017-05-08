@@ -90,7 +90,7 @@ def do_labeled_examples_get_correctly_classified_keys(labeled_examples, rules_as
         nb_of_incorrecty_labeled_examples / nb_of_examples * 100) + "%")
 
 
-def get_example_databases(examples:Iterable[Example], background_knowledge: Optional[LogicProgram]=None) -> List[ClauseDBExample]:
+def get_example_databases(examples:Iterable[Example], background_knowledge: Optional[LogicProgram]=None, models=False) -> List[ClauseDBExample]:
     engine = DefaultEngine()
     engine.unknown = 1
 
@@ -103,8 +103,12 @@ def get_example_databases(examples:Iterable[Example], background_knowledge: Opti
             for statement in example:
                 db_example += statement
             example_dbs.append(db_example)
+            if models:
+                db_example.label = example.label
     else:
         for example in examples:
             db_example = engine.prepare(example)  # type: ClauseDB
             example_dbs.append(db_example)
+            if models:
+                db_example.label = example.label
     return example_dbs
