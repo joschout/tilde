@@ -9,12 +9,11 @@
 #
 
 
-from classification import get_labels_single_example_models, get_label
-from trees.TreeNode import *
 from mach_tests.mach_definitions_examples_ACE import examples
-from mach_tests.mach_definitions_logic import *
-from mach_tests.mach_definitions_TILDE_paper import language_machines
 
+from classification import get_labels_single_example_models, get_label
+from test.mach_tests.mach_definitions_logic import *
+from trees.TreeNode import *
 
 # === creating the decision tree ===============
 tree_node_n3 = TreeNode()

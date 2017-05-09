@@ -3,7 +3,7 @@ from typing import List, Optional
 from problog.program import PrologFile
 
 from IO.parsing_background_knowledge import parse_background_knowledge
-from IO.parsing_examples import parse_examples_model_format
+from IO.parsing_examples_models_format import ModelsExampleParser
 from IO.parsing_settings import SettingParser, Settings
 from classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models, \
     get_example_databases
@@ -31,7 +31,7 @@ def run_models_simpleprogram(fname_labeled_examples: str, fname_settings: str, f
         background_knowledge = None
 
     # EXAMPLES
-    examples = parse_examples_model_format(fname_labeled_examples, possible_targets)
+    examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)
     # =======================
 
     tree_builder = TreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge))
@@ -62,7 +62,7 @@ def run_models_clausedb(fname_labeled_examples: str, fname_settings: str, fname_
         background_knowledge = None
 
     # EXAMPLES
-    examples = parse_examples_model_format(fname_labeled_examples, possible_targets)  # type: List[SimpleProgramExample]
+    examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)  # type: List[SimpleProgramExample]
     example_dbs = get_example_databases(examples, background_knowledge, models=True)  # type: List[ClauseDBExample]
 
     # =======================

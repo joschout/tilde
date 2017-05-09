@@ -1,7 +1,7 @@
 from problog.logic import And
+
 import classification
 import trees.scoring
-from mach_tests.mach_definitions_TILDE_paper import *
 
 # Testing the four examples from the problog paper using the following queries:
 # <- replaceable(X)

@@ -14,3 +14,10 @@ def apply_substitution_to_term(term: Term, substitution: Dict[str, Term]) -> Ter
 
     term_substitution = term.apply(complete_substitution)
     return term_substitution
+
+
+def get_probability(term: Term) -> float:
+    if term.probability is None:
+        return 1.0
+    else:
+        return term.probability

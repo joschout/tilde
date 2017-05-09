@@ -5,7 +5,7 @@ from problog.program import PrologFile
 
 from IO.label_collector import ClauseDBLabelCollector, SimpleProgramLabelCollector
 from IO.parsing_background_knowledge import parse_background_knowledge
-from IO.parsing_examples import parse_examples_key_format_with_key
+from IO.parsing_examples_keys_format import parse_examples_key_format_with_key
 from IO.parsing_settings import Settings, SettingParser, KeysPredictionGoalHandler
 from classification.classification_helper import do_labeled_examples_get_correctly_classified_keys, \
     get_example_databases, Label

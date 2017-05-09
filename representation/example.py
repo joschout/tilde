@@ -2,7 +2,7 @@ from typing import Optional
 
 from problog.engine import ClauseDB
 from problog.logic import Term
-from problog.program import SimpleProgram
+from problog.program import SimpleProgram, PrologString
 
 
 class Example:
@@ -30,8 +30,18 @@ class SimpleProgramExample(SimpleProgram, Example):
     An example  consists of a prolog program (e.g. facts and/or clauses)
     and MIGHT have a label.
     """
-    pass
+    def __init__(self):
+        SimpleProgramExample.__init__(self)
+        Example.__init__(self)
 
 
 class ClauseDBExample(ClauseDB, Example):
-    pass
+    def __init__(self, builtins=None, parent=None):
+        ClauseDB.__init__(self,builtins=builtins, parent=parent)
+        Example.__init__(self)
+
+
+class PrologStringExample(PrologString, Example):
+    def __init__(self, string):
+        PrologString.__init__(self, string)
+        Example.__init__(self)
