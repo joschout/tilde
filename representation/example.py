@@ -1,13 +1,19 @@
-from typing import Optional
+from typing import Optional, Union, Set, Dict, Iterable, Tuple
 
 from problog.engine import ClauseDB
 from problog.logic import Term
 from problog.program import SimpleProgram, PrologString
 
 
+Probability = float
+
+class LabelError(Exception):
+    pass
+
+
 class Example:
     def __init__(self, label=None):
-        self.label = label  # type: Optional[Term]
+        self.label = label  # type: Optional[Union[Term, Dict[Term, Probability]]]
 
     def get_label(self) -> Optional[Term]:
         try:
@@ -24,6 +30,16 @@ class Example:
         except AttributeError:
             return None
 
+    def get_label_dict(self) -> Dict[Term, Probability]:
+        if isinstance(self.label, dict):
+            return self.label
+        else:
+            raise LabelError("method expected label to be a dict, but its value was: " + str(self.label))
+
+    def get_probability_of_label(self, label:Term) -> float:
+        label_dict = self.get_label_dict()
+        return label_dict[label]
+
 
 class SimpleProgramExample(SimpleProgram, Example):
     """Wrapper class for an example.
@@ -31,7 +47,7 @@ class SimpleProgramExample(SimpleProgram, Example):
     and MIGHT have a label.
     """
     def __init__(self):
-        SimpleProgramExample.__init__(self)
+        SimpleProgram.__init__(self)
         Example.__init__(self)
 
 
@@ -45,3 +61,18 @@ class PrologStringExample(PrologString, Example):
     def __init__(self, string):
         PrologString.__init__(self, string)
         Example.__init__(self)
+
+
+
+def calculate_majority_class(examples: Iterable[Example]) -> Tuple[Term, int]:
+    """Calculate the majority class label in the given set of examples.
+    """
+    label_counts = {}
+    for example in examples:
+        if example.label in label_counts:
+            label_counts[example.label] += 1
+        else:
+            label_counts[example.label] = 1
+    label_with_max_count = max(label_counts, key=(lambda key: label_counts[key]))  # type: Term
+    count = label_counts[label_with_max_count]  # type: int
+    return label_with_max_count, count

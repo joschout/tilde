@@ -68,7 +68,7 @@ def convert_tree_to_simple_program(tree_root: TreeNode, language: TypeModeLangua
     if debug_printing:
         print('resulting program:')
         for statement in program:
-            print(statement)
+            print(str(statement) + ".")
         print('=== END conversion of tree to program ===\n')
     return program
 
