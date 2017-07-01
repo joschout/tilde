@@ -1,13 +1,9 @@
-from typing import Iterable, Set, Dict, Optional
+from typing import Iterable, Set, Optional
 
 import problog
 from problog.engine import DefaultEngine, ClauseDB
-from problog.errors import InvalidValue
 from problog.program import SimpleProgram, LogicProgram
 from problog.program import Term
-from problog.cnf_formula import CNF
-from problog.ddnnf_formula import  DDNNF
-from problog.formula import LogicDAG, LogicFormula
 
 from representation.example import Example, SimpleProgramExample, ClauseDBExample
 
@@ -48,11 +44,8 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
             db_to_query += Term('query')(self.to_query)
             db_to_query += (self.to_query << query)
 
-            try:
-                query_result = problog.get_evaluatable().create_from(db_to_query, engine=self.engine).evaluate()
-            except InvalidValue:
-                print("break")
-            # query_result = self._query(db_to_query)
+            query_result = problog.get_evaluatable().create_from(db_to_query, engine=self.engine).evaluate()
+
             if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(example)
 
