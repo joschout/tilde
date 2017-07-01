@@ -4,8 +4,8 @@ from problog.engine import ClauseDB
 from problog.logic import Term
 from problog.program import SimpleProgram, PrologString
 
-
 Probability = float
+
 
 class LabelError(Exception):
     pass
@@ -36,7 +36,7 @@ class Example:
         else:
             raise LabelError("method expected label to be a dict, but its value was: " + str(self.label))
 
-    def get_probability_of_label(self, label:Term) -> float:
+    def get_probability_of_label(self, label: Term) -> float:
         label_dict = self.get_label_dict()
         return label_dict[label]
 
@@ -46,6 +46,7 @@ class SimpleProgramExample(SimpleProgram, Example):
     An example  consists of a prolog program (e.g. facts and/or clauses)
     and MIGHT have a label.
     """
+
     def __init__(self):
         SimpleProgram.__init__(self)
         Example.__init__(self)
@@ -53,7 +54,7 @@ class SimpleProgramExample(SimpleProgram, Example):
 
 class ClauseDBExample(ClauseDB, Example):
     def __init__(self, builtins=None, parent=None):
-        ClauseDB.__init__(self,builtins=builtins, parent=parent)
+        ClauseDB.__init__(self, builtins=builtins, parent=parent)
         Example.__init__(self)
 
 
@@ -61,7 +62,6 @@ class PrologStringExample(PrologString, Example):
     def __init__(self, string):
         PrologString.__init__(self, string)
         Example.__init__(self)
-
 
 
 def calculate_majority_class(examples: Iterable[Example]) -> Tuple[Term, int]:
