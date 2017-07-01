@@ -1,4 +1,4 @@
-from typing import List, Iterable, Sequence, Collection, Sized
+from typing import List, Iterable, Sequence, Collection, Sized, Optional
 from problog.logic import *
 
 from classification.classification_helper import Label
@@ -27,29 +27,34 @@ def entropy_binary(list_of_bools: Sequence[bool]) -> float:
            - nb_of_negatives / len(list_of_bools) * math.log2(nb_of_negatives / len(list_of_bools))
 
 
-def entropy(list_of_examples, list_of_possible_labels: Iterable[str]) -> float:
+def entropy(list_of_examples, list_of_possible_labels: Iterable[str], probabilistic:Optional[bool]=False) -> float:
     """Calculates the entropy of a list of examples. Entropy is also known as information.
 
     An example is an object containing a label, e.g. an instance of representation.example
     It is necessary to provide the list of all possible labels.
 
+    :param probabilistic: 
     :param list_of_examples
             A list of examples
     :param list_of_possible_labels
             A list of possible labels
     """
-    if len(list_of_examples) == 0:
-        return 0
-    entropy_value = 0  # type: float
 
-    nb_of_examples = len(list_of_examples)
+    if probabilistic:
+        return entropy_probabilistic(list_of_examples, list_of_possible_labels)
+    else:
+        if len(list_of_examples) == 0:
+            return 0
+        entropy_value = 0  # type: float
 
-    for label in list_of_possible_labels:
-        probability_of_label = sum([get_probability(example.label) for example in list_of_examples if example.label == label])
-        if probability_of_label != 0:
-            entropy_value -= probability_of_label / nb_of_examples\
-                             * math.log2(probability_of_label / nb_of_examples)
-    return entropy_value
+        nb_of_examples = len(list_of_examples)
+
+        for label in list_of_possible_labels:
+            probability_of_label = sum([get_probability(example.label) for example in list_of_examples if example.label == label])
+            if probability_of_label != 0:
+                entropy_value -= probability_of_label / nb_of_examples\
+                                 * math.log2(probability_of_label / nb_of_examples)
+        return entropy_value
 
 
 def entropy_probabilistic(list_of_examples, list_of_possible_labels: Iterable[str]) -> float:
@@ -69,8 +74,23 @@ def entropy_probabilistic(list_of_examples, list_of_possible_labels: Iterable[st
 
     nb_of_examples = len(list_of_examples)
 
+    # TODO: assumption that an example is labeled with all label probabilities
+
+    label_accumulators = {}
+
     for label in list_of_possible_labels:
-        probability_of_label = sum([get_probability(example.label) for example in list_of_examples if example.label == label])
+        # NOTE: label is now a a set of labels
+        label_accumulators[label] = 0.0
+
+    for example in list_of_examples:
+        example_labels = example.get_label_dict()
+        for example_label in example_labels.keys():
+            prob = example_labels[example_label]
+
+            label_accumulators[example_label] = label_accumulators[example_label] + example_labels[example_label].value
+
+    for label in label_accumulators.keys():
+        probability_of_label = label_accumulators[label]
         if probability_of_label != 0:
             entropy_value -= probability_of_label / nb_of_examples\
                              * math.log2(probability_of_label / nb_of_examples)
@@ -78,16 +98,17 @@ def entropy_probabilistic(list_of_examples, list_of_possible_labels: Iterable[st
 
 
 def information_gain(example_list, sublist_left, sublist_right,
-                     list_of_possible_labels: List[Label]) -> float:
+                     list_of_possible_labels: List[Label],
+                     probabilistic:Optional[bool]=False) -> float:
     """
     Calculates the information gain of splitting a set of examples into two subsets.
     """
     if len(example_list) == 0:
         return 0
 
-    ig = entropy(example_list, list_of_possible_labels)  # type: float
+    ig = entropy(example_list, list_of_possible_labels, probabilistic)  # type: float
 
-    ig -= len(sublist_left) / len(example_list) * entropy(sublist_left, list_of_possible_labels)
-    ig -= len(sublist_right) / len(example_list) * entropy(sublist_right, list_of_possible_labels)
+    ig -= len(sublist_left) / len(example_list) * entropy(sublist_left, list_of_possible_labels, probabilistic)
+    ig -= len(sublist_right) / len(example_list) * entropy(sublist_right, list_of_possible_labels, probabilistic)
     return ig
 

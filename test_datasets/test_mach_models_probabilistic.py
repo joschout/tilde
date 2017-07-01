@@ -34,7 +34,7 @@ else:
 examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)
 # =======================
 
-tree_builder = TreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge))
+tree_builder = TreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge), probabilistic_tree_building=True)
 
 tree_builder.debug_printing(True)
 tree_builder.build_tree(examples)

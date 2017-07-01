@@ -21,9 +21,11 @@ identifier, and properties of a single example are given by listing facts that r
 
 """
 import re
-from typing import List, Tuple, Pattern, Set
+from typing import List, Tuple, Pattern, Set, Dict
 from typing import Optional, Iterable
 from problog.logic import Term
+
+from problog_helper.problog_helper import get_probability
 from representation.example import PrologStringExample
 
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'
@@ -87,6 +89,7 @@ class ExampleParseException(Exception):
     #                         prolog_string_accumulator = prolog_string_accumulator + line
     #     return examples_found
 
+Probability = float
 
 class ModelsExampleParser:
     def __init__(self, possible_labels: Optional[Iterable[Term]] = None):
@@ -95,7 +98,7 @@ class ModelsExampleParser:
 
         self.currently_parsing_example = False  # type: bool
         self.id_of_current_example = None  # type: Optional(str)
-        self.labels_of_current_example = None  # type: Optional(Set[Term])
+        self.labels_of_current_example = None  # type: Optional[Dict[Term, Probability]]
         self.prolog_string_accumulator = None  # type: Optional(str)
 
     def _parse_examples_model_format(self, file_name_labeled_examples: str):
@@ -114,7 +117,7 @@ class ModelsExampleParser:
         if matches_begin_of_example is not None:
             self.currently_parsing_example = True
             self.id_of_current_example = matches_begin_of_example.group(1)
-            self.labels_of_current_example = set()
+            self.labels_of_current_example = dict()
             self.prolog_string_accumulator = ''
         else:
             pass
@@ -147,7 +150,7 @@ class ModelsExampleParser:
             matches_label = label_pattern.search(line)
             if matches_label is not None:
                 parsed_label = Term.from_string(line)
-                self.labels_of_current_example.add(parsed_label)
+                self.labels_of_current_example[parsed_label] = get_probability(parsed_label)
                 current_line_is_label = True
         return current_line_is_label
 
@@ -162,11 +165,13 @@ class ModelsExampleParser:
         return label_patterns
 
     @staticmethod
-    def _parse_example_string(prolog_string_unlabeled: str, example_labels=None) -> PrologStringExample:
+    def _parse_example_string(prolog_string_unlabeled: str, example_labels:Optional[Dict[Term, Probability]]=None) -> PrologStringExample:
         example = PrologStringExample(prolog_string_unlabeled)
         if example_labels is not None:
             if len(example_labels) == 1:
-                example.label = example_labels.pop()
+                #TODO: Note, value of probability is never used
+                label, probability = example_labels.popitem()
+                example.label = label
             else:
                 example.label = example_labels
         return example
