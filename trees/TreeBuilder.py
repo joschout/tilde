@@ -21,9 +21,6 @@ class TreeBuilder:
     DEBUG_PRINTING = False  # type: bool
     stop_criterion_handler = None  # type: StopCriterionHandler
 
-    probabilistic_tree_building = False  # type: bool
-    DEBUG_PRINTING_PROBABILISTIC = True  # type: bool
-
     def __init__(self, language: TypeModeLanguage, possible_targets: List[Label],
                  example_partitioner: ExamplePartitioner,
                  stop_criterion_handler: StopCriterionHandler = StopCriterionMinimalCoverage(),
@@ -53,68 +50,113 @@ class TreeBuilder:
 
     def _build_tree_recursive(self, examples: Set[Example], tilde_query: TILDEQuery, tree_node: TreeNode,
                               recursion_level=0):
-        """"
-        MAKE SURE EXAMPLES IS A SET
-        """
+        # MAKE SURE EXAMPLES IS A SET
         if self.DEBUG_PRINTING:
             print('\nrecursion level', recursion_level)
-        # generating the refined queries to test
-        refined_queries = RefinementController.get_refined_queries_of(tilde_query,
-                                                                      self.language)  # type: Iterable[TILDEQuery]:
-        # computing which query provides the optimal split
 
-        best_query, score_best_query, examples_satisfying_best_query, examples_not_satisfying_best_query \
-            = TILDEQueryScorer.get_best_refined_query(refined_queries, examples, self.example_partitioner,
-                                                      self.possible_targets, self.probabilistic_tree_building)
-        if self.DEBUG_PRINTING:
-            print('best query: ', str(best_query))
-            if self.probabilistic_tree_building:
-                print_partition_statistics_prob(examples_satisfying_best_query, examples_not_satisfying_best_query,
-                                                self.possible_targets, "\t")
-            else:
-                print_partition_subset_sizes(examples_satisfying_best_query, examples_not_satisfying_best_query)
+        # generating the refined queries to test
+        refined_queries = self._get_refined_queries_of(tilde_query)  # type: Iterable[TILDEQuery]
+        score_info = self._score_queries(refined_queries, examples)  # type: QueryScoreInfo
 
         # check whether to turn a node into a leaf
         # a node has to be turned into a leaf node when the set of current examples is sufficiently homogeneous
-        # The set of current examples is sufficiently homogeneous when:
-        if self.stop_criterion_handler.is_stop_criterion_reached(score_best_query, examples_satisfying_best_query,
-                                                                 examples_not_satisfying_best_query):
+        if self._stop_criterion(score_info):
             self._turn_node_into_leaf(tree_node, examples)
         else:
-            self._turn_into_inner_node(tree_node, best_query, tilde_query, examples_satisfying_best_query, examples_not_satisfying_best_query, recursion_level + 1)
+            self._turn_into_inner_node(tree_node, tilde_query, score_info, recursion_level + 1)
+
+    def _get_refined_queries_of(self, query: TILDEQuery) -> Iterable[TILDEQuery]:
+        return RefinementController.get_refined_queries_of(query, self.language)
 
     def _turn_node_into_leaf(self, tree_node: TreeNode, examples: Set[Example]):
+        raise NotImplementedError('abstract method')
 
-        # make a leaf node
-        # calculate the majority class in the set of examples
-        if not self.probabilistic_tree_building:
-            label_with_max_count, nb_of_examples_with_label = calculate_majority_class(examples)
-            tree_node.classification = label_with_max_count
-            tree_node.nb_of_examples_with_label = nb_of_examples_with_label
-            tree_node.nb_of_examples_in_this_node = len(examples)
-        else:
-            # TODO
-            create_probabilistic_leaf_node(tree_node, examples, self.possible_targets)
-            tree_node.nb_of_examples_in_this_node = len(examples)
-
-    def _turn_into_inner_node(self, tree_node: TreeNode, refined_query: TILDEQuery, parent_query: TILDEQuery,
-                              examples_satisfying_best_query: Set[Example],
-                              examples_not_satisfying_best_query: Set[Example],
+    def _turn_into_inner_node(self, tree_node: TreeNode, parent_query: TILDEQuery, score_info: QueryScoreInfo,
                               recursion_level_of_node):
-        tree_node.query = refined_query
+        tree_node.query = score_info.best_query  # type: TILDEQuery
         # left child node
         tree_node.left_subtree = TreeNode()
-        self._build_tree_recursive(examples_satisfying_best_query, refined_query, tree_node.left_subtree,
+        self._build_tree_recursive(score_info.examples_satisfying_best_query, score_info.best_query,
+                                   tree_node.left_subtree,
                                    recursion_level_of_node)
         if self.DEBUG_PRINTING:
             print(self.tree_root.to_string2())
 
         # right child node
         tree_node.right_subtree = TreeNode()
-        self._build_tree_recursive(examples_not_satisfying_best_query, parent_query, tree_node.right_subtree,
+        self._build_tree_recursive(score_info.examples_not_satisfying_best_query, parent_query, tree_node.right_subtree,
                                    recursion_level_of_node)
         if self.DEBUG_PRINTING:
             print(self.tree_root.to_string2())
 
+    def _score_queries(self, refined_queries: Iterable[TILDEQuery], examples: Set[Example]) -> QueryScoreInfo:
+        # computing which query provides the optimal split
+        raise NotImplementedError('abstract method')
+
+    def _stop_criterion(self, score: QueryScoreInfo) -> bool:
+        return self.stop_criterion_handler.is_stop_criterion_reached(score.score_of_best_query,
+                                                                     score.examples_satisfying_best_query,
+                                                                     score.examples_not_satisfying_best_query)
+
     def get_tree(self) -> TreeNode:
         return self.tree_root
+
+
+class DeterministicTreeBuilder(TreeBuilder):
+    """
+    Builds a regular relational decision tree for classification,
+    where each leaf has one class label.
+    """
+
+    def __init__(self, language: TypeModeLanguage, possible_targets: List[Label],
+                 example_partitioner: ExamplePartitioner,
+                 stop_criterion_handler: StopCriterionHandler = StopCriterionMinimalCoverage()):
+        super().__init__(language, possible_targets, example_partitioner, stop_criterion_handler)
+
+    def _turn_node_into_leaf(self, tree_node: TreeNode, examples: Set[Example]):
+        # make a leaf node
+        # calculate the majority class in the set of examples
+        label_with_max_count, nb_of_examples_with_label = calculate_majority_class(examples)
+        tree_node.classification = label_with_max_count
+        tree_node.nb_of_examples_with_label = nb_of_examples_with_label
+        tree_node.nb_of_examples_in_this_node = len(examples)
+
+    def _score_queries(self, refined_queries: Iterable[TILDEQuery], examples: Set[Example]) -> QueryScoreInfo:
+        # computing which query provides the optimal split
+        score_info = TILDEQueryScorer.get_best_refined_query(refined_queries, examples, self.example_partitioner,
+                                                             self.possible_targets)
+        if self.DEBUG_PRINTING:
+            print('best query: ', str(score_info.best_query))
+            print_partition_subset_sizes(score_info.examples_satisfying_best_query,
+                                         score_info.examples_not_satisfying_best_query)
+
+        return score_info
+
+
+class MLEDeterministicTreeBuilder:
+    pass
+
+
+class ProbabilisticTreeBuilder(TreeBuilder):
+    def __init__(self, language: TypeModeLanguage, possible_targets: List[Label],
+                 example_partitioner: ExamplePartitioner,
+                 stop_criterion_handler: StopCriterionHandler = StopCriterionMinimalCoverage()):
+        super().__init__(language, possible_targets, example_partitioner, stop_criterion_handler)
+
+    def _turn_node_into_leaf(self, tree_node: TreeNode, examples: Set[Example]):
+        # make a leaf node
+        # TODO
+        create_probabilistic_leaf_node(tree_node, examples, self.possible_targets)
+        tree_node.nb_of_examples_in_this_node = len(examples)
+
+    def _score_queries(self, refined_queries: Iterable[TILDEQuery], examples: Set[Example]) -> QueryScoreInfo:
+        # computing which query provides the optimal split
+        score_info = TILDEQueryScorer.get_best_refined_query(refined_queries, examples, self.example_partitioner,
+                                                             self.possible_targets, probabilistic=True)
+
+        if self.DEBUG_PRINTING:
+            print('best query: ', str(score_info.best_query))
+            print_partition_statistics_prob(score_info.examples_satisfying_best_query,
+                                            score_info.examples_not_satisfying_best_query,
+                                            self.possible_targets, "\t")
+        return score_info

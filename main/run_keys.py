@@ -12,7 +12,7 @@ from classification.classification_helper import do_labeled_examples_get_correct
 from classification.example_partitioning import ClauseDBExamplePartitioner, SimpleProgramExamplePartitioner
 from representation.example import SimpleProgramExample, ClauseDBExample
 from representation.language import TypeModeLanguage
-from trees.TreeBuilder import TreeBuilder
+from trees.TreeBuilder import TreeBuilder, DeterministicTreeBuilder
 from trees.pruning import prune_leaf_nodes_with_same_label
 from trees.stop_criterion import StopCriterionMinimalCoverage
 from trees.tree_converter import KeyTreeToProgramConverter
@@ -44,7 +44,7 @@ def run_keys_clausedb(fname_labeled_examples: str, fname_settings: str, fname_ba
     possible_labels = label_collector.get_labels()  # type: Set[Label]
     # =================================
 
-    tree_builder = TreeBuilder(language, list(possible_labels), ClauseDBExamplePartitioner(),
+    tree_builder = DeterministicTreeBuilder(language, list(possible_labels), ClauseDBExamplePartitioner(),
                                StopCriterionMinimalCoverage(4))
     tree_builder.debug_printing(True)
     tree_builder.build_tree(example_dbs, prediction_goal)
@@ -86,7 +86,7 @@ def run_keys_simpleprogram(fname_labeled_examples: str, fname_settings: str, fna
     possible_labels = label_collector.get_labels()
     # =================================
 
-    tree_builder = TreeBuilder(language, possible_labels, SimpleProgramExamplePartitioner(background_knowledge))
+    tree_builder = DeterministicTreeBuilder(language, possible_labels, SimpleProgramExamplePartitioner(background_knowledge))
     tree_builder.debug_printing(True)
     tree_builder.build_tree(examples, prediction_goal)
 

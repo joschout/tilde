@@ -6,7 +6,7 @@ from IO.parsing_examples import parse_examples_key_format_with_key
 from IO.parsing_settings import Settings, SettingParser, KeysPredictionGoalHandler
 from classification.classification_helper import get_example_databases
 from representation.language import TypeModeLanguage
-from trees.TreeBuilder import TreeBuilder
+from trees.TreeBuilder import TreeBuilder, DeterministicTreeBuilder
 from trees.pruning import prune_leaf_nodes_with_same_label
 from trees.stop_criterion import StopCriterionMinimalCoverage
 from trees.tree_converter import KeyTreeToProgramConverter
@@ -35,7 +35,7 @@ def run_keys(file_name_labeled_examples, file_name_settings, file_name_backgroun
     possible_labels = label_collector.get_labels()
     # =================================
 
-    tree_builder = TreeBuilder(language, background_knw, possible_labels, StopCriterionMinimalCoverage(4))
+    tree_builder = DeterministicTreeBuilder(language, background_knw, possible_labels, StopCriterionMinimalCoverage(4))
     tree_builder.debug_printing(True)
     tree_builder.build_tree(example_dbs, prediction_goal)
 

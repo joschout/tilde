@@ -18,8 +18,9 @@
 #         total_conj_right_node = And(conj_of_neg_left_class_ables, previous_conjunction)
 #         right_class_labels = decision_tree_to_simple_program(node.right_subtree, simple_program, total_conj_right_node)
 #         return left_class_labels + right_class_labels
+from typing import Optional
 
-from problog.logic import Term, And, Var
+from problog.logic import Term, And, Var, Constant
 from problog.program import SimpleProgram
 
 from problog_helper.problog_helper import apply_substitution_to_term
@@ -144,13 +145,31 @@ class KeyTreeToProgramConverter(TreeToProgramConverter):
         self.prediction_goal = prediction_goal
         self.index = index
 
-    def get_leaf_node_clause(self, node, previous_conjunction):
+    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
         var = self.prediction_goal.args[self.index]  # type: Var
         label = node.classification  # type: Term
         substitution = {var.name: label}
         goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
         return goal_with_label << previous_conjunction
 
+
+class MLEKeyTreeToProgramConverter(KeyTreeToProgramConverter):
+    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
+        var = self.prediction_goal.args[self.index]  # type: Var
+        label = node.classification  # type: Term
+        nb_ex_with_label = node.nb_of_examples_with_label  # type: Optional[int]
+        nb_ex_in_this_node = node.nb_of_examples_in_this_node  # type: Optional[int]
+        substitution = {var.name: label}
+        goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
+
+        if nb_ex_in_this_node is not None and nb_ex_in_this_node is not None:
+            probability_of_rule = Constant(nb_ex_with_label/nb_ex_in_this_node)
+            goal_with_label.probability = probability_of_rule
+        else:
+            print("ERROR: expected count of the nb of examples in the leaf, found None")
+            print("using 1.0 as probability for the rule")
+
+        return goal_with_label << previous_conjunction
 
 
 

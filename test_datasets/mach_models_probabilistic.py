@@ -7,7 +7,7 @@ from classification.classification_helper import Label, do_labeled_examples_get_
 from classification.example_partitioning import SimpleProgramExamplePartitioner
 
 from representation.language import TypeModeLanguage
-from trees.TreeBuilder import TreeBuilder
+from trees.TreeBuilder import TreeBuilder, ProbabilisticTreeBuilder
 
 from trees.tree_converter import convert_tree_to_simple_program
 from main.run_models import run_models_simpleprogram
@@ -34,7 +34,7 @@ else:
 examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)
 # =======================
 
-tree_builder = TreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge), probabilistic_tree_building=True)
+tree_builder = ProbabilisticTreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge)
 
 tree_builder.debug_printing(True)
 tree_builder.build_tree(examples)

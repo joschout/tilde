@@ -61,6 +61,26 @@ def print_partition_statistics_prob(examples_satisfying_best_query, examples_not
     print_set_statistics_prob(examples_not_satisfying_best_query, possible_targets, indentation)
 
 
+
+
+class MLELeafNodeConverter:
+
+    def convert_to_MLE_leaf_node(self, node: TreeNode, examples_in_this_node: Iterable[Example], possible_targets):
+        pass
+
+    def _count_labels_of_examples(self, examples:Iterable[Example], possible_targets) -> Dict[Label, float]:
+        label_counts = {}  # type: Dict[Label, float]
+
+        for example in examples:  # type: Example
+            label = example.get_label()  # type: Label
+            label_counts[label] = label_counts.get(label, 0) + 1
+
+        for label in label_counts.keys():
+            label_counts[label] = label_counts[label] / len(examples)
+
+        return label_counts
+
+
 def create_probabilistic_leaf_node(node: TreeNode, examples: Iterable[Example], possible_targets):
     # TODO: this still uses deterministic labels
     nb_of_ex = len(examples)

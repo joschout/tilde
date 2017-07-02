@@ -10,7 +10,7 @@ from classification.classification_helper import Label, do_labeled_examples_get_
 from classification.example_partitioning import SimpleProgramExamplePartitioner, ClauseDBExamplePartitioner
 from representation.example import ClauseDBExample, SimpleProgramExample
 from representation.language import TypeModeLanguage
-from trees.TreeBuilder import TreeBuilder
+from trees.TreeBuilder import TreeBuilder, DeterministicTreeBuilder
 from trees.pruning import prune_leaf_nodes_with_same_label
 from trees.tree_converter import convert_tree_to_simple_program
 
@@ -34,7 +34,7 @@ def run_models_simpleprogram(fname_labeled_examples: str, fname_settings: str, f
     examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)
     # =======================
 
-    tree_builder = TreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge))
+    tree_builder = DeterministicTreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge))
 
     tree_builder.debug_printing(True)
     tree_builder.build_tree(examples)
@@ -67,7 +67,7 @@ def run_models_clausedb(fname_labeled_examples: str, fname_settings: str, fname_
 
     # =======================
 
-    tree_builder = TreeBuilder(language, possible_targets, ClauseDBExamplePartitioner())
+    tree_builder = DeterministicTreeBuilder(language, possible_targets, ClauseDBExamplePartitioner())
 
     tree_builder.debug_printing(True)
     tree_builder.build_tree(example_dbs)

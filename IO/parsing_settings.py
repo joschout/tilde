@@ -44,7 +44,7 @@ class ConstantBuilder:
         elif ConstantBuilder.is_float(constant_str):
             return Constant(float(constant_str))
         else:
-            return Constant(constant_str)
+            return Term(constant_str)
 
     @staticmethod
     def is_float(x: str) -> bool:

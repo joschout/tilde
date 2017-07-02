@@ -19,9 +19,14 @@ def prune_leaf_nodes_with_same_label(node: TreeNode):
     """
 
     # TODO: fails when given None
+    if node is None:
+        return
 
     left_child_node = node.get_left_child_node()
     right_child_node = node.get_right_child_node()
+
+    if left_child_node is None or right_child_node is None:
+        return
 
     left_is_leaf = left_child_node.is_leaf_node()
     right_is_leaf = right_child_node.is_leaf_node()
