@@ -18,15 +18,17 @@
 #         total_conj_right_node = And(conj_of_neg_left_class_ables, previous_conjunction)
 #         right_class_labels = decision_tree_to_simple_program(node.right_subtree, simple_program, total_conj_right_node)
 #         return left_class_labels + right_class_labels
-from typing import Optional
+from typing import Optional, Dict
 
-from problog.logic import Term, And, Var, Constant
+from problog.logic import Term, And, Var, Constant, AnnotatedDisjunction
 from problog.program import SimpleProgram
 
+from IO.utils import KnowledgeBaseFormat
+from classification.classification_helper import Label
 from problog_helper.problog_helper import apply_substitution_to_term
 from representation.language import TypeModeLanguage
 from trees import TreeNode
-from trees.TreeNode import get_predicate_generator
+from trees.TreeNode import get_predicate_generator, MLEDeterministicLeafStrategy
 
 
 def decision_tree_to_simple_program2(node: TreeNode, simple_program: SimpleProgram,
@@ -51,18 +53,19 @@ def decision_tree_to_simple_program2(node: TreeNode, simple_program: SimpleProgr
         # recurse on right subtree
         decision_tree_to_simple_program2(node.right_subtree, simple_program, predicate_generator, conj_right)
     else:
-        if node.classification is not None:
-            clause = (node.classification << previous_conjunction)
+        if node.can_classify():
+            clause = (node.strategy.classification << previous_conjunction)
             simple_program += clause
         else:
             raise InvalidTreeNodeError()
 
 
-def convert_tree_to_simple_program(tree_root: TreeNode, language: TypeModeLanguage, debug_printing=False) -> SimpleProgram:
+def convert_tree_to_simple_program(tree_root: TreeNode, language: TypeModeLanguage,
+                                   debug_printing=False) -> SimpleProgram:
     if debug_printing:
         print('\n=== START conversion of tree to program ===')
         print('tree to be converted:')
-        print(tree_root.to_string2())
+        print(tree_root.to_string())
     predicate_generator = get_predicate_generator(language)
     program = SimpleProgram()
     decision_tree_to_simple_program2(tree_root, program, predicate_generator, debug_printing=debug_printing)
@@ -79,8 +82,9 @@ class InvalidTreeNodeError(Exception):
 
 
 class TreeToProgramConverter:
-    def __init__(self, debug_printing=False):
-        self.debug_printing = debug_printing
+    def __init__(self, kb_format: KnowledgeBaseFormat, debug_printing: bool = False):
+        self.kb_format = kb_format  # type: KnowledgeBaseFormat
+        self.debug_printing = debug_printing  # type: bool
         self.predicate_generator = None
         self.program = None
 
@@ -88,7 +92,7 @@ class TreeToProgramConverter:
         if self.debug_printing:
             print('\n=== START conversion of tree to program ===')
             print('tree to be converted:')
-            print(tree_root.to_string2())
+            print(tree_root.to_string())
         self.predicate_generator = get_predicate_generator(language)
         self.program = SimpleProgram()
         self._decision_tree_to_simple_program(tree_root)
@@ -102,7 +106,7 @@ class TreeToProgramConverter:
     def _decision_tree_to_simple_program(self, node: TreeNode, previous_conjunction=Term('true')):
         if node.has_both_children():
             self._handle_inner_node(node, previous_conjunction)
-        elif node.classification is not None:
+        elif node.can_classify():
             self._handle_leaf_node(node, previous_conjunction)
         else:
             raise InvalidTreeNodeError()
@@ -134,44 +138,84 @@ class TreeToProgramConverter:
         raise NotImplementedError('abstract method')
 
 
-class ModelsTreeToProgramConverter(TreeToProgramConverter):
-    def get_leaf_node_clause(self, node, previous_conjunction):
-        return node.classification << previous_conjunction
+class DeterministicTreeToProgramConverter(TreeToProgramConverter):
+    def __init__(self, kb_format: KnowledgeBaseFormat, debug_printing: bool = False,
+                 prediction_goal: Optional[Term] = None, index: Optional[int] = None):
+        super().__init__(kb_format, debug_printing)
+        if self.kb_format == KnowledgeBaseFormat.KEYS:
+            if prediction_goal is None:
+                raise ValueError('prediction_goal cannot be None when kb_format==KnowledgeBaseFormat.KEYS')
+            else:
+                self.prediction_goal = prediction_goal
 
-
-class KeyTreeToProgramConverter(TreeToProgramConverter):
-    def __init__(self, prediction_goal, index, debug_printing=False):
-        super().__init__(debug_printing)
-        self.prediction_goal = prediction_goal
-        self.index = index
+            if index is None:
+                raise ValueError('index cannot be None when kb_format==KnowledgeBaseFormat.KEYS')
+            else:
+                self.index = index
 
     def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
-        var = self.prediction_goal.args[self.index]  # type: Var
-        label = node.classification  # type: Term
-        substitution = {var.name: label}
-        goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
-        return goal_with_label << previous_conjunction
-
-
-class MLEKeyTreeToProgramConverter(KeyTreeToProgramConverter):
-    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
-        var = self.prediction_goal.args[self.index]  # type: Var
-        label = node.classification  # type: Term
-        nb_ex_with_label = node.nb_of_examples_with_label  # type: Optional[int]
-        nb_ex_in_this_node = node.nb_of_examples_in_this_node  # type: Optional[int]
-        substitution = {var.name: label}
-        goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
-
-        if nb_ex_in_this_node is not None and nb_ex_in_this_node is not None:
-            probability_of_rule = Constant(nb_ex_with_label/nb_ex_in_this_node)
-            goal_with_label.probability = probability_of_rule
+        if self.kb_format == KnowledgeBaseFormat.MODELS:
+            return node.strategy.classification << previous_conjunction
+        elif self.kb_format == KnowledgeBaseFormat.KEYS:
+            var = self.prediction_goal.args[self.index]  # type: Var
+            label = node.strategy.classification  # type: Term
+            substitution = {var.name: label}
+            goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
+            return goal_with_label << previous_conjunction
         else:
-            print("ERROR: expected count of the nb of examples in the leaf, found None")
-            print("using 1.0 as probability for the rule")
-
-        return goal_with_label << previous_conjunction
+            raise ValueError("Unexpected value of KnowledgeBaseFormat: " + str(self.kb_format))
 
 
+# class ModelsTreeToProgramConverter(TreeToProgramConverter):
+#     def get_leaf_node_clause(self, node, previous_conjunction):
+#         return node.classification << previous_conjunction
+#
+#
+# class KeyTreeToProgramConverter(TreeToProgramConverter):
+#     def __init__(self, prediction_goal, index, debug_printing=False):
+#         super().__init__(debug_printing)
+#         self.prediction_goal = prediction_goal
+#         self.index = index
+#
+#     def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
+#         var = self.prediction_goal.args[self.index]  # type: Var
+#         label = node.classification  # type: Term
+#         substitution = {var.name: label}
+#         goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
+#         return goal_with_label << previous_conjunction
 
 
+class MLETreeToProgramConverter(DeterministicTreeToProgramConverter):
+    def __init__(self, kb_format: KnowledgeBaseFormat, debug_printing: bool = False,
+                 prediction_goal: Optional[Term] = None, index: Optional[int] = None):
+        super().__init__(kb_format, debug_printing, prediction_goal=prediction_goal, index=index)
 
+    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
+        if self.kb_format == KnowledgeBaseFormat.MODELS:
+            # TODO: TEST THIS
+            strategy = node.strategy  # type: MLEDeterministicLeafStrategy
+            label_frequencies = strategy.label_frequencies  # type: Optional[Dict[Label, float]]
+
+            goals_with_probabilities = []
+            for label in label_frequencies.keys():
+                goal = label.with_probability(label_frequencies[label])
+                goals_with_probabilities.append(goal)
+            return AnnotatedDisjunction(goals_with_probabilities, previous_conjunction)
+
+        elif self.kb_format == KnowledgeBaseFormat.KEYS:
+            var = self.prediction_goal.args[self.index]  # type: Var
+            strategy = node.strategy  # type: MLEDeterministicLeafStrategy
+            label_frequencies = strategy.label_frequencies  # type: Optional[Dict[Label, float]]
+
+            goals_with_probabilities = []
+
+            for label in label_frequencies.keys():
+                substitution = {var.name: label}  # type: Dict[str, Term]
+                goal_with_label = apply_substitution_to_term(self.prediction_goal, substitution)  # type: Term
+                probability_of_goal = Constant(label_frequencies[label])
+                goal_with_label.probability = probability_of_goal
+                goals_with_probabilities.append(goal_with_label)
+
+            return AnnotatedDisjunction(goals_with_probabilities, previous_conjunction)
+        else:
+            raise ValueError("Unexpected value of KnowledgeBaseFormat: " + str(self.kb_format))

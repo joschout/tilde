@@ -76,3 +76,36 @@ def calculate_majority_class(examples: Iterable[Example]) -> Tuple[Term, int]:
     label_with_max_count = max(label_counts, key=(lambda key: label_counts[key]))  # type: Term
     count = label_counts[label_with_max_count]  # type: int
     return label_with_max_count, count
+
+
+def calculate_label_frequencies(examples: object) -> object:
+    """Assumes that the examples each have ONE label, and not a distribution over labels"""
+    label_counts = {}  # type: Dict[Term, float]
+
+    for example in examples:  # type: Example
+        label = example.get_label()  # type: Term
+        label_counts[label] = label_counts.get(label, 0) + 1
+
+    for label in label_counts.keys():
+        label_counts[label] = label_counts[label] / len(examples)
+
+    return label_counts
+
+
+def calculate_label_frequencies_and_absolute_counts(examples:Iterable[Example]) -> Tuple[Dict[Term, float],Dict[Term, float]]:
+    """Assumes that the examples each have ONE label, and not a distribution over labels"""
+    label_counts = {}  # type: Dict[Term, float]
+
+    for example in examples:  # type: Example
+        label = example.label  # type: Term
+
+    #    label = example.get_label()  # type: Term
+        label_counts[label] = label_counts.get(label, 0) + 1
+
+    label_frequencies = {}
+
+    for label in label_counts.keys():
+        label_frequencies[label] = label_counts[label] / len(examples)
+
+    return label_frequencies, label_counts
+

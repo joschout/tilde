@@ -15,7 +15,7 @@ tree_builder.debug_printing(True)
 
 tree_builder.build_tree(labeled_examples)
 tree = tree_builder.get_tree()
-print(tree.to_string2())
+print(tree.to_string())
 
 
 program = convert_tree_to_simple_program(tree, language_machines, debug_printing=True)
