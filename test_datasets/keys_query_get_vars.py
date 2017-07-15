@@ -5,9 +5,9 @@ from IO.parsing_background_knowledge import parse_background_knowledge
 from problog.engine import DefaultEngine
 from problog.logic import *
 
-file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\keys-experimental\\mach.kb'
-file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\keys-experimental\\mach.s'
-file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\keys-experimental\\mach.bg'
+file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys-experimental\\mach.kb'
+file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys-experimental\\mach.s'
+file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys-experimental\\mach.bg'
 
 setting_parser = SettingParser.get_key_settings_parser()
 setting_parser.parse(file_name_settings)

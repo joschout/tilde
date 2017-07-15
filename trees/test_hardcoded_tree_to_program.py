@@ -12,7 +12,6 @@
 from mach_tests.mach_definitions_examples_ACE import examples
 
 from classification import get_labels_single_example_models, get_label
-from test.mach_tests.mach_definitions_logic import *
 from trees.TreeNode import *
 
 # === creating the decision tree ===============

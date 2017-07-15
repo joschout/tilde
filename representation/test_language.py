@@ -2,8 +2,8 @@ import math
 
 import classification
 import trees.scoring
+from probeersel.mach_tests import labeled_examples, background_knowledge, possible_targets, language_machines
 from representation.TILDE_query import TILDEQuery
-from test.mach_tests import labeled_examples, background_knowledge, possible_targets, language_machines
 
 tilde_query = TILDEQuery(None, None)
 

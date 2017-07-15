@@ -93,7 +93,6 @@ def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgra
     return labels_ex
 
 
-
 def get_labels_single_example_probabilistic_models(example: SimpleProgram, rules: SimpleProgram, possible_labels: Iterable[str], background_knowledge=None, debug_printing=False) -> List[str]:
     """
     Classifies a single example and returns a list of its labels

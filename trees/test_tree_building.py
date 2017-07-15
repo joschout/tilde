@@ -3,7 +3,7 @@ from mach_tests.mach_definitions_TILDE_paper import labeled_examples, background
 from mach_tests.mach_definitions_examples_ACE import ex1
 
 from classification import get_labels_single_example_models
-from test.mach_tests.mach_definitions_logic import sendback, fix, ok
+from probeersel.mach_tests import sendback, fix, ok
 from trees.TreeBuilder import TreeBuilder
 from trees.tree_converter import convert_tree_to_simple_program
 

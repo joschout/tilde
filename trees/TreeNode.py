@@ -1,6 +1,5 @@
 from typing import Optional, Iterator, Dict
 
-from pip.cmdoptions import pre
 from problog.logic import *
 
 # class PredicateGenerator:

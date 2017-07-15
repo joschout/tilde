@@ -1,4 +1,4 @@
-from problog.logic import Term
+from typing import Collection, Mapping
 
 from representation.TILDE_query import TILDEQueryHiddenLiteral
 from representation.example import calculate_majority_class, calculate_label_frequencies, \
@@ -33,12 +33,9 @@ class TreeBuilder:
     def debug_printing(self, should_print: bool):
         self.DEBUG_PRINTING = should_print
 
-    def build_tree(self, examples: Iterable[Example], query_head_if_keys_format: Optional[Term] = None):
+    def build_tree(self, examples: Collection[Example], query_head_if_keys_format: Optional[Term] = None):
 
-        if query_head_if_keys_format is not None:
-            initial_tilde_query = TILDEQueryHiddenLiteral(query_head_if_keys_format)
-        else:
-            initial_tilde_query = TILDEQuery(None, None)
+        initial_tilde_query = self.__get_initial_query(query_head_if_keys_format)
 
         if self.DEBUG_PRINTING:
             print("\n=== START recursive tree building ===")
@@ -46,6 +43,13 @@ class TreeBuilder:
         self._build_tree_recursive(set(examples), initial_tilde_query, self.tree_root)
         if self.DEBUG_PRINTING:
             print("=== END recursive tree building ===\n")
+
+    @staticmethod
+    def __get_initial_query(query_head_if_keys_format: Optional[Term] = None) -> TILDEQuery:
+        if query_head_if_keys_format is not None:
+            return TILDEQueryHiddenLiteral(query_head_if_keys_format)
+        else:
+            return TILDEQuery(None, None)
 
     def _build_tree_recursive(self, examples: Set[Example], tilde_query: TILDEQuery, tree_node: TreeNode,
                               recursion_level=0):

@@ -178,3 +178,6 @@ ENV/
 # modules.xml
 # .idea/misc.xml
 # *.ipr
+\.idea/dictionaries/Jonas\.xml
+
+\.idea/misc\.xml

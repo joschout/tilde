@@ -13,9 +13,9 @@ from trees.tree_converter import convert_tree_to_simple_program
 from main.run_models import run_models_simpleprogram
 from typing import List, Optional
 
-fname_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples-experimental\\mach.s'
-fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples-experimental\\mach.bg'
-fname_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\mach\\examples-experimental\\mach.kb'
+fname_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.s'
+fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.bg'
+fname_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.kb'
 
 # SETINGS for MODELS format
 settings = SettingParser.get_settings_models_format(fname_settings)  # type: Settings

@@ -1,7 +1,7 @@
 from main.run_keys import run_keys_simpleprogram, run_keys_clausedb
 
-file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\bongard\\keys\\bongard.kb'
-file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\ACE\\ace\\bongard\\keys\\bongard.s'
+file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\bongard\\keys\\bongard.kb'
+file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\bongard\\keys\\bongard.s'
 
 use_clausedb = True
 debug_printing = True

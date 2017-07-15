@@ -8,7 +8,7 @@ from IO.parsing_settings import SettingParser, Settings
 from classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models, \
     get_example_databases
 from classification.example_partitioning import SimpleProgramExamplePartitioner, ClauseDBExamplePartitioner
-from representation.example import ClauseDBExample, SimpleProgramExample
+from representation.example import ClauseDBExample, SimpleProgramExample, Example
 from representation.language import TypeModeLanguage
 from trees.TreeBuilder import TreeBuilder, DeterministicTreeBuilder
 from trees.pruning import prune_leaf_nodes_with_same_label
@@ -32,7 +32,7 @@ def run_models_simpleprogram(fname_labeled_examples: str, fname_settings: str, f
         background_knowledge = None
 
     # EXAMPLES
-    examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)
+    examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)  # type: List[Example]
     # =======================
 
     tree_builder = DeterministicTreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge))
