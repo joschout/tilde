@@ -176,8 +176,6 @@ ENV/
 
 # *.iml
 # modules.xml
-# .idea/misc.xml
+.idea/misc.xml
 # *.ipr
-\.idea/dictionaries/Jonas\.xml
-
-\.idea/misc\.xml
+.idea/dictionaries/Jonas.xml

@@ -10,7 +10,7 @@ from classification.classification_helper import Label, do_labeled_examples_get_
 from classification.example_partitioning import SimpleProgramExamplePartitioner, ClauseDBExamplePartitioner
 from representation.example import ClauseDBExample, SimpleProgramExample, Example
 from representation.language import TypeModeLanguage
-from trees.TreeBuilder import TreeBuilder, DeterministicTreeBuilder
+from trees.TreeBuilder import DeterministicTreeBuilder
 from trees.pruning import prune_leaf_nodes_with_same_label
 from trees.tree_converter import convert_tree_to_simple_program
 

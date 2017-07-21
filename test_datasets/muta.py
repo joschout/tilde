@@ -1,4 +1,4 @@
-from main.run_keys import run_keys_clausedb
+from run.run_keys import run_keys_clausedb
 
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.kb'
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.s'

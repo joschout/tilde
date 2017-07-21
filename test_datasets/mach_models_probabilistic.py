@@ -7,10 +7,9 @@ from classification.classification_helper import Label, do_labeled_examples_get_
 from classification.example_partitioning import SimpleProgramExamplePartitioner
 
 from representation.language import TypeModeLanguage
-from trees.TreeBuilder import TreeBuilder, ProbabilisticTreeBuilder
-
+from trees.TreeBuilder import ProbabilisticTreeBuilder
 from trees.tree_converter import convert_tree_to_simple_program
-from main.run_models import run_models_simpleprogram
+
 from typing import List, Optional
 
 fname_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.s'
@@ -34,7 +33,7 @@ else:
 examples = ModelsExampleParser.parse(fname_labeled_examples, possible_targets)
 # =======================
 
-tree_builder = ProbabilisticTreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge)
+tree_builder = ProbabilisticTreeBuilder(language, possible_targets, SimpleProgramExamplePartitioner(background_knowledge))
 
 tree_builder.debug_printing(True)
 tree_builder.build_tree(examples)

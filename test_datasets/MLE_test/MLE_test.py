@@ -7,7 +7,7 @@ from IO.parsing_settings import SettingParser
 from IO.utils import KnowledgeBaseFormat
 from classification.classification_helper import do_labeled_examples_get_correctly_classified_keys
 from classification.example_partitioning import SimpleProgramExamplePartitioner
-from main.run_keys import run_keys_simpleprogram, run_keys_clausedb
+from run.run_keys import run_keys_simpleprogram, run_keys_clausedb
 from trees.TreeBuilder import TreeBuilder, DeterministicTreeBuilder, MLEDeterministicTreeBuilder
 from trees.tree_converter import MLETreeToProgramConverter
 

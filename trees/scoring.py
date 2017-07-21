@@ -72,7 +72,7 @@ def entropy_probabilistic(list_of_examples, list_of_possible_labels: Iterable[st
         return 0
     entropy_value = 0  # type: float
 
-    nb_of_examples = len(list_of_examples)
+    nb_of_examples = len(list_of_examples)  # type: int
 
     # TODO: assumption that an example is labeled with all label probabilities
 

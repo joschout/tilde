@@ -1,4 +1,4 @@
-from main.run_models import run_models_simpleprogram, run_models_clausedb
+from run.run_models import run_models_simpleprogram, run_models_clausedb
 
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples\\mach.s'
 file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples\\mach.bg'
