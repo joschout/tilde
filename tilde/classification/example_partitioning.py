@@ -5,7 +5,7 @@ from problog.engine import DefaultEngine, ClauseDB
 from problog.program import SimpleProgram, LogicProgram
 from problog.program import Term
 
-from tilde.representation.example import Example, SimpleProgramExample, ClauseDBExample
+from tilde.representation.example import Example, SimpleProgramExample, ClauseDBExample, InternalExampleFormat
 
 
 class ExamplePartitioner:
@@ -70,6 +70,21 @@ class ClauseDBExamplePartitioner(ExamplePartitioner):
                 examples_satisfying_query.add(example_db)
 
         return examples_satisfying_query
+
+
+class PartitionerBuilder:
+
+    # def __init__(self, internal_ex_format: InternalExampleFormat):
+    #     self.internal_ex_format = internal_ex_format
+
+    def build_partitioner(self, internal_ex_format: InternalExampleFormat, background_knowledge: Optional[LogicProgram]=None) -> ExamplePartitioner:
+        if internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:
+            return SimpleProgramExamplePartitioner(background_knowledge)
+        elif internal_ex_format is InternalExampleFormat.CLAUSEDB:
+            return ClauseDBExamplePartitioner()
+        else:
+            raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
+
 
 # def get_examples_satisfying_query(examples: Iterable[Example], query, background_knowledge: SimpleProgram)
 #                                    -> Set[Example]:

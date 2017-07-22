@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Iterable
 # python 3.6
 try:
@@ -186,3 +187,27 @@ class ProbabilisticTreeBuilder(TreeBuilder):
                                             score_info.examples_not_satisfying_best_query,
                                             self.possible_targets, "\t")
         return score_info
+
+
+class TreeBuilderType(Enum):
+    DETERMINISTIC = 1
+    MLEDETERMINISTIC = 2
+    PROBABILISITC = 3
+
+
+class TreeBuilderBuilder:
+
+    #TODO: misschien heeft het voordeel om het type al bij init mee te geven
+
+    def build_treebuilder(self, tree_builder_type: TreeBuilderType,
+                          language: TypeModeLanguage, possible_labels:  List[Label],
+                        example_partitioner: ExamplePartitioner
+    ) -> TreeBuilder:
+        if tree_builder_type is TreeBuilderType.DETERMINISTIC:
+            return DeterministicTreeBuilder(language, possible_labels, example_partitioner)
+        elif tree_builder_type is TreeBuilderType.MLEDETERMINISTIC:
+            pass
+        elif tree_builder_type is TreeBuilderType.PROBABILISITC:
+            pass
+        else:
+            raise NotImplementedError('No defined treebuilder choice for: ' + str(tree_builder_type))

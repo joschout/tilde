@@ -5,7 +5,9 @@ import os
 import sys
 from typing import Optional
 
-from tilde.IO.utils import KnowledgeBaseFormat, InternalExampleFormat
+from tilde.IO.parsing_settings import ModelsSettingsParser, KeysSettingsParser
+from tilde.IO.input_format import KnowledgeBaseFormat
+from tilde.representation.example import InternalExampleFormat
 from tilde.run.run_keys import run_keys_simpleprogram, run_keys_clausedb
 from tilde.run.run_models import run_models_clausedb, run_models_simpleprogram
 
@@ -48,12 +50,12 @@ class ProgramSettings:
 
         input_format = arguments.format
         print(input_format)
-        if input_format == 'k' or input_format == 'key':
+        if input_format == 'k' or input_format == 'key' or input_format == 'keys':
             settings.kb_format = KnowledgeBaseFormat.KEYS
-        elif input_format == 'm' or input_format == 'models':
+        elif input_format == 'm' or input_format == 'model' or input_format == 'models':
             settings.kb_format = KnowledgeBaseFormat.MODELS
         else:
-            raise Exception("required argument for --format has to be k/key or m/models")
+            raise Exception("required argument for --format has to be k/key(s) or m/model(s)")
 
         if arguments.ex:
             internal_examples_format = arguments.ex
@@ -81,7 +83,7 @@ def make_argument_parser() -> argparse.ArgumentParser:
 
     parser.add_argument('format', help=('Used to explicitly specify the format of the input knowledge base.'
                                         ' This can be key/k or models/m'),
-                        choices=['m', 'models', 'k', 'key'])
+                        choices=['m', 'model', 'models', 'k', 'key', 'keys'])
 
     parser.add_argument('-e', '--ex', help=('Used to explicitly specify how the examples have to be stored internally.'
                                             'This can be clausedb or simpleprogram. Normally, clausedb is faster.'),
@@ -109,25 +111,46 @@ def run_program(settings: ProgramSettings):
     if settings.kb_format is None:
         raise NotImplementedError('Automatic recognition of input format is not yet supported.')
     elif settings.kb_format is KnowledgeBaseFormat.MODELS:
+
+        settings_file_parser = ModelsSettingsParser()
+        parsed_settings = settings_file_parser.parse(fname_settings)
+
         if settings.internal_examples_format is InternalExampleFormat.CLAUSEDB:
-            run_models_clausedb(fname_labeled_examples, fname_settings, fname_background_knowledge, debug_printing,
+            run_models_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
                                 use_mle)
         elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
-            run_models_simpleprogram(fname_labeled_examples, fname_settings, fname_background_knowledge, debug_printing,
+            run_models_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
                                      use_mle)
         else:
             raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
     elif settings.kb_format is KnowledgeBaseFormat.KEYS:
+
+        settings_file_parser = KeysSettingsParser()
+        parsed_settings = settings_file_parser.parse(fname_settings)
+
         if settings.internal_examples_format is InternalExampleFormat.CLAUSEDB:
-            run_keys_clausedb(fname_labeled_examples, fname_settings, fname_background_knowledge, debug_printing,
+            run_keys_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
                               use_mle)
         elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
-            run_keys_simpleprogram(fname_labeled_examples, fname_settings, fname_background_knowledge, debug_printing,
+            run_keys_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
                                    use_mle)
         else:
             raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
     else:
         raise NotImplementedError('Only the input formats Models and Key are supported.')
+
+
+# def run_program_models():
+#     if settings.internal_examples_format is InternalExampleFormat.CLAUSEDB:
+#         run_models_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
+#                             use_mle)
+#     elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
+#         run_models_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
+#                                  use_mle)
+#     else:
+#         raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
+
+
 
 
 def main(argv=sys.argv[1:]):

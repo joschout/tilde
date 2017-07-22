@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional, Union, Set, Dict, Iterable, Tuple
 
 from problog.engine import ClauseDB
@@ -5,6 +6,11 @@ from problog.logic import Term
 from problog.program import SimpleProgram, PrologString
 
 Probability = float
+
+
+class InternalExampleFormat(Enum):
+    SIMPLEPROGRAM = 1
+    CLAUSEDB = 2
 
 
 class LabelError(Exception):
@@ -78,7 +84,7 @@ def calculate_majority_class(examples: Iterable[Example]) -> Tuple[Term, int]:
     return label_with_max_count, count
 
 
-def calculate_label_frequencies(examples: object) -> object:
+def calculate_label_frequencies(examples):
     """Assumes that the examples each have ONE label, and not a distribution over labels"""
     label_counts = {}  # type: Dict[Term, float]
 
@@ -92,14 +98,15 @@ def calculate_label_frequencies(examples: object) -> object:
     return label_counts
 
 
-def calculate_label_frequencies_and_absolute_counts(examples:Iterable[Example]) -> Tuple[Dict[Term, float],Dict[Term, float]]:
+def calculate_label_frequencies_and_absolute_counts(examples: Iterable[Example]) -> Tuple[
+    Dict[Term, float], Dict[Term, float]]:
     """Assumes that the examples each have ONE label, and not a distribution over labels"""
     label_counts = {}  # type: Dict[Term, float]
 
     for example in examples:  # type: Example
         label = example.label  # type: Term
 
-    #    label = example.get_label()  # type: Term
+        #    label = example.get_label()  # type: Term
         label_counts[label] = label_counts.get(label, 0) + 1
 
     label_frequencies = {}
@@ -108,4 +115,3 @@ def calculate_label_frequencies_and_absolute_counts(examples:Iterable[Example]) 
         label_frequencies[label] = label_counts[label] / len(examples)
 
     return label_frequencies, label_counts
-

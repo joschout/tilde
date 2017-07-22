@@ -105,54 +105,47 @@ class SettingParser:
         self.first_setting_token_parser = None
         self.settings = Settings()
 
-    def parse(self, file_path):
+    def parse(self, file_path) -> Settings:
         if self.first_setting_token_parser is not None:
             with open(file_path, 'r') as f:
                 for line in f:
                     self.first_setting_token_parser.parse_line(line, self.settings)
+            return self.settings
         else:
             raise SettingsParsingError("No SettingTokenParser set as first token parser")
 
-    @staticmethod
-    def get_models_settings_parser() -> 'SettingParser':
-        setting_parser = SettingParser()
+
+class ModelsSettingsParser(SettingParser):
+
+    def __init__(self):
+        super().__init__()
+
         classes_token_parser = ClassesTokenParser()
         type_token_parser = TypeTokenParser()
         rmode_token_parser = RmodeTokenParser()
 
-        setting_parser.first_setting_token_parser = classes_token_parser
+        self.first_setting_token_parser = classes_token_parser
         classes_token_parser.set_successor(type_token_parser)
         type_token_parser.set_successor(rmode_token_parser)
-        return setting_parser
 
-    @staticmethod
-    def get_key_settings_parser() -> 'SettingParser':
-        setting_parser = SettingParser()
+
+class KeysSettingsParser(SettingParser):
+
+    def __init__(self):
+        super().__init__()
+
         prediction_token_parser = PredictionTokenParser()
         type_token_parser = TypeTokenParser()
         rmode_token_parser = RmodeTokenParser()
 
-        setting_parser.first_setting_token_parser = prediction_token_parser
+        self.first_setting_token_parser = prediction_token_parser
         prediction_token_parser.set_successor(type_token_parser)
         type_token_parser.set_successor(rmode_token_parser)
-        return setting_parser
-
-    @staticmethod
-    def get_settings_keys_format( file_path:str) -> Settings:
-        setting_parser = SettingParser.get_key_settings_parser()
-        setting_parser.parse(file_path)
-        return setting_parser.settings
-
-    @staticmethod
-    def get_settings_models_format(file_path: str) -> Settings:
-        setting_parser = SettingParser.get_models_settings_parser()
-        setting_parser.parse(file_path)
-        return setting_parser.settings
 
 
 class SettingTokenParser:
     """"
-    Chain of Responsabiliy Parser
+    Chain of Responsibility Parser
     """
     successor = None  # type: Optional[SettingTokenParser]
 
@@ -344,11 +337,11 @@ class RmodeTokenParser(SettingTokenParser):
     def __tokenize_rmode_argument_string(self, args: str) -> List[str]:
         """
         Breaks the arguments of an rmode line into substrings. This has to handle the case where there is a list of possible values.
-        For example:    rmode(5: config(+P,+S,#[up,down])).    
+        For example:    rmode(5: config(+P,+S,#[up,down])).
         --> input of this method: '+P,+S,#[up,down]'
-            output:     ['+P', '+S', '#[up,down]']   
-        :param args: 
-        :return: 
+            output:     ['+P', '+S', '#[up,down]']
+        :param args:
+        :return:
         """
         if args == '':
             return []

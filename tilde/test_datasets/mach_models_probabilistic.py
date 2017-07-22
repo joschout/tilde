@@ -6,7 +6,7 @@ from representation.language import TypeModeLanguage
 from trees.tree_converter import convert_tree_to_simple_program
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
-from tilde.IO.parsing_settings import SettingParser, Settings
+from tilde.IO.parsing_settings import SettingParser, Settings, ModelsSettingsParser
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.classification.example_partitioning import SimpleProgramExamplePartitioner
 from tilde.trees.TreeBuilder import ProbabilisticTreeBuilder
@@ -16,7 +16,7 @@ fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-
 fname_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.kb'
 
 # SETINGS for MODELS format
-settings = SettingParser.get_settings_models_format(fname_settings)  # type: Settings
+settings = ModelsSettingsParser().parse(fname_settings)  # type: Settings
 language = settings.language  # type: TypeModeLanguage
 
 # LABELS

@@ -2,7 +2,7 @@ from typing import Optional
 
 from trees.tree_converter import MLETreeToProgramConverter
 
-from tilde.IO.utils import KnowledgeBaseFormat
+from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.parsing_settings import SettingParser
 from tilde.IO.label_collector import SimpleProgramLabelCollector
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
