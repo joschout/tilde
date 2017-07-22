@@ -22,9 +22,9 @@ from typing import Optional, Dict
 
 from problog.logic import Term, And, Var, Constant, AnnotatedDisjunction
 from problog.program import SimpleProgram
-from problog_helper.problog_helper import apply_substitution_to_term
-from tilde.representation.language import TypeModeLanguage
 
+from tilde.problog_helper.problog_helper import apply_substitution_to_term
+from tilde.representation.language import TypeModeLanguage
 from tilde.IO.utils import KnowledgeBaseFormat
 from tilde.classification.classification_helper import Label
 from tilde.trees import TreeNode

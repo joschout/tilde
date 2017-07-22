@@ -25,8 +25,8 @@ from typing import List, Tuple, Pattern, Dict
 from typing import Optional, Iterable
 
 from problog.logic import Term
-from problog_helper.problog_helper import get_probability
 
+from tilde.problog_helper.problog_helper import get_probability
 from tilde.representation.example import PrologStringExample
 
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'

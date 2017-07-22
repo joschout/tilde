@@ -6,8 +6,7 @@ from problog.logic import *
 #
 #     def __init__(self, language):
 #         self.language = language
-from representation.language import TypeModeLanguage
-
+from tilde.representation.language import TypeModeLanguage
 from tilde.representation.TILDE_query import TILDEQuery
 
 

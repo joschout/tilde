@@ -3,7 +3,7 @@ from itertools import product
 from typing import Iterable, Iterator
 
 from problog.logic import Term, is_variable, Var
-from representation.TILDE_query import Rule, TILDEQuery
+from tilde.representation.TILDE_query import Rule, TILDEQuery
 
 from tilde.representation.language_types import *
 
