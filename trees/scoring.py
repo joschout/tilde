@@ -1,9 +1,9 @@
-from typing import List, Iterable, Sequence, Collection, Sized, Optional
+from typing import List, Iterable, Sequence, Optional
+
 from problog.logic import *
 
 from classification.classification_helper import Label
 from problog_helper.problog_helper import get_probability
-from representation.example import Example
 
 
 def entropy_binary(list_of_bools: Sequence[bool]) -> float:

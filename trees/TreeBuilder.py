@@ -1,4 +1,9 @@
-from typing import Collection, Mapping
+from typing import Iterable
+# python 3.6
+try:
+    from typing import Collection
+except ImportError:
+    Collection = Iterable
 
 from representation.TILDE_query import TILDEQueryHiddenLiteral
 from representation.example import calculate_majority_class, calculate_label_frequencies, \

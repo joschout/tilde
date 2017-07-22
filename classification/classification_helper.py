@@ -1,4 +1,10 @@
-from typing import Iterable, List, Union, Optional, Collection
+from typing import Iterable, List, Union, Optional
+
+# python 3.6
+try:
+    from typing import Collection
+except ImportError:
+    Collection = Iterable
 
 from problog.engine import ClauseDB, DefaultEngine
 from problog.logic import Term
