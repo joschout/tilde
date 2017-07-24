@@ -3,7 +3,8 @@ from typing import Iterable, Set
 from problog.engine import DefaultEngine
 
 from tilde.classification.classification_helper import Label
-from tilde.representation.example import SimpleProgramExample, ClauseDBExample
+from tilde.representation.example import SimpleProgramExample, ClauseDBExample, InternalExampleFormat, \
+    InternalExampleFormatException, Example
 
 
 class LabelCollector:
@@ -20,6 +21,9 @@ class LabelCollector:
 
     def get_labels(self) -> Set[Label]:
         return self.labels
+
+    def extract_labels(self, examples: Iterable[Example]):
+        raise NotImplementedError('Abstract method')
 
 
 class SimpleProgramLabelCollector(LabelCollector):
@@ -54,3 +58,16 @@ class ClauseDBLabelCollector(LabelCollector):
                 label = answer[self.index_of_label_var]
                 self.labels.add(label)
                 db_example.label = label
+
+
+class LabelCollectorMapper:
+
+    @staticmethod
+    def get_label_collector(internal_ex_format: InternalExampleFormat, predicate_to_query, index_of_label_var, background_knowledge=None):
+        if internal_ex_format is internal_ex_format.CLAUSEDB:
+            return ClauseDBLabelCollector(predicate_to_query, index_of_label_var, background_knowledge)
+        elif internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:
+            return SimpleProgramLabelCollector(predicate_to_query, index_of_label_var, background_knowledge)
+        else:
+            raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported, "
+                                                 "got: " + str(internal_ex_format))

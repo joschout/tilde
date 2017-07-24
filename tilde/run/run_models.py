@@ -48,12 +48,12 @@ def run_models(fname_labeled_examples: str, settings: Settings, internal_ex_form
 
     if debug_printing:
         print("UNPRUNED tree:")
-        print(tree.to_string())
+        print(tree)
 
     prune_leaf_nodes_with_same_label(tree)
     if debug_printing:
         print("PRUNED tree:")
-    print(tree.to_string())
+    print(tree)
 
     tree_to_program_converter = TreeToProgramConverterMapper.get_converter(treebuilder_type, KnowledgeBaseFormat.MODELS,
                                                                            debug_printing)

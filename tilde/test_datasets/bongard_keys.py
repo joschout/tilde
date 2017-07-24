@@ -1,5 +1,7 @@
-from IO.parsing_settings import KeysSettingsParser
-from tilde.run.run_keys import run_keys_simpleprogram, run_keys_clausedb
+from tilde.IO.parsing_settings import KeysSettingsParser
+from tilde.representation.example import InternalExampleFormat
+from tilde.run.run_keys import run_keys
+from tilde.trees.TreeBuilder import TreeBuilderType
 
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\bongard\\keys\\bongard.kb'
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\bongard\\keys\\bongard.s'
@@ -10,8 +12,11 @@ use_mle = True
 
 parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
-if use_clausedb:
-    run_keys_clausedb(file_name_labeled_examples, parsed_settings, debug_printing=debug_printing, use_mle=use_mle)
-else:
-    run_keys_simpleprogram(file_name_labeled_examples, parsed_settings, debug_printing=debug_printing, use_mle=use_mle)
+treebuilder_type = TreeBuilderType.DETERMINISTIC
 
+if use_clausedb:
+    internal_ex_format = InternalExampleFormat.CLAUSEDB
+else:
+    internal_ex_format = InternalExampleFormat.SIMPLEPROGRAM
+
+run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type,  debug_printing=debug_printing)
