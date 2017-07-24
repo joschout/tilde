@@ -1,4 +1,4 @@
-from IO.parsing_settings import KeysSettingsParser
+from tilde.IO.parsing_settings import KeysSettingsParser
 from tilde.run.run_keys import run_keys_simpleprogram, run_keys_clausedb
 
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys\\mach.kb'

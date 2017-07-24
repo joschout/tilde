@@ -2,7 +2,7 @@ import math
 
 from tilde.probeersel.mach_tests import labeled_examples, background_knowledge, possible_targets, language_machines
 
-import classification
+import tilde.classification
 from tilde.representation.TILDE_query import TILDEQuery
 
 tilde_query = TILDEQuery(None, None)

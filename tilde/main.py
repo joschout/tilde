@@ -6,8 +6,8 @@ import sys
 from typing import Optional
 
 from tilde.IO.parsing_settings import ModelsSettingsParser, KeysSettingsParser
-from tilde.IO.input_format import KnowledgeBaseFormat
-from tilde.representation.example import InternalExampleFormat
+from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
+from tilde.representation.example import InternalExampleFormat, InternalExampleFormatException
 from tilde.run.run_keys import run_keys_simpleprogram, run_keys_clausedb
 from tilde.run.run_models import run_models_clausedb, run_models_simpleprogram
 
@@ -119,10 +119,11 @@ def run_program(settings: ProgramSettings):
             run_models_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
                                 use_mle)
         elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
-            run_models_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
+            run_models_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge,
+                                     debug_printing,
                                      use_mle)
         else:
-            raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
+            raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported.")
     elif settings.kb_format is KnowledgeBaseFormat.KEYS:
 
         settings_file_parser = KeysSettingsParser()
@@ -135,9 +136,9 @@ def run_program(settings: ProgramSettings):
             run_keys_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
                                    use_mle)
         else:
-            raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
+            raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported.")
     else:
-        raise NotImplementedError('Only the input formats Models and Key are supported.')
+        raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 
 
 # def run_program_models():
@@ -149,9 +150,6 @@ def run_program(settings: ProgramSettings):
 #                                  use_mle)
 #     else:
 #         raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
-
-
-
 
 def main(argv=sys.argv[1:]):
     argparser = make_argument_parser()  # type: argparse.ArgumentParser

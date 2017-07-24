@@ -1,12 +1,12 @@
 import unittest
 from typing import Optional, List
 
-from classification.classification_helper import Label, get_example_databases
+from tilde.classification.classification_helper import Label, get_example_databases
 from problog.program import PrologFile, SimpleProgram
-from representation.example import PrologStringExample, ClauseDBExample
-from representation.language import TypeModeLanguage
-from trees.TreeBuilder import DeterministicTreeBuilder
-from trees.tree_converter import convert_tree_to_simple_program
+from tilde.representation.example import PrologStringExample, ClauseDBExample
+from tilde.representation.language import TypeModeLanguage
+from tilde.trees.TreeBuilder import DeterministicTreeBuilder
+from tilde.trees.tree_converter import convert_tree_to_simple_program
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
 from tilde.IO.parsing_settings import SettingParser, Settings

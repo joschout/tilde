@@ -1,5 +1,7 @@
-from IO.parsing_settings import ModelsSettingsParser
-from tilde.run.run_models import run_models_simpleprogram, run_models_clausedb
+from tilde.IO.parsing_settings import ModelsSettingsParser
+from tilde.representation.example import InternalExampleFormat
+from tilde.run.run_models import run_models
+from tilde.trees.TreeBuilder import TreeBuilderType
 
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples\\mach.s'
 file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples\\mach.bg'
@@ -12,7 +14,14 @@ use_mle = True
 
 parsed_settings = ModelsSettingsParser().parse(file_name_settings)
 
-if use_clausedb:
-    run_models_clausedb(file_name_labeled_examples, parsed_settings, file_name_background, debug_printing=debug_printing, use_mle=use_mle)
+if use_mle:
+    treebuilder_type = TreeBuilderType.MLEDETERMINISTIC
 else:
-    run_models_simpleprogram(file_name_labeled_examples, parsed_settings, file_name_background, debug_printing=debug_printing, use_mle=use_mle)
+    treebuilder_type = TreeBuilderType.DETERMINISTIC
+
+if use_clausedb:
+    internal_ex_format = InternalExampleFormat.CLAUSEDB
+else:
+    internal_ex_format = InternalExampleFormat.SIMPLEPROGRAM
+
+run_models(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type, file_name_background, debug_printing=debug_printing)

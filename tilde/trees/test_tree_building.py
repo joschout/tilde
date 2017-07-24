@@ -1,7 +1,7 @@
 from tilde.probeersel.mach_tests.mach_definitions_TILDE_paper import labeled_examples, background_knowledge, possible_targets, \
     language_machines
 from tilde.probeersel.mach_tests.mach_definitions_examples_ACE import ex1
-from trees.tree_converter import convert_tree_to_simple_program
+from tilde.trees.tree_converter import convert_tree_to_simple_program
 
 from tilde.classification.classification import get_labels_single_example_models
 from tilde.probeersel.mach_tests.mach_definitions_logic import sendback, fix, ok

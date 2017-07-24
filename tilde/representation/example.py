@@ -8,6 +8,10 @@ from problog.program import SimpleProgram, PrologString
 Probability = float
 
 
+class InternalExampleFormatException(Exception):
+    pass
+
+
 class InternalExampleFormat(Enum):
     SIMPLEPROGRAM = 1
     CLAUSEDB = 2

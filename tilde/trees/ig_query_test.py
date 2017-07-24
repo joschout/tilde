@@ -1,6 +1,6 @@
 from problog.logic import And
 
-import classification
+import tilde.classification
 import tilde.trees.scoring
 
 from tilde.probeersel.mach_tests.mach_definitions_logic import *

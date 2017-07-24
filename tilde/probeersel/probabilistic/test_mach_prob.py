@@ -1,10 +1,10 @@
 from typing import Dict, List
 
-from classification.classification_helper import Label
+from tilde.classification.classification_helper import Label
 from problog.engine import DefaultEngine
 from problog.program import PrologString, PrologFile
-from representation.example import Example, Probability
-from representation.language import TypeModeLanguage
+from tilde.representation.example import Example, Probability
+from tilde.representation.language import TypeModeLanguage
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
 from tilde.IO.parsing_settings import SettingParser, Settings

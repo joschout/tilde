@@ -1,9 +1,9 @@
 from typing import List
 
-from classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models
+from tilde.classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models
 from problog.program import PrologFile
-from representation.language import TypeModeLanguage
-from trees.tree_converter import convert_tree_to_simple_program
+from tilde.representation.language import TypeModeLanguage
+from tilde.trees.tree_converter import convert_tree_to_simple_program
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
 from tilde.IO.parsing_settings import SettingParser, Settings, ModelsSettingsParser

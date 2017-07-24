@@ -91,6 +91,9 @@ class TreeNode:
                 result = result + self.get_right_child_node().to_string(child_indentation, 2)
             return result
 
+    def __str__(self):
+        return self.to_string()
+
     def can_classify(self) -> object:
         if self.strategy is None:
             raise AttributeError('TreeNode has no Strategy')

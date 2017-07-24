@@ -1,6 +1,6 @@
 from typing import Optional
 
-from trees.tree_converter import MLETreeToProgramConverter
+from tilde.trees.tree_converter import MLETreeToProgramConverter
 
 from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.parsing_settings import SettingParser

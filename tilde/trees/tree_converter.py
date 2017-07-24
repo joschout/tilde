@@ -28,6 +28,7 @@ from tilde.representation.language import TypeModeLanguage
 from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.classification.classification_helper import Label
 from tilde.trees import TreeNode
+from tilde.trees.TreeBuilder import TreeBuilderType
 from tilde.trees.TreeNode import get_predicate_generator, MLEDeterministicLeafStrategy
 
 
@@ -219,3 +220,19 @@ class MLETreeToProgramConverter(DeterministicTreeToProgramConverter):
             return AnnotatedDisjunction(goals_with_probabilities, previous_conjunction)
         else:
             raise ValueError("Unexpected value of KnowledgeBaseFormat: " + str(self.kb_format))
+
+
+class TreeToProgramConverterMapper:
+
+    @staticmethod
+    def get_converter(tree_builder_type: TreeBuilderType, kb_format: KnowledgeBaseFormat, debug_printing: bool = False,
+                 prediction_goal: Optional[Term] = None, index: Optional[int] = None):
+
+        if tree_builder_type is TreeBuilderType.DETERMINISTIC:
+            return DeterministicTreeToProgramConverter(kb_format, debug_printing, prediction_goal, index)
+        elif tree_builder_type.MLEDETERMINISTIC:
+            return MLETreeToProgramConverter(kb_format, debug_printing, prediction_goal, index)
+        elif tree_builder_type.PROBABILISITC:
+            return NotImplementedError('No defined treebuilder choice for: ' + str(tree_builder_type))
+        else:
+            raise NotImplementedError('No defined treebuilder choice for: ' + str(tree_builder_type))
