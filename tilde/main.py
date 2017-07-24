@@ -5,7 +5,7 @@ import os
 import sys
 from typing import Optional
 
-from tilde.IO.parsing_settings import ModelsSettingsParser, KeysSettingsParser
+from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser, KeysSettingsParser
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.representation.example import InternalExampleFormat, InternalExampleFormatException
 from tilde.run.run_keys import run_keys_simpleprogram, run_keys_clausedb
@@ -72,7 +72,7 @@ class ProgramSettings:
         return settings
 
 
-def make_argument_parser() -> argparse.ArgumentParser:
+def make_cli_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()  # type: argparse.ArgumentParser
     # parser.parse_args('-v', '--verbose', help='helps increase verbosity',
     #                   action='store_true')
@@ -141,20 +141,10 @@ def run_program(settings: ProgramSettings):
         raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 
 
-# def run_program_models():
-#     if settings.internal_examples_format is InternalExampleFormat.CLAUSEDB:
-#         run_models_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
-#                             use_mle)
-#     elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
-#         run_models_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
-#                                  use_mle)
-#     else:
-#         raise NotImplementedError("Only the internal formats SimpleProgram and ClauseDB are supported.")
-
 def main(argv=sys.argv[1:]):
-    argparser = make_argument_parser()  # type: argparse.ArgumentParser
-    arguments = argparser.parse_args(argv)
-    program_settings = ProgramSettings.make_program_settings(arguments)
+    argparser = make_cli_argument_parser()  # type: argparse.ArgumentParser
+    cli_arguments = argparser.parse_args(argv)
+    program_settings = ProgramSettings.make_program_settings(cli_arguments)
     run_program(program_settings)
 
 

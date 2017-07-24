@@ -1,4 +1,4 @@
-from tilde.IO.parsing_settings import ModelsSettingsParser
+from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde.run.run_models import run_models
 from tilde.trees.TreeBuilder import TreeBuilderType

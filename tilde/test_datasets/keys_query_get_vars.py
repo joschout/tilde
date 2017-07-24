@@ -1,7 +1,7 @@
 from problog.engine import DefaultEngine
 from problog.logic import *
 
-from tilde.IO.parsing_settings import SettingParser
+from tilde.IO.parsing_settings.setting_parser import SettingParser
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_examples_keys_format import parse_examples_key_format_with_key
 

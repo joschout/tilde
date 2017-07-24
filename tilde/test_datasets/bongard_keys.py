@@ -1,4 +1,4 @@
-from tilde.IO.parsing_settings import KeysSettingsParser
+from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde.run.run_keys import run_keys
 from tilde.trees.TreeBuilder import TreeBuilderType

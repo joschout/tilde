@@ -9,7 +9,8 @@ from tilde.trees.TreeBuilder import DeterministicTreeBuilder
 from tilde.trees.tree_converter import convert_tree_to_simple_program
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
-from tilde.IO.parsing_settings import SettingParser, Settings
+from tilde.IO.parsing_settings.setting_parser import SettingParser
+from tilde.IO.parsing_settings.utils import Settings
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.classification.example_partitioning import SimpleProgramExamplePartitioner, ClauseDBExamplePartitioner
 from tilde.trees.pruning import prune_leaf_nodes_with_same_label

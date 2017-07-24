@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from tilde.IO.parsing_settings.utils import Settings
 from tilde.classification.classification_helper import Label
 from problog.engine import DefaultEngine
 from problog.program import PrologString, PrologFile
@@ -7,7 +8,8 @@ from tilde.representation.example import Example, Probability
 from tilde.representation.language import TypeModeLanguage
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
-from tilde.IO.parsing_settings import SettingParser, Settings
+from tilde.IO.parsing_settings.setting_parser import SettingParser
+
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.classification.classification import get_labels_single_example_probabilistic_models
 

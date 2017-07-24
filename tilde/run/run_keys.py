@@ -7,7 +7,7 @@ from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_examples import KeysExampleFormatHandler
-from tilde.IO.parsing_settings import Settings, KeysPredictionGoalHandler
+from tilde.IO.parsing_settings.utils import Settings, KeysPredictionGoalHandler
 from tilde.classification.classification_helper import Label
 from tilde.classification.example_partitioning import PartitionerBuilder
 from tilde.representation.example import InternalExampleFormat, Example
@@ -50,7 +50,7 @@ def run_keys(fname_labeled_examples: str, settings: Settings, internal_ex_format
     example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, background_knowledge)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, list(possible_labels),
-                                                          example_partitioner, StopCriterionMinimalCoverage(4))
+                                                          example_partitioner, StopCriterionMinimalCoverage())
 
     tree_builder.debug_printing(debug_printing)
     tree_builder.build_tree(examples, prediction_goal)

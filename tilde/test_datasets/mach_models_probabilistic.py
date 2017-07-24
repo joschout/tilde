@@ -1,15 +1,16 @@
 from typing import List
 
-from tilde.classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models
 from problog.program import PrologFile
-from tilde.representation.language import TypeModeLanguage
-from tilde.trees.tree_converter import convert_tree_to_simple_program
 
-from tilde.IO.parsing_examples_models_format import ModelsExampleParser
-from tilde.IO.parsing_settings import SettingParser, Settings, ModelsSettingsParser
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
+from tilde.IO.parsing_examples_models_format import ModelsExampleParser
+from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser
+from tilde.IO.parsing_settings.utils import Settings
+from tilde.classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models
 from tilde.classification.example_partitioning import SimpleProgramExamplePartitioner
+from tilde.representation.language import TypeModeLanguage
 from tilde.trees.TreeBuilder import ProbabilisticTreeBuilder
+from tilde.trees.tree_converter import convert_tree_to_simple_program
 
 fname_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.s'
 fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.bg'

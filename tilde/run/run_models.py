@@ -5,7 +5,7 @@ from problog.program import PrologFile
 from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_examples import ModelsExampleFormatHandler
-from tilde.IO.parsing_settings import Settings
+from tilde.IO.parsing_settings.utils import Settings
 from tilde.classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models
 from tilde.classification.example_partitioning import PartitionerBuilder
 from tilde.representation.example import Example, InternalExampleFormat

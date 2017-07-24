@@ -1,4 +1,4 @@
-from tilde.IO.parsing_settings import KeysSettingsParser
+from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde.run.run_keys import run_keys
 from tilde.trees.TreeBuilder import TreeBuilderType
@@ -21,4 +21,4 @@ if use_clausedb:
 else:
     internal_ex_format = InternalExampleFormat.SIMPLEPROGRAM
 
-run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type,  debug_printing=debug_printing)
+run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type,  fname_background_knowledge=file_name_background, debug_printing=debug_printing)

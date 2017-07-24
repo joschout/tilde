@@ -1,18 +1,3 @@
-""""
-The file app.s contains a number of settings that influence the way in which ACE works.
-
-These settings can mainly be divided in two kinds:
-    settings that define the language bias (the kind of patterns that can be found),
-     and settings that control the system in some other way.
-
-The language bias can be defined in two ways.
-1. For beginning users there are the warmode-settings;
-    these are simple to use and allow to define a good language bias very quickly.
-    warmode-settings are automatically translated by the system to a lower level
-        consisting of rmode, type and other settings.
-2. The user can also specify the language directly at this lower level, which offers better control of the
-way in which the program traverses the search space but is more complicated.
-"""
 import itertools
 import re
 from typing import List
@@ -20,127 +5,10 @@ from typing import Match
 from typing import Optional
 from typing import Pattern
 
-from problog.logic import Term, Constant, Var
+from problog.logic import Term
 
-from tilde.classification.classification_helper import Label
-from tilde.representation.language import TypeModeLanguage
-
-
-class SettingsParsingError(Exception):
-    pass
-
-
-class ConstantBuilder:
-    @staticmethod
-    def parse_constant_str(constant_str: str) -> Constant:
-        if ConstantBuilder.is_int(constant_str):
-            return Constant(int(constant_str))
-        elif ConstantBuilder.is_float(constant_str):
-            return Constant(float(constant_str))
-        else:
-            return Term(constant_str)
-
-    @staticmethod
-    def is_float(x: str) -> bool:
-        try:
-            a = float(x)
-        except ValueError:
-            return False
-        else:
-            return True
-
-    @staticmethod
-    def is_int(x: str) -> bool:
-        try:
-            a = float(x)
-            b = int(a)
-        except ValueError:
-            return False
-        else:
-            return a == b
-
-
-class KeysPredictionGoalHandler:
-    def __init__(self, functor, modes, types):
-        self.functor = functor  # type: str
-        self.modes = modes  # type: List[str]
-        self.types = types  # type: List[str]
-
-    def get_prediction_goal(self) -> Term:
-        prediction_goal_term = Term(self.functor)
-
-        nb_of_args = len(self.modes)
-        arguments = [Var('#')] * nb_of_args
-        prediction_goal_term = prediction_goal_term(*arguments)
-
-        prediction_goal_term = prediction_goal_term.apply(TypeModeLanguage.ReplaceNew(0))
-        return prediction_goal_term
-
-    def get_predicate_goal_index_of_label_var(self) -> int:
-        for index, arg_mode in enumerate(self.modes):
-            if arg_mode == "-":
-                return index
-        raise SettingsParsingError("predicate to predict has no argument with arg_mode '-'")
-
-
-class Settings:
-    def __init__(self):
-        self.possible_labels = []  # type: List[Label]
-        self.language = TypeModeLanguage(False)
-        self.is_typed = None  # type: Optional[bool]
-        self.prediction_goal_handler = None  # type: KeysPredictionGoalHandler
-
-    def add_labels(self, labels: List[Label]):
-        self.possible_labels.extend(labels)
-
-    def add_label(self, label: Label):
-        self.possible_labels.append(label)
-
-    def get_prediction_goal_handler(self) -> KeysPredictionGoalHandler:
-        return self.prediction_goal_handler
-
-
-class SettingParser:
-    def __init__(self):
-        self.first_setting_token_parser = None
-        self.settings = Settings()
-
-    def parse(self, file_path) -> Settings:
-        if self.first_setting_token_parser is not None:
-            with open(file_path, 'r') as f:
-                for line in f:
-                    self.first_setting_token_parser.parse_line(line, self.settings)
-            return self.settings
-        else:
-            raise SettingsParsingError("No SettingTokenParser set as first token parser")
-
-
-class ModelsSettingsParser(SettingParser):
-
-    def __init__(self):
-        super().__init__()
-
-        classes_token_parser = ClassesTokenParser()
-        type_token_parser = TypeTokenParser()
-        rmode_token_parser = RmodeTokenParser()
-
-        self.first_setting_token_parser = classes_token_parser
-        classes_token_parser.set_successor(type_token_parser)
-        type_token_parser.set_successor(rmode_token_parser)
-
-
-class KeysSettingsParser(SettingParser):
-
-    def __init__(self):
-        super().__init__()
-
-        prediction_token_parser = PredictionTokenParser()
-        type_token_parser = TypeTokenParser()
-        rmode_token_parser = RmodeTokenParser()
-
-        self.first_setting_token_parser = prediction_token_parser
-        prediction_token_parser.set_successor(type_token_parser)
-        type_token_parser.set_successor(rmode_token_parser)
+from tilde.IO.parsing_settings.utils import Settings, SettingsParsingError, KeysPredictionGoalHandler, \
+    ConstantBuilder
 
 
 class SettingTokenParser:
@@ -364,17 +232,3 @@ class RmodeTokenParser(SettingTokenParser):
 
     def parse_token_experimental(self, line: str, settings: Settings, match: Match[str]):
         pass
-
-
-# def get_rmode_from_query():
-#     settings_prolog = PrologFile(settings_file_path)
-#     # for statement in settings_prolog:
-#     #     print(statement)
-#     engine = DefaultEngine()
-#     # try:
-#     settings_db = engine.prepare(settings_prolog)
-#     for statement in settings_db:
-#         print(statement)
-#     # except ParseError as perr:
-#     #     print('ParseError thrown')
-#     print(engine.query(settings_db, Term('rmode', 'replaceable(+V_0)')))
