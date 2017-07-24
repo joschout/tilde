@@ -6,7 +6,7 @@ from tilde.IO.parsing_examples_keys_format import parse_examples_key_format_with
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
 from tilde.classification.classification_helper import Label, get_example_databases
 from tilde.representation.example import ClauseDBExample, InternalExampleFormat, InternalExampleFormatException
-from tilde.IO.input_format import KnowledgeBaseFormat
+from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.representation.example import SimpleProgramExample
 from tilde.representation.example import Example
 
@@ -82,3 +82,16 @@ class KeysExampleFormatHandler(ExampleFormatHandler):
         self.examples = parse_examples_key_format_with_key(fname_examples)  # type: List[SimpleProgramExample]
         self.example_dbs = get_example_databases(self.examples, background_knowledge)  # type: List[ClauseDBExample]
         return self.example_dbs
+
+
+class ExampleFormatHandlerMapper:
+
+    @staticmethod
+    def get_example_format_handler(kb_format:KnowledgeBaseFormat):
+        if kb_format is KnowledgeBaseFormat.KEYS:
+            return KeysExampleFormatHandler()
+        elif kb_format is KnowledgeBaseFormat.MODELS:
+            return ModelsExampleFormatHandler()
+        else:
+            raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
+

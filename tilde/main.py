@@ -5,11 +5,13 @@ import os
 import sys
 from typing import Optional
 
-from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser, KeysSettingsParser
+from tilde.IO.parsing_background_knowledge import parse_background_knowledge
+from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser, KeysSettingsParser, SettingsParserMapper
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.representation.example import InternalExampleFormat, InternalExampleFormatException
-from tilde.run.run_keys import run_keys_simpleprogram, run_keys_clausedb
-from tilde.run.run_models import run_models_clausedb, run_models_simpleprogram
+from tilde.run.run_keys import run_keys
+from tilde.run.run_models import run_models
+from tilde.trees.TreeBuilder import TreeBuilderType
 
 kb_suffix = '.kb'
 bg_suffix = '.bg'
@@ -23,7 +25,7 @@ class ProgramSettings:
         self.internal_examples_format = InternalExampleFormat.CLAUSEDB  # type: InternalExampleFormat
         self.filename_prefix = ""  # type: str
         self.use_bg = False  # type: bool
-        self.use_mle = False  # type: bool
+        self.treebuilder_type = TreeBuilderType.DETERMINISTIC  # type: TreeBuilderType
 
     @staticmethod
     def make_program_settings(arguments) -> 'ProgramSettings':
@@ -67,7 +69,7 @@ class ProgramSettings:
                 raise Exception('Got unknown input for argument internal example format: ' + str(arguments.ex))
 
         if arguments.mle:
-            settings.use_mle = True
+            settings.treebuilder_type = TreeBuilderType.MLEDETERMINISTIC
 
         return settings
 
@@ -101,42 +103,27 @@ def run_program(settings: ProgramSettings):
     # get the name of the program to run
     fname_labeled_examples = settings.filename_prefix + kb_suffix
     fname_settings = settings.filename_prefix + s_suffix
+
+    # BACKGROUND KNOWLEDGE
     if settings.use_bg:
         fname_background_knowledge = settings.filename_prefix + bg_suffix
+        background_knowledge = parse_background_knowledge(fname_background_knowledge)
     else:
-        fname_background_knowledge = None
+        background_knowledge = None
+
     debug_printing = settings.debug_parsing
-    use_mle = settings.use_mle
 
     if settings.kb_format is None:
         raise NotImplementedError('Automatic recognition of input format is not yet supported.')
-    elif settings.kb_format is KnowledgeBaseFormat.MODELS:
-
-        settings_file_parser = ModelsSettingsParser()
+    else:
+        # SETTINGS FILE
+        settings_file_parser = SettingsParserMapper.get_settings_parser(settings.kb_format)
         parsed_settings = settings_file_parser.parse(fname_settings)
 
-        if settings.internal_examples_format is InternalExampleFormat.CLAUSEDB:
-            run_models_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
-                                use_mle)
-        elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
-            run_models_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge,
-                                     debug_printing,
-                                     use_mle)
-        else:
-            raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported.")
+    if settings.kb_format is KnowledgeBaseFormat.MODELS:
+        run_models(fname_labeled_examples, parsed_settings, settings.internal_examples_format, settings.treebuilder_type, background_knowledge, debug_printing)
     elif settings.kb_format is KnowledgeBaseFormat.KEYS:
-
-        settings_file_parser = KeysSettingsParser()
-        parsed_settings = settings_file_parser.parse(fname_settings)
-
-        if settings.internal_examples_format is InternalExampleFormat.CLAUSEDB:
-            run_keys_clausedb(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
-                              use_mle)
-        elif settings.internal_examples_format is InternalExampleFormat.SIMPLEPROGRAM:
-            run_keys_simpleprogram(fname_labeled_examples, parsed_settings, fname_background_knowledge, debug_printing,
-                                   use_mle)
-        else:
-            raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported.")
+        run_keys(fname_labeled_examples, parsed_settings, settings.internal_examples_format, settings.treebuilder_type, background_knowledge, debug_printing)
     else:
         raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 

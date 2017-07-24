@@ -1,3 +1,4 @@
+from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde.run.run_models import run_models
@@ -14,6 +15,8 @@ use_mle = True
 
 parsed_settings = ModelsSettingsParser().parse(file_name_settings)
 
+background_knowledge = parse_background_knowledge(file_name_background)
+
 if use_mle:
     treebuilder_type = TreeBuilderType.MLEDETERMINISTIC
 else:
@@ -24,4 +27,4 @@ if use_clausedb:
 else:
     internal_ex_format = InternalExampleFormat.SIMPLEPROGRAM
 
-run_models(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type, file_name_background, debug_printing=debug_printing)
+run_models(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type, background_knowledge=background_knowledge, debug_printing=debug_printing)

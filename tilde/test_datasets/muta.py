@@ -1,3 +1,4 @@
+from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 
 from tilde.representation.example import InternalExampleFormat
@@ -16,7 +17,9 @@ parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
 treebuilder_type = TreeBuilderType.DETERMINISTIC
 
+background_knowledge = parse_background_knowledge(file_name_background)
+
 internal_ex_format = InternalExampleFormat.CLAUSEDB
 
-run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type, fname_background_knowledge=file_name_background, debug_printing=debug_printing)
+run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type, background_knowledge=background_knowledge, debug_printing=debug_printing)
 

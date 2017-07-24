@@ -13,7 +13,7 @@ The language bias can be defined in two ways.
 2. The user can also specify the language directly at this lower level, which offers better control of the
 way in which the program traverses the search space but is more complicated.
 """
-
+from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.IO.parsing_settings.token_parser import ClassesTokenParser, TypeTokenParser, RmodeTokenParser, \
     PredictionTokenParser
 from tilde.IO.parsing_settings.utils import Settings, SettingsParsingError
@@ -35,7 +35,6 @@ class SettingParser:
 
 
 class ModelsSettingsParser(SettingParser):
-
     def __init__(self):
         super().__init__()
 
@@ -49,7 +48,6 @@ class ModelsSettingsParser(SettingParser):
 
 
 class KeysSettingsParser(SettingParser):
-
     def __init__(self):
         super().__init__()
 
@@ -61,6 +59,16 @@ class KeysSettingsParser(SettingParser):
         prediction_token_parser.set_successor(type_token_parser)
         type_token_parser.set_successor(rmode_token_parser)
 
+
+class SettingsParserMapper:
+    @staticmethod
+    def get_settings_parser(kb_format: KnowledgeBaseFormat) -> SettingParser:
+        if kb_format is KnowledgeBaseFormat.KEYS:
+            return KeysSettingsParser()
+        elif kb_format is KnowledgeBaseFormat.MODELS:
+            return ModelsSettingsParser()
+        else:
+            raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 
 # def get_rmode_from_query():
 #     settings_prolog = PrologFile(settings_file_path)
