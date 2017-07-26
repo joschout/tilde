@@ -4,8 +4,8 @@ from problog.program import PrologFile
 
 from tilde.IO.parsing_examples_keys_format import parse_examples_key_format_with_key
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
-from tilde.classification.classification_helper import Label, get_example_databases
-from tilde.representation.example import ClauseDBExample, InternalExampleFormat, InternalExampleFormatException
+from tilde.classification.classification_helper import get_example_databases
+from tilde.representation.example import Label, ClauseDBExample, InternalExampleFormat, InternalExampleFormatException
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.representation.example import SimpleProgramExample
 from tilde.representation.example import Example

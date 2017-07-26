@@ -1,25 +1,28 @@
 from typing import List, Optional
 
-from problog.program import PrologFile
+from problog.program import PrologFile, SimpleProgram
 
 from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.parsing_examples import ExampleFormatHandlerMapper
-from tilde.IO.parsing_settings.utils import Settings
-from tilde.classification.classification_helper import Label
+from tilde.IO.parsing_settings.utils import FileSettings
+from tilde.classification.classification_helper import get_models_classifier, \
+    do_labeled_examples_get_correctly_classified
+
 from tilde.classification.example_partitioning import PartitionerBuilder
-from tilde.representation.example import Example, InternalExampleFormat
+from tilde.representation.example import Example, Label, InternalExampleFormat
 from tilde.representation.language import TypeModeLanguage
 from tilde.trees.TreeBuilder import TreeBuilderBuilder, TreeBuilderType
 from tilde.trees.pruning import prune_leaf_nodes_with_same_label
+from tilde.trees.stop_criterion import StopCriterionMinimalCoverage
 from tilde.trees.tree_converter import TreeToProgramConverterMapper
 
 
-def run_models(fname_labeled_examples: str, settings: Settings, internal_ex_format: InternalExampleFormat,
+def run_models(fname_labeled_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
                treebuilder_type: TreeBuilderType,
                background_knowledge: Optional[PrologFile] = None,
                debug_printing=False,
                kb_format=KnowledgeBaseFormat.MODELS
-               ):
+               ) -> SimpleProgram:
     language = settings.language  # type: TypeModeLanguage
 
     # LABELS
@@ -34,7 +37,7 @@ def run_models(fname_labeled_examples: str, settings: Settings, internal_ex_form
     example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, background_knowledge)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, possible_labels,
-                                                          example_partitioner)
+                                                          example_partitioner, StopCriterionMinimalCoverage())
 
     tree_builder.debug_printing(debug_printing)
     tree_builder.build_tree(examples)
@@ -60,6 +63,9 @@ def run_models(fname_labeled_examples: str, settings: Settings, internal_ex_form
     for statement in program:
         print(str(statement) + ".")
 
-        # TODO: THIS CAN GIVE ERRORS
-        # do_labeled_examples_get_correctly_classified_models(examples_format_handler.examples, program, possible_targets,
-        #                                                     background_knowledge)
+    classifier = get_models_classifier(internal_ex_format, program, possible_labels, background_knowledge, debug_printing=False)
+
+    # TODO: THIS CAN GIVE ERRORS WHEN USING MLE
+
+    do_labeled_examples_get_correctly_classified(classifier, examples, debug_printing)
+    return program

@@ -5,7 +5,6 @@ from problog.engine import DefaultEngine, ClauseDB
 from problog.program import SimpleProgram
 from problog.program import Term
 
-
 # def get_label_old(examples: Iterable[SimpleProgram], rules: SimpleProgram, possible_labels: Iterable[str]) -> List[str]:
 #     label_list = []
 #     eng = DefaultEngine()
@@ -50,10 +49,15 @@ from problog.program import Term
 #                 example_labels.append(label)
 #         labeled_examples.append((example, example_labels))
 #     return labeled_examples
+from tilde.utils import deprecated
 
 
-def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgram, possible_labels: Iterable[str], background_knowledge=None, debug_printing=False) -> List[str]:
+@deprecated
+def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgram, possible_labels: Iterable[str],
+                                     background_knowledge=None, debug_printing=False) -> List[str]:
     """
+
+
     Classifies a single example and returns a list of its labels
     :param example:
     :param rules:
@@ -78,7 +82,7 @@ def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgra
         print('\nQueried database:')
         for statement in db:
             print('\t' + str(statement))
-        # print('\n')
+            # print('\n')
 
     result_list = [eng.query(db, x) for x in possible_labels]
     zipped = zip(result_list, possible_labels)
@@ -93,7 +97,10 @@ def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgra
     return labels_ex
 
 
-def get_labels_single_example_probabilistic_models(example: SimpleProgram, rules: SimpleProgram, possible_labels: Iterable[str], background_knowledge=None, debug_printing=False) -> List[str]:
+@deprecated
+def get_labels_single_example_probabilistic_models(example: SimpleProgram, rules: SimpleProgram,
+                                                   possible_labels: Iterable[str], background_knowledge=None,
+                                                   debug_printing=False) -> List[str]:
     """
     Classifies a single example and returns a list of its labels
     :param example:
@@ -119,7 +126,7 @@ def get_labels_single_example_probabilistic_models(example: SimpleProgram, rules
         print('\nQueried database:')
         for statement in db:
             print('\t' + str(statement))
-        # print('\n')
+            # print('\n')
 
     query_terms = [Term('query')(label) for label in possible_labels]
 
@@ -132,7 +139,9 @@ def get_labels_single_example_probabilistic_models(example: SimpleProgram, rules
     return query_results
 
 
-def get_labels_single_example_keys(example: SimpleProgram, rules: SimpleProgram, prediction_goal: Term, index_of_label_arg:int, possible_labels: Iterable[str], background_knowledge=None, debug_printing=False) -> List[str]:
+def get_labels_single_example_keys(example: SimpleProgram, rules: SimpleProgram, prediction_goal: Term,
+                                   index_of_label_arg: int, possible_labels: Iterable[str], background_knowledge=None,
+                                   debug_printing=False) -> List[str]:
     """
     Classifies a single example and returns a list of its labels
     :param prediction_goal: 
@@ -166,4 +175,3 @@ def get_labels_single_example_keys(example: SimpleProgram, rules: SimpleProgram,
     for query_result in query_results:
         labels_ex.append(query_result[index_of_label_arg])
     return labels_ex
-

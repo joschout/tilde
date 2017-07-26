@@ -1,13 +1,12 @@
-from typing import Set, Optional, List
+from typing import Optional, List, Set
 
 from problog.logic import Term
-from problog.program import PrologFile, SimpleProgram
+from problog.program import PrologFile
 
 from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_examples import ExampleFormatHandlerMapper
 from tilde.IO.parsing_settings.utils import FileSettings, KeysPredictionGoalHandler
-from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
 from tilde.classification.example_partitioning import PartitionerBuilder
 from tilde.representation.example import InternalExampleFormat, Example, Label
 from tilde.representation.language import TypeModeLanguage
@@ -19,13 +18,10 @@ from tilde.trees.stop_criterion import StopCriterionMinimalCoverage
 from tilde.trees.tree_converter import TreeToProgramConverterMapper
 
 
-def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
-             treebuilder_type: TreeBuilderType,
-             background_knowledge: Optional[PrologFile] = None,
-             debug_printing=False,
-             kb_format=KnowledgeBaseFormat.KEYS) -> SimpleProgram:
-    language = settings.language  # type: TypeModeLanguage
-
+def preprocessing_examples_keys(
+        fname_labeled_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
+        background_knowledge: Optional[PrologFile] = None,
+        kb_format=KnowledgeBaseFormat.KEYS):
     prediction_goal_handler = settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler
     prediction_goal = prediction_goal_handler.get_prediction_goal()  # type: Term
 
@@ -41,8 +37,30 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
     possible_labels = label_collector.get_labels()  # type: Set[Label]
     possible_labels = list(possible_labels)
 
-    # =================================
+    return examples, prediction_goal, index_of_label_var, possible_labels
 
+
+def preprocessing_examples_models(
+        fname_labeled_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
+        background_knowledge: Optional[PrologFile] = None,
+        kb_format=KnowledgeBaseFormat.MODELS):
+    # LABELS
+    possible_labels = settings.possible_labels  # type: List[Label]
+
+    # EXAMPLES
+    examples_format_handler = ExampleFormatHandlerMapper().get_example_format_handler(kb_format)
+    examples = examples_format_handler.parse(internal_ex_format, fname_labeled_examples, possible_labels,
+                                             background_knowledge)  # type: List[Example]
+    return examples
+
+
+def build_tree(internal_ex_format: InternalExampleFormat,
+               treebuilder_type: TreeBuilderType,
+               language: TypeModeLanguage, possible_labels, examples,
+               prediction_goal=None,
+               background_knowledge: Optional[PrologFile] = None,
+               debug_printing=False,
+               ) -> TreeNode:
     example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, background_knowledge)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, possible_labels,
@@ -61,6 +79,16 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
         print("PRUNED tree:")
     print(tree)
 
+    return tree
+
+
+def convert_tree_to_program(kb_format: KnowledgeBaseFormat,
+                            treebuilder_type: TreeBuilderType,
+                            tree: TreeNode,
+                            language: TypeModeLanguage,
+                            debug_printing=False,
+                            prediction_goal=None,
+                            index_of_label_var=None):
     tree_to_program_converter = TreeToProgramConverterMapper.get_converter(treebuilder_type, kb_format,
                                                                            debug_printing=debug_printing,
                                                                            prediction_goal=prediction_goal,
@@ -71,10 +99,5 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
     print("%------------------")
     for statement in program:
         print(str(statement) + ".")
-
-    classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
-                                     index_of_label_var, background_knowledge, debug_printing=False)
-
-    do_labeled_examples_get_correctly_classified(classifier, examples, debug_printing)
 
     return program

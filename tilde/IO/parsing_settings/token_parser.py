@@ -7,7 +7,7 @@ from typing import Pattern
 
 from problog.logic import Term
 
-from tilde.IO.parsing_settings.utils import Settings, SettingsParsingError, KeysPredictionGoalHandler, \
+from tilde.IO.parsing_settings.utils import FileSettings, SettingsParsingError, KeysPredictionGoalHandler, \
     ConstantBuilder
 
 
@@ -27,10 +27,10 @@ class SettingTokenParser:
     def can_parse(match: Optional[Match[str]]) -> bool:
         return match is not None
 
-    def parse_token(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
         raise NotImplementedError('abstract method')
 
-    def parse_line(self, line: str, settings: Settings):
+    def parse_line(self, line: str, settings: FileSettings):
         match = self.can_parse_pre(line)
         if self.can_parse(match):
             self.parse_token(line, settings, match)
@@ -45,7 +45,7 @@ class ClassesTokenParser(SettingTokenParser):
     def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.classes_pattern.match(line)
 
-    def parse_token(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
         classes = match.group(1)  # type: str
         classes = classes.replace(' ', '')
         classes = classes.split(',')
@@ -60,7 +60,7 @@ class TypedLanguageTokenParser(SettingTokenParser):
     def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.typed_language_pattern.match(line)
 
-    def parse_token(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
         typed = match.group(1)
         typed = typed.replace(' ', '')
         if typed == 'yes':
@@ -84,7 +84,7 @@ class PredictionTokenParser(SettingTokenParser):
     def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.predict_pattern.match(line)
 
-    def parse_token(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
         # TODO: change on typed language or not
         # TODO: for now, assume the language is completely typed
 
@@ -135,7 +135,7 @@ class TypeTokenParser(SettingTokenParser):
     def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.type_pattern.match(line)
 
-    def parse_token(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
         conjunction_definition = match.group(1)
         conjunction_match = self.conjunction_pattern.search(conjunction_definition)
         if conjunction_match is not None:
@@ -162,7 +162,7 @@ class RmodeTokenParser(SettingTokenParser):
     def can_parse_pre(self, line: str) -> Optional[Match[str]]:
         return self.rmode_pattern.match(line)
 
-    def parse_token(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
         conjunction_definition = match.group(1)
         # a conjunction can consist
         conjunction_pattern_match = self.conjunction_pattern.search(conjunction_definition)
@@ -174,7 +174,7 @@ class RmodeTokenParser(SettingTokenParser):
 
             self._parse_rmode_arguments(arguments, functor, settings)
 
-    def _parse_rmode_arguments(self, arguments: List[str], functor: str, settings: Settings):
+    def _parse_rmode_arguments(self, arguments: List[str], functor: str, settings: FileSettings):
         all_args_mode_indicators = []
         for argument_index, argument in enumerate(arguments):
             moded_var_match = self.moded_var_pattern.search(argument)
@@ -230,5 +230,5 @@ class RmodeTokenParser(SettingTokenParser):
                 arguments.extend(args_after)
         return arguments
 
-    def parse_token_experimental(self, line: str, settings: Settings, match: Match[str]):
+    def parse_token_experimental(self, line: str, settings: FileSettings, match: Match[str]):
         pass

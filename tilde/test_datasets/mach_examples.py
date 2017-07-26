@@ -9,9 +9,9 @@ file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\
 file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples\\mach.kb'
 
 
-use_clausedb = False
+use_clausedb = True
 debug_printing = True
-use_mle = True
+use_mle = False
 
 parsed_settings = ModelsSettingsParser().parse(file_name_settings)
 

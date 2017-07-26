@@ -26,6 +26,7 @@ from typing import Optional, Iterable
 
 from problog.logic import Term
 
+from tilde.IO.parsing_settings.utils import ConstantBuilder
 from tilde.problog_helper.problog_helper import get_probability
 from tilde.representation.example import PrologStringExample
 
@@ -137,7 +138,9 @@ class ModelsExampleParser:
         if self.id_of_current_example != example_id_on_end_line:
             raise ExampleParseException("The example number in the begin and end tags do not match")
         else:
-            example = self._parse_example_string(self.prolog_string_accumulator, self.labels_of_current_example)
+            example = self._parse_example_string(self.prolog_string_accumulator)
+            example = self._add_example_info(example, self.labels_of_current_example, self.id_of_current_example)
+
             self.examples_found.append(example)
 
             self.currently_parsing_example = False
@@ -166,8 +169,13 @@ class ModelsExampleParser:
         return label_patterns
 
     @staticmethod
-    def _parse_example_string(prolog_string_unlabeled: str, example_labels:Optional[Dict[Term, Probability]]=None) -> PrologStringExample:
-        example = PrologStringExample(prolog_string_unlabeled)
+    def _parse_example_string(prolog_string_unlabeled: str) -> PrologStringExample:
+        return PrologStringExample(prolog_string_unlabeled)
+
+
+    @staticmethod
+    def _add_example_info(example: PrologStringExample, example_labels:Optional[Dict[Term, Probability]]=None, example_id_str:Optional[str]=None)->PrologStringExample:
+        # if it has one or more labels, add them
         if example_labels is not None:
             if len(example_labels) == 1:
                 #TODO: Note, value of probability is never used
@@ -175,6 +183,10 @@ class ModelsExampleParser:
                 example.label = label
             else:
                 example.label = example_labels
+
+        # add its key
+        example.key = ConstantBuilder.parse_constant_str(example_id_str)
+
         return example
 
     @staticmethod

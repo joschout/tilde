@@ -5,9 +5,10 @@ from problog.program import PrologFile
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
 from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser
-from tilde.IO.parsing_settings.utils import Settings
-from tilde.classification.classification_helper import Label, do_labeled_examples_get_correctly_classified_models
+from tilde.IO.parsing_settings.utils import FileSettings
+from tilde.classification.classification_helper import do_labeled_examples_get_correctly_classified_models
 from tilde.classification.example_partitioning import SimpleProgramExamplePartitioner
+from tilde.representation.example import Label
 from tilde.representation.language import TypeModeLanguage
 from tilde.trees.TreeBuilder import ProbabilisticTreeBuilder
 from tilde.trees.tree_converter import convert_tree_to_simple_program
@@ -17,7 +18,7 @@ fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-
 fname_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.kb'
 
 # SETINGS for MODELS format
-settings = ModelsSettingsParser().parse(fname_settings)  # type: Settings
+settings = ModelsSettingsParser().parse(fname_settings)  # type: FileSettings
 language = settings.language  # type: TypeModeLanguage
 
 # LABELS

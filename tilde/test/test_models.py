@@ -1,16 +1,16 @@
 import unittest
 from typing import Optional, List
 
-from tilde.classification.classification_helper import Label, get_example_databases
+from tilde.classification.classification_helper import get_example_databases
 from problog.program import PrologFile, SimpleProgram
-from tilde.representation.example import PrologStringExample, ClauseDBExample
+from tilde.representation.example import PrologStringExample, ClauseDBExample, Label
 from tilde.representation.language import TypeModeLanguage
 from tilde.trees.TreeBuilder import DeterministicTreeBuilder
 from tilde.trees.tree_converter import convert_tree_to_simple_program
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
 from tilde.IO.parsing_settings.setting_parser import SettingParser
-from tilde.IO.parsing_settings.utils import Settings
+from tilde.IO.parsing_settings.utils import FileSettings
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.classification.example_partitioning import SimpleProgramExamplePartitioner, ClauseDBExamplePartitioner
 from tilde.trees.pruning import prune_leaf_nodes_with_same_label
@@ -22,7 +22,7 @@ class ModelsTestBase(unittest.TestCase):
     def general_setup(self, fname_labeled_examples: str, fname_settings: str, fname_background_knowledge: Optional[str] = None):
 
         # SETINGS for MODELS format
-        settings = SettingParser.get_settings_models_format(fname_settings)  # type: Settings
+        settings = SettingParser.get_settings_models_format(fname_settings)  # type: FileSettings
         self.language = settings.language  # type: TypeModeLanguage
 
         # LABELS

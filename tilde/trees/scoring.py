@@ -2,7 +2,7 @@ from typing import List, Iterable, Sequence, Optional
 
 from problog.logic import *
 
-from tilde.classification.classification_helper import Label
+from tilde.representation.example import Label
 from tilde.problog_helper.problog_helper import get_probability
 
 

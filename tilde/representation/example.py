@@ -6,6 +6,7 @@ from problog.logic import Term
 from problog.program import SimpleProgram, PrologString
 
 Probability = float
+Label = Union[Term, str]
 
 
 class InternalExampleFormatException(Exception):
@@ -22,8 +23,9 @@ class LabelError(Exception):
 
 
 class Example:
-    def __init__(self, label=None):
+    def __init__(self, label=None, key: Optional = None):
         self.label = label  # type: Optional[Union[Term, Dict[Term, Probability]]]
+        self.key = key
 
     def get_label(self) -> Optional[Term]:
         try:

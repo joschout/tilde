@@ -1,7 +1,6 @@
 from typing import Dict, Iterable
 
-from tilde.classification.classification_helper import Label
-from tilde.representation.example import Probability, Example
+from tilde.representation.example import Probability, Example, Label
 from tilde.trees import TreeNode
 
 

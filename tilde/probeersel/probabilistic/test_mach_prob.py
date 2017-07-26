@@ -1,10 +1,9 @@
 from typing import Dict, List
 
-from tilde.IO.parsing_settings.utils import Settings
-from tilde.classification.classification_helper import Label
+from tilde.IO.parsing_settings.utils import FileSettings
 from problog.engine import DefaultEngine
 from problog.program import PrologString, PrologFile
-from tilde.representation.example import Example, Probability
+from tilde.representation.example import Example, Probability, Label
 from tilde.representation.language import TypeModeLanguage
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
@@ -35,7 +34,7 @@ engine = DefaultEngine()
 engine.unknown = 1
 
 # SETINGS for MODELS format
-settings = SettingParser.get_settings_models_format(fname_settings)  # type: Settings
+settings = SettingParser.get_settings_models_format(fname_settings)  # type: FileSettings
 language = settings.language  # type: TypeModeLanguage
 
 # LABELS

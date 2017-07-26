@@ -2,12 +2,18 @@ from typing import Iterable, Set
 
 from problog.engine import DefaultEngine
 
-from tilde.classification.classification_helper import Label
 from tilde.representation.example import SimpleProgramExample, ClauseDBExample, InternalExampleFormat, \
-    InternalExampleFormatException, Example
+    InternalExampleFormatException, Example, Label
 
 
 class LabelCollector:
+    """"
+
+    IMPORTANT:
+        * ONLY for KEYS format
+        * has a lot of overlap with Classifier
+    """
+
     def __init__(self, predicate_to_query, index_of_label_var, background_knowledge=None):
         self.engine = DefaultEngine()
         self.engine.unknown = 1
@@ -26,6 +32,7 @@ class LabelCollector:
         raise NotImplementedError('Abstract method')
 
 
+# TODO: refactor: use query_result_label_extractor
 class SimpleProgramLabelCollector(LabelCollector):
     def extract_label(self, example: SimpleProgramExample):
         if self.db is not None:
@@ -35,10 +42,10 @@ class SimpleProgramLabelCollector(LabelCollector):
         else:
             db_example = self.engine.prepare(example)
 
-        list_of_answers = self.engine.query(db_example, self.predicate_to_query)
-        if len(list_of_answers) is 0:
+        query_results = self.engine.query(db_example, self.predicate_to_query)
+        if len(query_results) is 0:
             raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
-        for answer in list_of_answers:
+        for answer in query_results:
             label = answer[self.index_of_label_var]
             self.labels.add(label)
             example.label = label
@@ -51,19 +58,19 @@ class SimpleProgramLabelCollector(LabelCollector):
 class ClauseDBLabelCollector(LabelCollector):
     def extract_labels(self, example_dbs: Iterable[ClauseDBExample]):
         for db_example in example_dbs:  # type: ClauseDBExample
-            list_of_answers = self.engine.query(db_example, self.predicate_to_query)
-            if len(list_of_answers) is 0:
+            query_results = self.engine.query(db_example, self.predicate_to_query)
+            if len(query_results) is 0:
                 raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
-            for answer in list_of_answers:
+            for answer in query_results:
                 label = answer[self.index_of_label_var]
                 self.labels.add(label)
                 db_example.label = label
 
 
 class LabelCollectorMapper:
-
     @staticmethod
-    def get_label_collector(internal_ex_format: InternalExampleFormat, predicate_to_query, index_of_label_var, background_knowledge=None):
+    def get_label_collector(internal_ex_format: InternalExampleFormat, predicate_to_query, index_of_label_var,
+                            background_knowledge=None):
         if internal_ex_format is internal_ex_format.CLAUSEDB:
             return ClauseDBLabelCollector(predicate_to_query, index_of_label_var, background_knowledge)
         elif internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:

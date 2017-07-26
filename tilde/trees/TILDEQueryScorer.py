@@ -1,11 +1,11 @@
 import math
 from typing import Iterable, Set, List, Optional
 
-from tilde.classification.classification_helper import Label
 from problog.logic import And
 from tilde.representation.example import Example
 
 from tilde.classification.example_partitioning import ExamplePartitioner
+from tilde.representation.example import Label
 from tilde.representation.TILDE_query import TILDEQuery
 from tilde.trees.scoring import information_gain
 

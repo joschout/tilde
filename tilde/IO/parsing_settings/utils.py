@@ -2,9 +2,8 @@ from typing import List
 from typing import Optional
 from problog.logic import Term, Constant, Var
 
-from tilde.classification.classification_helper import Label
 from tilde.representation.language import TypeModeLanguage
-
+from tilde.representation.example import Label
 
 class SettingsParsingError(Exception):
     pass
@@ -63,7 +62,7 @@ class KeysPredictionGoalHandler:
         raise SettingsParsingError("predicate to predict has no argument with arg_mode '-'")
 
 
-class Settings:
+class FileSettings:
     def __init__(self):
         self.possible_labels = []  # type: List[Label]
         self.language = TypeModeLanguage(False)

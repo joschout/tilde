@@ -16,15 +16,15 @@ way in which the program traverses the search space but is more complicated.
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.IO.parsing_settings.token_parser import ClassesTokenParser, TypeTokenParser, RmodeTokenParser, \
     PredictionTokenParser
-from tilde.IO.parsing_settings.utils import Settings, SettingsParsingError
+from tilde.IO.parsing_settings.utils import FileSettings, SettingsParsingError
 
 
 class SettingParser:
     def __init__(self):
         self.first_setting_token_parser = None
-        self.settings = Settings()
+        self.settings = FileSettings()
 
-    def parse(self, file_path) -> Settings:
+    def parse(self, file_path) -> FileSettings:
         if self.first_setting_token_parser is not None:
             with open(file_path, 'r') as f:
                 for line in f:

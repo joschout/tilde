@@ -5,12 +5,12 @@ import os
 import sys
 from typing import Optional
 
-from tilde.IO.parsing_background_knowledge import parse_background_knowledge
-from tilde.IO.parsing_settings.setting_parser import ModelsSettingsParser, KeysSettingsParser, SettingsParserMapper
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
-from tilde.representation.example import InternalExampleFormat, InternalExampleFormatException
-from tilde.run.run_keys import run_keys
-from tilde.run.run_models import run_models
+from tilde.IO.parsing_background_knowledge import parse_background_knowledge
+from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
+from tilde.representation.example import InternalExampleFormat
+from tilde.run.program_phase import preprocessing_examples_models, build_tree, convert_tree_to_program, \
+    preprocessing_examples_keys
 from tilde.trees.TreeBuilder import TreeBuilderType
 
 kb_suffix = '.kb'
@@ -51,7 +51,6 @@ class ProgramSettings:
             settings.debug_parsing = True
 
         input_format = arguments.format
-        print(input_format)
         if input_format == 'k' or input_format == 'key' or input_format == 'keys':
             settings.kb_format = KnowledgeBaseFormat.KEYS
         elif input_format == 'm' or input_format == 'model' or input_format == 'models':
@@ -120,12 +119,26 @@ def run_program(settings: ProgramSettings):
         settings_file_parser = SettingsParserMapper.get_settings_parser(settings.kb_format)
         parsed_settings = settings_file_parser.parse(fname_settings)
 
-    if settings.kb_format is KnowledgeBaseFormat.MODELS:
-        run_models(fname_labeled_examples, parsed_settings, settings.internal_examples_format, settings.treebuilder_type, background_knowledge, debug_printing)
-    elif settings.kb_format is KnowledgeBaseFormat.KEYS:
-        run_keys(fname_labeled_examples, parsed_settings, settings.internal_examples_format, settings.treebuilder_type, background_knowledge, debug_printing)
-    else:
-        raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
+        if settings.kb_format is KnowledgeBaseFormat.MODELS:
+            possible_labels = parsed_settings.possible_labels
+            examples = preprocessing_examples_models(fname_labeled_examples, parsed_settings,
+                                                     settings.internal_examples_format, background_knowledge)
+            prediction_goal = None
+            index_of_label_var = None
+        elif settings.kb_format is KnowledgeBaseFormat.KEYS:
+            examples, prediction_goal, index_of_label_var, possible_labels = \
+                preprocessing_examples_keys(fname_labeled_examples, parsed_settings, settings.internal_examples_format,
+                                            background_knowledge)
+        else:
+            raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
+
+        tree = build_tree(settings.internal_examples_format, settings.treebuilder_type, parsed_settings.language,
+                          possible_labels, examples, prediction_goal=prediction_goal, background_knowledge=background_knowledge,
+                          debug_printing=debug_printing)
+
+        program = convert_tree_to_program(settings.kb_format, settings.treebuilder_type, tree, parsed_settings.language,
+                                          debug_printing=debug_printing, prediction_goal=prediction_goal,
+                                          index_of_label_var=index_of_label_var)
 
 
 def main(argv=sys.argv[1:]):
