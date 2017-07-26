@@ -1,5 +1,5 @@
 import warnings
-from typing import Iterable, List, Union, Optional
+from typing import Iterable, List, Dict, Tuple
 
 # python 3.6
 from tilde.model_validation.model_validation import ClassifierMapper, Classifier
@@ -11,12 +11,104 @@ try:
 except ImportError:
     Collection = Iterable
 
-from problog.engine import ClauseDB, DefaultEngine
 from problog.logic import Term
 from problog.program import SimpleProgram, LogicProgram
 
-from tilde.classification.classification import get_labels_single_example_models, get_labels_single_example_keys
-from tilde.representation.example import ClauseDBExample, Example, InternalExampleFormat, Label
+from tilde.representation.example import Example, InternalExampleFormat, Label
+
+
+class ClassificationStatisticsHandler:
+    def __init__(self, possible_labels: List[Label]):
+        self.confusion_matrix = {}  # type: Dict[Tuple[Term, Term], int]
+        self.possible_labels = possible_labels
+
+        self.total_nb_of_examples = 0
+        self.nb_ex_correctly_classified = 0
+        self.nb_ex_incorrectly_classified = 0
+
+    def update_statistics(self, actual_label, predicted_label):
+
+        is_correctly_classified = (actual_label == predicted_label)
+        if is_correctly_classified:
+            self.nb_ex_correctly_classified += 1
+        else:
+            self.nb_ex_incorrectly_classified += 1
+
+        self.total_nb_of_examples += 1
+
+        key = (actual_label, predicted_label)
+        old_value = self.confusion_matrix.get(key, 0)
+        new_value = old_value + 1
+        self.confusion_matrix[key] = new_value
+
+    def get_confusion_matrix_str(self) -> str:
+
+        max_label_str_len = max([len(str(label)) for label in self.possible_labels])
+
+        result = ' ' * max_label_str_len + '|'
+
+        column_sums = {}  # type: Dict[Term, int]
+
+        # === create header row + initialize sum of columns ===
+        for first_row_label in self.possible_labels:
+            column_sums[first_row_label] = 0
+
+            str_label = str(first_row_label)
+            label_str_len = len(str_label)
+            result = result + str(first_row_label) + ' ' * (max_label_str_len - label_str_len) + '|'
+        # --------------------
+        result = result + '\n'
+        # =========================
+
+        nb_of_labels = len(self.possible_labels)
+        horizontal_bar_str = '-' * ((nb_of_labels + 2) * max_label_str_len + nb_of_labels + 1)
+        result = result + horizontal_bar_str + '\n'
+
+        # == create table rows ===
+        for first_column_label in self.possible_labels:
+            # first column value of this row is a label
+            first_column_label_str = str(first_column_label)
+            first_column_label_str_len = len(first_column_label_str)
+            result = result + first_column_label_str + ' ' * (max_label_str_len - first_column_label_str_len) + '|'
+
+            # initialize sum of this row
+            row_sum = 0
+
+            # other column values of this table
+            for row_label in self.possible_labels:
+                key = (first_column_label, row_label)
+                value = self.confusion_matrix.get(key, 0)
+                value_str = str(value)
+                value_str_len = len(value_str)
+
+                # update column and row sums
+                column_sums[row_label] = column_sums.get(row_label, 0) + value
+                row_sum += value
+
+                result = result + ' ' * (max_label_str_len - value_str_len) + value_str + '|'
+            # --------------------
+            # close this row with the row sum
+            result = result + '\tactual: ' + str(row_sum) + '\n'
+        # =========================
+
+        # last row: print the column sums
+        result = result + horizontal_bar_str + '\n'
+
+        total_nb_of_examples = 0
+
+        result = result + ' ' * max_label_str_len + '|'
+        for column_label in self.possible_labels:
+            column_sum = column_sums[column_label]
+            column_sum_str = str(column_sum)
+            column_sum_str_len = len(column_sum_str)
+
+            total_nb_of_examples += column_sum
+
+            result = result + ' ' * (max_label_str_len - column_sum_str_len) + column_sum_str + '|'
+
+        result = result + '\ttotal: ' + str(self.total_nb_of_examples)
+
+        return result
 
 
 def get_models_classifier(internal_ex_format: InternalExampleFormat, model: SimpleProgram,
@@ -41,27 +133,27 @@ def get_keys_classifier(internal_ex_format: InternalExampleFormat, model: Simple
 
 
 def do_labeled_examples_get_correctly_classified(classifier: Classifier, examples: Collection[Example],
-                                                        debug_printing: bool = False):
+                                                 possible_labels: List[Label],
+                                                 debug_printing: bool = False):
     warnings.warn("Model verification only supports deterministic models")
 
     if debug_printing:
         print('\n=== CHECKING MODEL ===')
         print("Model verification only supports deterministic models")
 
-    nb_of_examples = len(examples)
-    nb_of_correcty_labeled_examples = 0
-    nb_of_incorrecty_labeled_examples = 0
+    statistics_handler = ClassificationStatisticsHandler(possible_labels)
 
     for example in examples:
-        true_label = example.label
+        actual_label = example.label
         found_labels = classifier.classify(example)
-        a_found_label = found_labels[0]
-        label_is_correct = (true_label == a_found_label)
+        a_predicted_label = found_labels[0]
 
-        if label_is_correct:
-            nb_of_correcty_labeled_examples += 1
-        else:
-            nb_of_incorrecty_labeled_examples += 1
+        statistics_handler.update_statistics(actual_label, a_predicted_label)
+    # -------------
+
+    nb_of_examples = len(examples)
+    nb_of_correcty_labeled_examples = statistics_handler.nb_ex_correctly_classified
+    nb_of_incorrecty_labeled_examples = statistics_handler.nb_ex_incorrectly_classified
 
     if debug_printing:
         print("total nb of examples: " + str(nb_of_examples))
@@ -72,7 +164,9 @@ def do_labeled_examples_get_correctly_classified(classifier: Classifier, example
         print("examples labeled incorrectly: " + str(nb_of_incorrecty_labeled_examples) + "/" + str(
             nb_of_examples) + ", " + str(
             nb_of_incorrecty_labeled_examples / nb_of_examples * 100) + "%")
-
+        print("confusion matrix:")
+        print("------------------\n")
+        print(statistics_handler.get_confusion_matrix_str())
 
 # def do_labeled_examples_get_correctly_classified_keys(labeled_examples, rules_as_program, prediction_goal: Term,
 #                                                       index_of_label_var: int, possible_labels: Iterable[str],
@@ -144,32 +238,3 @@ def do_labeled_examples_get_correctly_classified(classifier: Classifier, example
 #             nb_of_incorrecty_labeled_examples / nb_of_examples * 100) + "%")
 #
 #     return all_training_examples_labeled_correctly
-
-
-def get_example_databases(examples: Iterable[Example], background_knowledge: Optional[LogicProgram] = None,
-                          models=False) -> List[ClauseDBExample]:
-    engine = DefaultEngine()
-    engine.unknown = 1
-
-    example_dbs = []  # type: List[ClauseDBExample]
-
-    if background_knowledge is not None:
-        db = engine.prepare(background_knowledge)  # type: ClauseDB
-        for example in examples:
-            db_example = db.extend()  # type: ClauseDB
-            for statement in example:
-                db_example += statement
-            example_dbs.append(db_example)
-            if example.key is not None:
-                db_example.key = example.key
-            if models:
-                db_example.label = example.label
-    else:
-        for example in examples:
-            db_example = engine.prepare(example)  # type: ClauseDB
-            example_dbs.append(db_example)
-            if example.key is not None:
-                db_example.key = example.key
-            if models:
-                db_example.label = example.label
-    return example_dbs

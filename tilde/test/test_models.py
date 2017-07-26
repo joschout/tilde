@@ -1,7 +1,7 @@
 import unittest
 from typing import Optional, List
 
-from tilde.classification.classification_helper import get_example_databases
+from tilde.IO.parsing_examples import get_example_databases
 from problog.program import PrologFile, SimpleProgram
 from tilde.representation.example import PrologStringExample, ClauseDBExample, Label
 from tilde.representation.language import TypeModeLanguage

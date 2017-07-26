@@ -1,11 +1,12 @@
 from typing import Iterable, Optional, List
 # python 3.6
-from problog.program import PrologFile
+from problog.engine import DefaultEngine
+from problog.program import PrologFile, LogicProgram
 
 from tilde.IO.parsing_examples_keys_format import parse_examples_key_format_with_key
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
-from tilde.classification.classification_helper import get_example_databases
-from tilde.representation.example import Label, ClauseDBExample, InternalExampleFormat, InternalExampleFormatException
+from tilde.representation.example import Label, ClauseDBExample, InternalExampleFormat, InternalExampleFormatException, \
+    Example
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.representation.example import SimpleProgramExample
 from tilde.representation.example import Example
@@ -95,3 +96,31 @@ class ExampleFormatHandlerMapper:
         else:
             raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 
+
+def get_example_databases(examples: Iterable[Example], background_knowledge: Optional[LogicProgram] = None,
+                          models=False) -> List[ClauseDBExample]:
+    engine = DefaultEngine()
+    engine.unknown = 1
+
+    example_dbs = []  # type: List[ClauseDBExample]
+
+    if background_knowledge is not None:
+        db = engine.prepare(background_knowledge)  # type: ClauseDB
+        for example in examples:
+            db_example = db.extend()  # type: ClauseDB
+            for statement in example:
+                db_example += statement
+            example_dbs.append(db_example)
+            if example.key is not None:
+                db_example.key = example.key
+            if models:
+                db_example.label = example.label
+    else:
+        for example in examples:
+            db_example = engine.prepare(example)  # type: ClauseDB
+            example_dbs.append(db_example)
+            if example.key is not None:
+                db_example.key = example.key
+            if models:
+                db_example.label = example.label
+    return example_dbs

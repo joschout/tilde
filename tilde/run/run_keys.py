@@ -54,11 +54,13 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
 
     if debug_printing:
         print("UNPRUNED tree:")
+        print("--------------")
         print(tree)
 
     prune_leaf_nodes_with_same_label(tree)
     if debug_printing:
         print("PRUNED tree:")
+        print("------------")
     print(tree)
 
     tree_to_program_converter = TreeToProgramConverterMapper.get_converter(treebuilder_type, kb_format,
@@ -75,6 +77,6 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
     classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
                                      index_of_label_var, background_knowledge, debug_printing=False)
 
-    do_labeled_examples_get_correctly_classified(classifier, examples, debug_printing)
+    do_labeled_examples_get_correctly_classified(classifier, examples,possible_labels, debug_printing)
 
     return program

@@ -72,11 +72,13 @@ def build_tree(internal_ex_format: InternalExampleFormat,
 
     if debug_printing:
         print("UNPRUNED tree:")
+        print("--------------")
         print(tree)
 
     prune_leaf_nodes_with_same_label(tree)
     if debug_printing:
         print("PRUNED tree:")
+        print("-------------")
     print(tree)
 
     return tree

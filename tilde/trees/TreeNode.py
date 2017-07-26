@@ -7,7 +7,7 @@ from problog.logic import *
 #     def __init__(self, language):
 #         self.language = language
 from tilde.representation.language import TypeModeLanguage
-from tilde.representation.TILDE_query import TILDEQuery
+from tilde.representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
 
 
 def get_predicate_generator(language: TypeModeLanguage) -> Iterator[Term]:
@@ -24,6 +24,9 @@ def get_predicate_generator(language: TypeModeLanguage) -> Iterator[Term]:
 
 class LeafStrategy:
     def to_string(self, node_indentation) -> str:
+        raise NotImplementedError('abstract method')
+
+    def to_string_compact(self) -> str:
         raise NotImplementedError('abstract method')
 
     def can_classify(self) -> object:
@@ -58,7 +61,7 @@ class TreeNode:
     def is_leaf_node(self) -> bool:
         return self.left_subtree is None and self.right_subtree is None
 
-    def to_string(self, indentation='', current_node_number=0):
+    def to_string_full_query(self, indentation='', current_node_number=0):
         """
         Represents the tree as a string using some layouting
         :param indentation:
@@ -86,13 +89,67 @@ class TreeNode:
             result = node_indentation + 'INode, query: ' + str(self.query) + '\n'
 
             if self.get_left_child_node() is not None:
-                result = result + self.get_left_child_node().to_string(child_indentation, 1)
+                result = result + self.get_left_child_node().to_string_full_query(child_indentation, 1)
             if self.get_right_child_node() is not None:
-                result = result + self.get_right_child_node().to_string(child_indentation, 2)
+                result = result + self.get_right_child_node().to_string_full_query(child_indentation, 2)
+            return result
+
+    def to_string_compact(self, indentation='', current_node_number=0):
+        """
+        Represents the tree as a string using some layouting
+        :param indentation:
+        :param current_node_number:
+        :return:
+        """
+        node_indentation = indentation
+        child_indentation = indentation
+
+        if current_node_number == 0:
+            child_indentation = '\t'
+        elif current_node_number == 1:
+            node_indentation += '+--'
+            child_indentation += '|\t\t'
+        else:
+            node_indentation += '+--'
+            child_indentation += '\t\t'
+
+        if self.is_leaf_node():
+            if current_node_number == 0:
+                result = self.strategy.to_string_compact()
+            elif current_node_number == 1:
+                result = node_indentation + 'yes: ' + self.strategy.to_string_compact()
+            else:
+                result = node_indentation + 'no: ' + self.strategy.to_string_compact()
+
+            # result = self.strategy.to_string(node_indentation)
+
+            # result = node_indentation + "Leaf, class label: " + str(self.classification) + ", [" + str(
+            #     self.nb_of_examples_with_label) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
+            return result
+        else:
+            if current_node_number == 0:
+                if self.query.parent is not None and isinstance(self.query.parent, TILDEQueryHiddenLiteral):
+                    result = str(self.query.parent.literal) + '\n'
+                else:
+                    result = ""
+
+                result = result + str(self.query.get_literal()) + ' ?\n'
+
+            elif current_node_number == 1:
+                result = node_indentation + 'yes: ' + str(self.query.get_literal()) + ' ?\n'
+            else:
+                result = node_indentation + 'no: ' + str(self.query.get_literal()) + ' ?\n'
+
+            # result = node_indentation + 'INode, query: ' + str(self.query) + '\n'
+
+            if self.get_left_child_node() is not None:
+                result = result + self.get_left_child_node().to_string_compact(child_indentation, 1)
+            if self.get_right_child_node() is not None:
+                result = result + self.get_right_child_node().to_string_compact(child_indentation, 2)
             return result
 
     def __str__(self):
-        return self.to_string()
+        return self.to_string_compact()
 
     def can_classify(self) -> object:
         if self.strategy is None:
@@ -119,10 +176,15 @@ class DeterministicLeafStrategy(LeafStrategy):
             self.nb_of_examples_with_label) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
         return result
 
+    def to_string_compact(self) -> str:
+        result = '[' + str(self.classification) + "] [" + str(
+         self.nb_of_examples_with_label) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
+        return result
+
     def merge(self, other: 'DeterministicLeafStrategy'):
-        if other.classification is not self.classification:
+        if other.classification != self.classification:
             raise DeterministicLeafMergeException('2 DeterministicLeafStrategy cannot be merged, one has '
-                                                  'classification:' + str(self.classification) + ", the other has "
+                                                  'classification: ' + str(self.classification) + ", the other has "
                                                                                                  "classification: " +
                                                   str(other.classification))
         self.nb_of_examples_with_label += other.nb_of_examples_with_label
@@ -143,6 +205,12 @@ class MLEDeterministicLeafStrategy(LeafStrategy):
 
     def to_string(self, node_indentation) -> str:
         result = node_indentation + "Leaf, class label frequencies: " + str(
+            self.label_frequencies) + ", class label counts" + str(
+            self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
+        return result
+
+    def to_string_compact(self) -> str:
+        result = "class label frequencies: " + str(
             self.label_frequencies) + ", class label counts" + str(
             self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
         return result

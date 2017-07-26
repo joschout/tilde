@@ -5,9 +5,7 @@ from problog.engine import DefaultEngine, ClauseDB
 from problog.logic import Term
 from problog.program import SimpleProgram, LogicProgram
 
-from tilde.classification.classification import get_labels_single_example_models
-from tilde.representation.example import Example, Label, InternalExampleFormat, InternalExampleFormatException, \
-    recursive_print
+from tilde.representation.example import Example, Label, InternalExampleFormat, InternalExampleFormatException
 # python 3.6
 from tilde.representation.query_result_label_extractor import QueryResultLabelExtractor
 
@@ -54,6 +52,7 @@ class Classifier:
     """"
     IMPORTANT: has a lot of overlap with LabelCollector
     """
+
     def __init__(self,
                  query_result_label_extractor: QueryResultLabelExtractor,
                  debug_printing: Optional[bool] = None):
@@ -79,6 +78,7 @@ class SimpleProgramClassifier(Classifier):
     KEYS:
         query_terms = [Term('query')(prediction_goal)]
     """
+
     def __init__(self, model: SimpleProgram,
                  query_facts: List[Term],
                  query_result_label_extractor: QueryResultLabelExtractor,
@@ -176,7 +176,8 @@ class ClassifierMapper:
         if internal_ex_format is InternalExampleFormat.CLAUSEDB:
             return ClauseDBClassifier(model, query_facts, query_result_label_extractor, debug_printing)
         elif internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:
-            return SimpleProgramClassifier(model, query_facts, query_result_label_extractor, background_knowledge, debug_printing)
+            return SimpleProgramClassifier(model, query_facts, query_result_label_extractor,
+                                           background_knowledge, debug_printing)
         else:
             raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported, "
                                                  "got: " + str(internal_ex_format))

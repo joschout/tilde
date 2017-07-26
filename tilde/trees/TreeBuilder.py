@@ -89,14 +89,14 @@ class TreeBuilder:
                                    tree_node.left_subtree,
                                    recursion_level_of_node)
         if self.DEBUG_PRINTING:
-            print(self.tree_root.to_string())
+            print(str(self.tree_root))
 
         # right child node
         tree_node.right_subtree = TreeNode()
         self._build_tree_recursive(score_info.examples_not_satisfying_best_query, parent_query, tree_node.right_subtree,
                                    recursion_level_of_node)
         if self.DEBUG_PRINTING:
-            print(self.tree_root.to_string())
+            print(str(self.tree_root))
 
     def _score_queries(self, refined_queries: Iterable[TILDEQuery], examples: Set[Example]) -> QueryScoreInfo:
         # computing which query provides the optimal split

@@ -39,7 +39,7 @@ tree_builder = ProbabilisticTreeBuilder(language, possible_targets, SimpleProgra
 tree_builder.debug_printing(True)
 tree_builder.build_tree(examples)
 tree = tree_builder.get_tree()
-print(tree.to_string())
+print(str(tree))
 
 program = convert_tree_to_simple_program(tree, language, debug_printing=True)
 

@@ -66,7 +66,7 @@ def convert_tree_to_simple_program(tree_root: TreeNode, language: TypeModeLangua
     if debug_printing:
         print('\n=== START conversion of tree to program ===')
         print('tree to be converted:')
-        print(tree_root.to_string())
+        print(str(tree_root))
     predicate_generator = get_predicate_generator(language)
     program = SimpleProgram()
     decision_tree_to_simple_program2(tree_root, program, predicate_generator, debug_printing=debug_printing)
@@ -93,7 +93,7 @@ class TreeToProgramConverter:
         if self.debug_printing:
             print('\n=== START conversion of tree to program ===')
             print('tree to be converted:')
-            print(tree_root.to_string())
+            print(str(tree_root))
         self.predicate_generator = get_predicate_generator(language)
         self.program = SimpleProgram()
         self._decision_tree_to_simple_program(tree_root)

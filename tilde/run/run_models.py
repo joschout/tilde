@@ -67,5 +67,5 @@ def run_models(fname_labeled_examples: str, settings: FileSettings, internal_ex_
 
     # TODO: THIS CAN GIVE ERRORS WHEN USING MLE
 
-    do_labeled_examples_get_correctly_classified(classifier, examples, debug_printing)
+    do_labeled_examples_get_correctly_classified(classifier, examples, possible_labels, debug_printing)
     return program

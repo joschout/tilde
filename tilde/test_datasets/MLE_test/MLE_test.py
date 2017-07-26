@@ -48,7 +48,7 @@ def run_keys_simpleprogram_MLE(fname_labeled_examples: str, fname_settings: str,
     tree_builder.build_tree(examples, prediction_goal)
 
     tree = tree_builder.get_tree()
-    print(tree.to_string())
+    print(str(tree))
 
     tree_to_program_converter = MLETreeToProgramConverter(KnowledgeBaseFormat.KEYS, debug_printing=True, prediction_goal=prediction_goal, index = index_of_label_var)
     program = tree_to_program_converter.convert_tree_to_simple_program(tree, language)
