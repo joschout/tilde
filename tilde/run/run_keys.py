@@ -23,7 +23,9 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
              treebuilder_type: TreeBuilderType,
              background_knowledge: Optional[PrologFile] = None,
              debug_printing=False,
-             kb_format=KnowledgeBaseFormat.KEYS) -> SimpleProgram:
+             kb_format=KnowledgeBaseFormat.KEYS,
+             stop_criterion_handler: Optional=StopCriterionMinimalCoverage()
+             ) -> SimpleProgram:
     language = settings.language  # type: TypeModeLanguage
 
     prediction_goal_handler = settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler
@@ -46,7 +48,7 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
     example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, background_knowledge)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, possible_labels,
-                                                          example_partitioner, StopCriterionMinimalCoverage())
+                                                          example_partitioner, stop_criterion_handler)
 
     tree_builder.debug_printing(debug_printing)
     tree_builder.build_tree(examples, prediction_goal)
@@ -56,12 +58,22 @@ def run_keys(fname_labeled_examples: str, settings: FileSettings, internal_ex_fo
         print("UNPRUNED tree:")
         print("--------------")
         print(tree)
+        nb_of_nodes = tree.get_nb_of_nodes()
+        nb_inner_nodes = tree.get_nb_of_inner_nodes()
+        print("nb of nodes in unpruned tree: " + str(nb_of_nodes))
+        print("\tinner nodes: " + str(nb_inner_nodes))
+        print("\tleaf nodes: " + str(nb_of_nodes - nb_inner_nodes))
 
     prune_leaf_nodes_with_same_label(tree)
     if debug_printing:
         print("PRUNED tree:")
         print("------------")
     print(tree)
+    nb_of_nodes = tree.get_nb_of_nodes()
+    nb_inner_nodes = tree.get_nb_of_inner_nodes()
+    print("nb of nodes in unpruned tree: " + str(nb_of_nodes))
+    print("\tinner nodes: " + str(nb_inner_nodes))
+    print("\tleaf nodes: " + str(nb_of_nodes - nb_inner_nodes))
 
     tree_to_program_converter = TreeToProgramConverterMapper.get_converter(treebuilder_type, kb_format,
                                                                            debug_printing=debug_printing,

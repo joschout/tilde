@@ -151,6 +151,35 @@ class TreeNode:
     def __str__(self):
         return self.to_string_compact()
 
+    def get_nb_of_nodes(self) -> int:
+        return TreeNode._count_nb_of_nodes(self)
+
+    @staticmethod
+    def _count_nb_of_nodes(node:Optional['TreeNode'] = None) -> int:
+
+        if node is None:
+            return 0
+        else:
+            count = 1  # count the node itself
+            count += TreeNode._count_nb_of_nodes(node.left_subtree)
+            count += TreeNode._count_nb_of_nodes(node.right_subtree)
+
+            return count
+
+    def get_nb_of_inner_nodes(self):
+        return TreeNode._count_nb_of_inner_nodes(self)
+
+    @staticmethod
+    def _count_nb_of_inner_nodes(node:Optional['TreeNode'] = None) -> int:
+
+        if node.is_leaf_node():
+            return 0
+        else:
+            count = 1
+            count += TreeNode._count_nb_of_inner_nodes(node.left_subtree)
+            count += TreeNode._count_nb_of_inner_nodes(node.right_subtree)
+            return count
+
     def can_classify(self) -> object:
         if self.strategy is None:
             raise AttributeError('TreeNode has no Strategy')

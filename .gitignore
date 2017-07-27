@@ -181,3 +181,4 @@ ENV/
 .idea/dictionaries/Jonas.xml
 /data
 .idea/TILDE.iml
+tilde/fold/data

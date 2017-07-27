@@ -10,23 +10,25 @@ from tilde.representation.example import Example, InternalExampleFormat
 from tilde.run.program_phase import preprocessing_examples_keys, build_tree, convert_tree_to_program
 from tilde.trees.TreeBuilder import TreeBuilderType
 
-dir_logic_files = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ecml06 - met ace bestanden\\bongard4\\results\\t-0-0-0\\'
-fname_prefix_logic = 'bongard'
 
-fname_examples = dir_logic_files + fname_prefix_logic + kb_suffix
-fname_settings = dir_logic_files + fname_prefix_logic + s_suffix
-fname_background = dir_logic_files + fname_prefix_logic + bg_suffix
+# dir_logic_files = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ecml06 - met ace bestanden\\bongard4\\results\\t-0-0-0\\'
+# fname_prefix_logic = 'bongard'
+# 
+# fname_examples = dir_logic_files + fname_prefix_logic + kb_suffix
+# fname_settings = dir_logic_files + fname_prefix_logic + s_suffix
+# fname_background = dir_logic_files + fname_prefix_logic + bg_suffix
+# 
+# dir_fold_files = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ecml06 - met ace bestanden\\bongard4\\foil\\folds\\'
+# fname_prefix_fold = 'test'
+# fold_start_index = 0
+# nb_folds = 10
+# fold_suffix = '.txt'
+# 
+# dir_output_files = 'D:\\KUL\\KUL MAI\\Masterproef\\TILDE\\tilde\\fold\\data\\'
 
-dir_fold_files = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ecml06 - met ace bestanden\\bongard4\\foil\\folds\\'
-fname_prefix_fold = 'test'
-fold_start_index = 0
-nb_folds = 10
-fold_suffix = '.txt'
 
-dir_output_files = 'D:\\KUL\\KUL MAI\\Masterproef\\TILDE\\tilde\\fold\\data\\'
-
-
-def get_fold_info_filenames() -> List[str]:
+def get_fold_info_filenames(fold_start_index: int, nb_folds: int, dir_fold_files: str, fname_prefix_fold: str,
+                            fold_suffix: str) -> List[str]:
     fnames = []
     for i in range(fold_start_index, fold_start_index + nb_folds):
         fname = dir_fold_files + fname_prefix_fold + str(i) + fold_suffix
@@ -34,37 +36,19 @@ def get_fold_info_filenames() -> List[str]:
     return fnames
 
 
-# def learn_model(training_examples):
-#     pass
-#
-#
-# def evaluate_model(test_examples):
-#     pass
-
-
-def main_cross_validation():
-    # list_of_files = os.listdir(os.getcwd())
-    #
-    # prefixed_fnames = [fname for fname in list_of_files if fname.startswith(fprefix)]
-    #
-    #
-    # if(nb_folds) <= 1;
-    #     raise Exception("more than 1 fold file is needed")
-    #
-    # fname_labeled_examples = settings.filename_prefix + kb_suffix
-    # fname_settings = settings.filename_prefix + s_suffix
-    #
-    # # BACKGROUND KNOWLEDGE
-    # if settings.use_bg:
-    #     fname_background_knowledge = settings.filename_prefix + bg_suffix
-    #     background_knowledge = parse_background_knowledge(fname_background_knowledge)
-    # else:
-    #     background_knowledge = None
-    #
-    # debug_printing = settings.debug_parsing
-
-    debug_printing = True
-
+def main_cross_validation(fname_examples: str,
+                          fname_settings: str,
+                          fname_background: str,
+                          dir_fold_files: str,
+                          fname_prefix_fold: str,
+                          fold_start_index: int,
+                          nb_folds: int,
+                          fold_suffix: str,
+                          dir_output_files: str,
+                          debug_printing_tree_building=False,
+                          debug_printing_program_conversion=False,
+                          debug_printing_get_classifier=False,
+                          debug_printing_classification=True, ):
     settings_file_parser = SettingsParserMapper.get_settings_parser(KnowledgeBaseFormat.KEYS)
     parsed_settings = settings_file_parser.parse(fname_settings)
 
@@ -85,7 +69,8 @@ def main_cross_validation():
     print('\tpossible labels: ' + str(possible_labels))
     print('=== end preprocessing examples ===\n')
 
-    fold_file_names = get_fold_info_filenames()
+    fold_file_names = get_fold_info_filenames(fold_start_index, nb_folds, dir_fold_files, fname_prefix_fold,
+                                              fold_suffix)
 
     # read in all the keysets
     key_sets = []  # type: List[Set[Example]]
@@ -113,44 +98,44 @@ def main_cross_validation():
         tree = build_tree(internal_ex_format, treebuilder_type, parsed_settings.language,
                           possible_labels, training_examples, prediction_goal=prediction_goal,
                           background_knowledge=background_knowledge,
-                          debug_printing=debug_printing)
+                          debug_printing=debug_printing_tree_building)
 
         # write out tree
         tree_fname = dir_output_files + fname_prefix_fold + '_fold' + str(fold_index) + ".tree"
-        print('--- writing out tree to: ' + tree_fname)
+        print('\t--- writing out tree to: ' + tree_fname)
         with open(tree_fname, 'w') as f:
             f.write(str(tree))
 
-        print('=== end building tree for fold ' + str(fold_index + 1))
+        print('\t=== end building tree for fold ' + str(fold_index + 1))
 
-        print('=== start converting tree to program for fold ' + str(fold_index + 1))
+        print('\t=== start converting tree to program for fold ' + str(fold_index + 1))
         program = convert_tree_to_program(kb_format, treebuilder_type, tree, parsed_settings.language,
-                                          debug_printing=debug_printing, prediction_goal=prediction_goal,
+                                          debug_printing=debug_printing_program_conversion,
+                                          prediction_goal=prediction_goal,
                                           index_of_label_var=index_of_label_var)
         program_fname = dir_output_files + fname_prefix_fold + '_fold' + str(fold_index) + ".program"
-        print('--- writing out program to: ' + program_fname)
+        print('\t--- writing out program to: ' + program_fname)
         with open(program_fname, 'w') as f:
             for program_statement in program:
                 f.write(str(program_statement) + '.\n')
 
-        print('=== end converting tree to program for fold ' + str(fold_index + 1))
+        print('\t=== end converting tree to program for fold ' + str(fold_index + 1))
 
-        print('=== start classifying test set' + str(fold_index + 1))
+        print('\t=== start classifying test set' + str(fold_index + 1))
         # EVALUATE MODEL using test set
         classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
-                                         index_of_label_var, background_knowledge, debug_printing=False)
+                                         index_of_label_var, background_knowledge,
+                                         debug_printing=debug_printing_get_classifier)
 
-        do_labeled_examples_get_correctly_classified(classifier, test_examples, debug_printing)
-        print('=== end classifying test set' + str(fold_index + 1))
+        statistics_handler = do_labeled_examples_get_correctly_classified(classifier, test_examples, possible_labels,
+                                                                          debug_printing_classification)
 
-        #
-        # # train using training set
-        # learn_model(training_examples)
-        #
-        # # evaluate tree using test set\
-        # evaluate_model(test_examples)
+        statistics_fname = dir_output_files + fname_prefix_fold + '_fold' + str(fold_index) + ".statistics"
+        statistics_handler.write_out_statistics_to_file(statistics_fname)
 
-        print('=== end FOLD ' + str(fold_index + 1) + ' of ' + str(nb_folds) + '\n')
+        print('\t=== end classifying test set' + str(fold_index + 1))
+
+        print('\t=== end FOLD ' + str(fold_index + 1) + ' of ' + str(nb_folds) + '\n')
 
     print('\n=======================================')
     print('=== FINALLY, learn tree on all examples')
@@ -163,7 +148,7 @@ def main_cross_validation():
     tree = build_tree(internal_ex_format, treebuilder_type, parsed_settings.language,
                       possible_labels, examples, prediction_goal=prediction_goal,
                       background_knowledge=background_knowledge,
-                      debug_printing=debug_printing)
+                      debug_printing=debug_printing_tree_building)
 
     # write out tree
     tree_fname = dir_output_files + fname_prefix_fold + ".tree"
@@ -175,7 +160,7 @@ def main_cross_validation():
 
     print('=== start converting tree to program for ALL examples')
     program = convert_tree_to_program(kb_format, treebuilder_type, tree, parsed_settings.language,
-                                      debug_printing=debug_printing, prediction_goal=prediction_goal,
+                                      debug_printing=debug_printing_program_conversion, prediction_goal=prediction_goal,
                                       index_of_label_var=index_of_label_var)
     program_fname = dir_output_files + fname_prefix_fold + ".program"
     print('--- writing out program to: ' + program_fname)

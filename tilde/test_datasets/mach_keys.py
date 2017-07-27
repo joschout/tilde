@@ -9,7 +9,7 @@ file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ac
 file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys\mach.bg'
 
 
-use_clausedb = True
+use_clausedb = False
 debug_printing = True
 use_mle = False
 

@@ -60,7 +60,10 @@ class ClauseDBLabelCollector(LabelCollector):
         for db_example in example_dbs:  # type: ClauseDBExample
             query_results = self.engine.query(db_example, self.predicate_to_query)
             if len(query_results) is 0:
-                raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
+                example_str = ""
+                for ex_statement in db_example:
+                    print(ex_statement)
+                raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results. Example: \n", example_str)
             for answer in query_results:
                 label = answer[self.index_of_label_var]
                 self.labels.add(label)

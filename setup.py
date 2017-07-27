@@ -9,5 +9,5 @@ setup(name='tilde',
 
           ]
 
-      }, install_requires=['problog'])
+      }, install_requires=['problog', 'scikit-learn'])
 
