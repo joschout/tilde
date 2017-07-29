@@ -3,7 +3,7 @@ from typing import Dict, List
 from tilde.IO.parsing_settings.utils import FileSettings
 from problog.engine import DefaultEngine
 from problog.program import PrologString, PrologFile
-from tilde.representation.example import Example, Probability, Label
+from tilde.representation.example import ExampleWrapper, Probability, Label
 from tilde.representation.language import TypeModeLanguage
 
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
@@ -63,7 +63,7 @@ for label in possible_targets:
     nb_of_times_predicted_probability_incorrect[label] = 0
 
 
-for nb, example in enumerate(examples):  # type: Example
+for nb, example in enumerate(examples):  # type: ExampleWrapper
     print("example number: " + str(nb + 1))
     true_example_labels = example.get_label_dict()  # type: Dict[Label, Probability]
     query_results =\

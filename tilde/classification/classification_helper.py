@@ -1,7 +1,7 @@
 import warnings
 from typing import Iterable, List
 
-from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, precision_score, recall_score
+# from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, precision_score, recall_score
 
 # python 3.6
 from tilde.classification.statistics import ClassificationStatisticsHandler
@@ -17,7 +17,7 @@ except ImportError:
 from problog.logic import Term
 from problog.program import SimpleProgram, LogicProgram
 
-from tilde.representation.example import Example, InternalExampleFormat, Label
+from tilde.representation.example import ExampleWrapper, InternalExampleFormat, Label
 
 
 def print_cm(cm, labels, hide_zeroes=False, hide_diagonal=False, hide_threshold=None):
@@ -65,7 +65,7 @@ def get_keys_classifier(internal_ex_format: InternalExampleFormat, model: Simple
     return classifier
 
 
-def do_labeled_examples_get_correctly_classified(classifier: Classifier, examples: Collection[Example],
+def do_labeled_examples_get_correctly_classified(classifier: Classifier, examples: Collection[ExampleWrapper],
                                                  possible_labels: List[Label],
                                                  debug_printing: bool = False) -> ClassificationStatisticsHandler:
     warnings.warn("Model verification only supports deterministic models")
@@ -76,14 +76,17 @@ def do_labeled_examples_get_correctly_classified(classifier: Classifier, example
 
     statistics_handler = ClassificationStatisticsHandler(possible_labels)
 
+    # classifier.debug_printing = True
+
     actual_labels = []
     predicted_labels = []
 
     for example in examples:
         actual_label = example.label
         found_labels = classifier.classify(example)
-        print(actual_label)
-        print(found_labels)
+        if len(found_labels) > 1:
+            print('actual label: ', actual_label)
+            print('found labels: ', found_labels)
 
         a_predicted_label = found_labels[0]
 

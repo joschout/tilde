@@ -25,10 +25,11 @@ from typing import List, Tuple, Pattern, Dict
 from typing import Optional, Iterable
 
 from problog.logic import Term
+from problog.program import PrologString
 
 from tilde.IO.parsing_settings.utils import ConstantBuilder
 from tilde.problog_helper.problog_helper import get_probability
-from tilde.representation.example import PrologStringExample
+from tilde.representation.example import SimpleProgramExampleWrapper
 
 begin_model_regex = r'begin\(model\((\d+)\)\)\.\n'
 end_model_regex = r'end\(model\((\d+)\)\)\.\n'
@@ -96,7 +97,7 @@ Probability = float
 class ModelsExampleParser:
     def __init__(self, possible_labels: Optional[Iterable[Term]] = None):
         self.label_patterns = self._get_label_patterns(possible_labels)  # List[Tuple[Term, Pattern[str]]]
-        self.examples_found = []  # type: List[PrologStringExample]
+        self.examples_found = []  # type: List[SimpleProgramExampleWrapper]
 
         self.currently_parsing_example = False  # type: bool
         self.id_of_current_example = None  # type: Optional(str)
@@ -138,7 +139,7 @@ class ModelsExampleParser:
         if self.id_of_current_example != example_id_on_end_line:
             raise ExampleParseException("The example number in the begin and end tags do not match")
         else:
-            example = self._parse_example_string(self.prolog_string_accumulator)
+            example = self._parse_example_string(self.prolog_string_accumulator)  # type: SimpleProgramExampleWrapper
             example = self._add_example_info(example, self.labels_of_current_example, self.id_of_current_example)
 
             self.examples_found.append(example)
@@ -169,12 +170,12 @@ class ModelsExampleParser:
         return label_patterns
 
     @staticmethod
-    def _parse_example_string(prolog_string_unlabeled: str) -> PrologStringExample:
-        return PrologStringExample(prolog_string_unlabeled)
+    def _parse_example_string(prolog_string_unlabeled: str) -> SimpleProgramExampleWrapper:
+        return SimpleProgramExampleWrapper(logic_program=PrologString(prolog_string_unlabeled))
 
 
     @staticmethod
-    def _add_example_info(example: PrologStringExample, example_labels:Optional[Dict[Term, Probability]]=None, example_id_str:Optional[str]=None)->PrologStringExample:
+    def _add_example_info(example: SimpleProgramExampleWrapper, example_labels:Optional[Dict[Term, Probability]]=None, example_id_str:Optional[str]=None)->SimpleProgramExampleWrapper:
         # if it has one or more labels, add them
         if example_labels is not None:
             if len(example_labels) == 1:
@@ -191,7 +192,7 @@ class ModelsExampleParser:
 
     @staticmethod
     def parse(file_name_labeled_examples: str, possible_labels: Optional[Iterable[Term]] = None) -> List[
-        PrologStringExample]:
+        SimpleProgramExampleWrapper]:
         example_parser = ModelsExampleParser(possible_labels)
         example_parser._parse_examples_model_format(file_name_labeled_examples)
         return example_parser.examples_found

@@ -6,7 +6,7 @@ from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
 from tilde.IO.parsing_settings.utils import ConstantBuilder
 from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
 from tilde.main import kb_suffix, s_suffix, bg_suffix
-from tilde.representation.example import Example, InternalExampleFormat
+from tilde.representation.example import InternalExampleFormat, ExampleWrapper
 from tilde.run.program_phase import preprocessing_examples_keys, build_tree, convert_tree_to_program
 from tilde.trees.TreeBuilder import TreeBuilderType
 
@@ -49,6 +49,7 @@ def main_cross_validation(fname_examples: str,
                           debug_printing_program_conversion=False,
                           debug_printing_get_classifier=False,
                           debug_printing_classification=True, ):
+
     settings_file_parser = SettingsParserMapper.get_settings_parser(KnowledgeBaseFormat.KEYS)
     parsed_settings = settings_file_parser.parse(fname_settings)
 
@@ -73,7 +74,7 @@ def main_cross_validation(fname_examples: str,
                                               fold_suffix)
 
     # read in all the keysets
-    key_sets = []  # type: List[Set[Example]]
+    key_sets = []  # type: List[Set[ExampleWrapper]]
     for fname in fold_file_names:
         key_sets.append(get_keys_in_fold_file(fname))
 
@@ -171,7 +172,7 @@ def main_cross_validation(fname_examples: str,
     print('=== end converting tree to program for ALL examples')
 
 
-def filter_examples(examples: List[Example], key_set: Set[Example]):
+def filter_examples(examples: List[ExampleWrapper], key_set: Set[ExampleWrapper]):
     return [ex for ex in examples if ex.key in key_set]
 
 

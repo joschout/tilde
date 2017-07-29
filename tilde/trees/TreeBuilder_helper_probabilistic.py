@@ -1,6 +1,6 @@
 from typing import Dict, Iterable
 
-from tilde.representation.example import Probability, Example, Label
+from tilde.representation.example import Probability, Label, ExampleWrapper
 from tilde.trees import TreeNode
 
 
@@ -60,7 +60,7 @@ def print_partition_statistics_prob(examples_satisfying_best_query, examples_not
     print_set_statistics_prob(examples_not_satisfying_best_query, possible_targets, indentation)
 
 
-def create_probabilistic_leaf_node(node: TreeNode, examples: Iterable[Example], possible_targets):
+def create_probabilistic_leaf_node(node: TreeNode, examples: Iterable[ExampleWrapper], possible_targets):
     # TODO: this still uses deterministic labels
     nb_of_ex = len(examples)
 

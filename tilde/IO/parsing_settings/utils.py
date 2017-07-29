@@ -5,6 +5,7 @@ from problog.logic import Term, Constant, Var
 from tilde.representation.language import TypeModeLanguage
 from tilde.representation.example import Label
 
+
 class SettingsParsingError(Exception):
     pass
 

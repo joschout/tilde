@@ -1,4 +1,3 @@
-from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 
 from tilde.representation.example import InternalExampleFormat
@@ -10,19 +9,28 @@ file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.s'
 file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.bg'
 
-
-debug_printing = False
 use_mle = True
+
+debug_printing_example_parsing = True
+debug_printing_tree_building = False
+debug_printing_tree_pruning = False
+debug_printing_program_conversion = False
+debug_printing_get_classifier = False
+debug_printing_classification = True
 
 parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
 treebuilder_type = TreeBuilderType.DETERMINISTIC
 
-background_knowledge = parse_background_knowledge(file_name_background)
-
 internal_ex_format = InternalExampleFormat.CLAUSEDB
 
 run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type,
-         background_knowledge=background_knowledge, debug_printing=debug_printing,
-         stop_criterion_handler=StopCriterionMinimalCoverage(4))
-
+         fname_background_knowledge=file_name_background,
+         stop_criterion_handler=StopCriterionMinimalCoverage(4),
+         debug_printing_example_parsing=debug_printing_example_parsing,
+         debug_printing_tree_building=debug_printing_tree_building,
+         debug_printing_tree_pruning=debug_printing_tree_pruning,
+         debug_printing_program_conversion=debug_printing_program_conversion,
+         debug_printing_get_classifier=debug_printing_get_classifier,
+         debug_printing_classification=debug_printing_classification
+         )

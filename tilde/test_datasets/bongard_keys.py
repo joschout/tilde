@@ -7,8 +7,14 @@ file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\bongard\\keys\\bongard.s'
 
 use_clausedb = True
-debug_printing = True
 use_mle = True
+
+debug_printing_example_parsing=False
+debug_printing_tree_building = False
+debug_printing_tree_pruning = False
+debug_printing_program_conversion = False
+debug_printing_get_classifier = False
+debug_printing_classification = True
 
 parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
@@ -19,4 +25,11 @@ if use_clausedb:
 else:
     internal_ex_format = InternalExampleFormat.SIMPLEPROGRAM
 
-run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type,  debug_printing=debug_printing)
+run_keys(file_name_labeled_examples, parsed_settings, internal_ex_format, treebuilder_type,
+         debug_printing_example_parsing=debug_printing_example_parsing,
+         debug_printing_tree_building=debug_printing_tree_building,
+         debug_printing_tree_pruning=debug_printing_tree_pruning,
+         debug_printing_program_conversion=debug_printing_program_conversion,
+         debug_printing_get_classifier=debug_printing_get_classifier,
+         debug_printing_classification=debug_printing_classification
+         )

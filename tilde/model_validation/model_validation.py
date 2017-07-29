@@ -5,7 +5,8 @@ from problog.engine import DefaultEngine, ClauseDB
 from problog.logic import Term
 from problog.program import SimpleProgram, LogicProgram
 
-from tilde.representation.example import Example, Label, InternalExampleFormat, InternalExampleFormatException
+from tilde.representation.example import Label, InternalExampleFormat, InternalExampleFormatException, \
+    SimpleProgramExampleWrapper, ClauseDBExampleWrapper, ExampleWrapper
 # python 3.6
 from tilde.representation.query_result_label_extractor import QueryResultLabelExtractor
 
@@ -26,7 +27,7 @@ except ImportError:
 #     #
 #     #     self.possible_labels = possible_labels  # type: Iterable[Label]
 #
-#     def check_model(self, test_examples: Collection[Example], model: SimpleProgram, debug_printing: bool = False):
+#     def check_model(self, test_examples: Collection[ExampleWrapper], model: SimpleProgram, debug_printing: bool = False):
 #         raise NotImplementedError('Abstract method')
 #
 #
@@ -40,7 +41,7 @@ except ImportError:
 #
 #     """
 #
-#     def check_model(self, test_examples: Collection[Example], model: SimpleProgram, debug_printing: bool = False):
+#     def check_model(self, test_examples: Collection[ExampleWrapper], model: SimpleProgram, debug_printing: bool = False):
 #         for example in test_examples:
 #             true_label = example.label
 #
@@ -62,7 +63,7 @@ class Classifier:
 
         self.query_result_label_extractor = query_result_label_extractor
 
-    def classify(self, example: Example) -> List[Label]:
+    def classify(self, example: ExampleWrapper) -> List[Label]:
         raise NotImplementedError('Abstract method')
 
     def _query(self, db_to_query) -> Dict[Term, float]:
@@ -96,7 +97,7 @@ class SimpleProgramClassifier(Classifier):
         for qt in query_facts:
             self.db += qt
 
-    def classify(self, example: SimpleProgram) -> List[Label]:
+    def classify(self, example: SimpleProgramExampleWrapper) -> List[Label]:
         """"
         Classifies a single example and returns a list of its labels.
         """
@@ -137,7 +138,7 @@ class ClauseDBClassifier(Classifier):
         self.model = model  # type: SimpleProgram
         self.query_terms = query_facts
 
-    def classify(self, example: ClauseDB):
+    def classify(self, example: ClauseDBExampleWrapper):
         db_to_query = example.extend()
 
         for model_statement in self.model:

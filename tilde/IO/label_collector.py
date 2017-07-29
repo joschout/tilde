@@ -2,8 +2,9 @@ from typing import Iterable, Set
 
 from problog.engine import DefaultEngine
 
-from tilde.representation.example import SimpleProgramExample, ClauseDBExample, InternalExampleFormat, \
-    InternalExampleFormatException, Example, Label
+from tilde.representation.example import InternalExampleFormat, InternalExampleFormatException, Label, \
+    SimpleProgramExampleWrapper, ClauseDBExampleWrapper, ExampleWrapper
+from tilde.representation.example_collection import ExampleCollection
 
 
 class LabelCollector:
@@ -28,46 +29,67 @@ class LabelCollector:
     def get_labels(self) -> Set[Label]:
         return self.labels
 
-    def extract_labels(self, examples: Iterable[Example]):
+    def extract_labels(self, example_collection: ExampleCollection):
         raise NotImplementedError('Abstract method')
 
 
 # TODO: refactor: use query_result_label_extractor
+# TODO: INCORRECT: label could be defined in background knowledge
 class SimpleProgramLabelCollector(LabelCollector):
-    def extract_label(self, example: SimpleProgramExample):
-        if self.db is not None:
-            db_example = self.db.extend()
-            for statement in example:
-                db_example += statement
-        else:
-            db_example = self.engine.prepare(example)
-
-        query_results = self.engine.query(db_example, self.predicate_to_query)
-        if len(query_results) is 0:
-            raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
-        for answer in query_results:
-            label = answer[self.index_of_label_var]
+    def extract_label(self, example: SimpleProgramExampleWrapper):
+        if example.classification_term is not None:
+            label = example.classification_term.args[self.index_of_label_var]
             self.labels.add(label)
             example.label = label
+        else:
+            if self.db is not None:
+                db_example = self.db.extend()
+                for statement in example:
+                    db_example += statement
+            else:
+                db_example = self.engine.prepare(example.logic_program)
 
-    def extract_labels(self, examples: Iterable[SimpleProgramExample]):
-        for example in examples:
-            self.extract_label(example)
-
-
-class ClauseDBLabelCollector(LabelCollector):
-    def extract_labels(self, example_dbs: Iterable[ClauseDBExample]):
-        for db_example in example_dbs:  # type: ClauseDBExample
             query_results = self.engine.query(db_example, self.predicate_to_query)
             if len(query_results) is 0:
-                example_str = ""
-                for ex_statement in db_example:
-                    print(ex_statement)
-                raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results. Example: \n", example_str)
+                raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results")
             for answer in query_results:
                 label = answer[self.index_of_label_var]
                 self.labels.add(label)
-                db_example.label = label
+                example.label = label
+
+    def extract_labels(self, example_collection: ExampleCollection):
+        for example_wrapper in example_collection.get_example_wrappers_sp():
+            self.extract_label(example_wrapper)
+        example_collection.are_sp_examples_labeled = True
+
+
+class ClauseDBLabelCollector(LabelCollector):
+    def extract_labels(self, example_collection: ExampleCollection):
+        example_wrappers_sp = example_collection.get_example_wrappers_sp()
+        example_wrappers_clausedb = example_collection.get_example_wrappers_clausedb()
+
+        for ex_index, clause_db_ex in enumerate(example_wrappers_clausedb):  # type: Tuple[int, ClauseDBExampleWrapper]
+            if clause_db_ex.classification_term is not None:
+                label = clause_db_ex.classification_term.args[self.index_of_label_var]
+                self.labels.add(label)
+                clause_db_ex.label = label
+            else:
+                query_results = self.engine.query(clause_db_ex.logic_program, self.predicate_to_query)
+                if len(query_results) is 0:
+                    example_str = ""
+                    for ex_statement in clause_db_ex:
+                        print(ex_statement)
+                    raise Exception("Querying the predicate", self.predicate_to_query, "on the example gives no results. Example: \n", example_str)
+                for answer in query_results:
+                    label = answer[self.index_of_label_var]
+                    self.labels.add(label)
+                    clause_db_ex.label = label
+            # --------------------------------
+            example_wrappers_sp[ex_index].label = clause_db_ex.label
+        # ---------------------------------------------
+        # set flags
+        example_collection.are_sp_examples_labeled = True
+        example_collection.are_clausedb_examples_labeled = True
 
 
 class LabelCollectorMapper:
