@@ -50,6 +50,7 @@ def parse_examples_key_format_with_key(file_name_labeled_examples: str, predicti
     for prolog_statement in file:  # type: Term
         example_key = prolog_statement.args[0]
         if example_key not in examples_found:
+
             new_example = SimpleProgramExampleWrapper()
             new_example.key = example_key  # type: Term
 

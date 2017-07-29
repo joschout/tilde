@@ -6,11 +6,10 @@ import sys
 from typing import Optional
 
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
-from tilde.IO.parsing_background_knowledge import parse_background_knowledge
 from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
 from tilde.representation.example import InternalExampleFormat
 from tilde.run.program_phase import preprocessing_examples_models, build_tree, convert_tree_to_program, \
-    preprocessing_examples_keys
+    preprocessing_examples_keys, prune_tree
 from tilde.trees.TreeBuilder import TreeBuilderType
 
 kb_suffix = '.kb'
@@ -104,11 +103,11 @@ def run_program(settings: ProgramSettings):
     fname_settings = settings.filename_prefix + s_suffix
 
     # BACKGROUND KNOWLEDGE
-    if settings.use_bg:
-        fname_background_knowledge = settings.filename_prefix + bg_suffix
-        background_knowledge = parse_background_knowledge(fname_background_knowledge)
-    else:
-        background_knowledge = None
+
+    fname_background_knowledge = settings.filename_prefix + bg_suffix
+    #     background_knowledge = parse_background_knowledge(fname_background_knowledge)
+    # else:
+    #     background_knowledge = None
 
     debug_printing = settings.debug_parsing
 
@@ -121,20 +120,25 @@ def run_program(settings: ProgramSettings):
 
         if settings.kb_format is KnowledgeBaseFormat.MODELS:
             possible_labels = parsed_settings.possible_labels
-            examples = preprocessing_examples_models(fname_labeled_examples, parsed_settings,
-                                                     settings.internal_examples_format, background_knowledge)
+            training_examples_collection, background_knowledge_wrapper \
+                = preprocessing_examples_models(fname_labeled_examples, parsed_settings,
+                                                settings.internal_examples_format, fname_background_knowledge)
             prediction_goal = None
             index_of_label_var = None
         elif settings.kb_format is KnowledgeBaseFormat.KEYS:
-            examples, prediction_goal, index_of_label_var, possible_labels = \
+            training_examples_collection, prediction_goal, index_of_label_var, possible_labels, background_knowledge_wrapper = \
                 preprocessing_examples_keys(fname_labeled_examples, parsed_settings, settings.internal_examples_format,
-                                            background_knowledge)
+                                            fname_background_knowledge)
         else:
             raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 
+        full_background_knowledge_sp = background_knowledge_wrapper.get_full_background_knowledge_simple_program()
         tree = build_tree(settings.internal_examples_format, settings.treebuilder_type, parsed_settings.language,
-                          possible_labels, examples, prediction_goal=prediction_goal, background_knowledge=background_knowledge,
-                          debug_printing=debug_printing)
+                          possible_labels, training_examples_collection, prediction_goal=prediction_goal,
+                          full_background_knowledge_sp=full_background_knowledge_sp,
+                          debug_printing_tree_building=debug_printing)
+
+        tree = prune_tree(tree)
 
         program = convert_tree_to_program(settings.kb_format, settings.treebuilder_type, tree, parsed_settings.language,
                                           debug_printing=debug_printing, prediction_goal=prediction_goal,

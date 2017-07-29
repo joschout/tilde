@@ -171,7 +171,9 @@ class ModelsExampleParser:
 
     @staticmethod
     def _parse_example_string(prolog_string_unlabeled: str) -> SimpleProgramExampleWrapper:
-        return SimpleProgramExampleWrapper(logic_program=PrologString(prolog_string_unlabeled))
+        prolog_string_example = PrologString(prolog_string_unlabeled)
+        wrapper = SimpleProgramExampleWrapper(logic_program=prolog_string_example)
+        return wrapper
 
 
     @staticmethod

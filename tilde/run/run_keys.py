@@ -11,7 +11,7 @@ from tilde.IO.parsing_settings.utils import FileSettings, KeysPredictionGoalHand
 from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
 from tilde.classification.example_partitioning import PartitionerBuilder
 from tilde.representation.background_knowledge import BackgroundKnowledgeWrapper
-from tilde.representation.example import InternalExampleFormat, Label, ExampleWrapper, ClauseDBExampleWrapper, \
+from tilde.representation.example import InternalExampleFormat, Label, ClauseDBExampleWrapper, \
     SimpleProgramExampleWrapper
 from tilde.representation.example_collection import ExampleCollection
 from tilde.representation.language import TypeModeLanguage
@@ -117,7 +117,6 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
         print(str(statement) + ".")
 
     # =================================================================================================================
-
     # model verification
     stripped_background_knowledge = background_knowledge_wrapper.get_stripped_background_knowledge()  # type: Optional[SimpleProgram]
     print('\nbackground knowledge used in classification:\n')
@@ -129,7 +128,7 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
     stripped_examples_simple_program = training_examples_collection.get_labeled_example_wrappers_sp()  # type: List[SimpleProgramExampleWrapper]
     test_examples = stripped_examples_simple_program
 
-    if internal_ex_format.CLAUSEDB:
+    if internal_ex_format == InternalExampleFormat.CLAUSEDB:
         stripped_examples_clausedb = ClauseDBExampleWrapper.get_clause_db_examples(stripped_examples_simple_program,
                                                                                    background_knowledge=stripped_background_knowledge)
         test_examples = stripped_examples_clausedb
