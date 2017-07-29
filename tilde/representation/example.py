@@ -57,7 +57,7 @@ class ExampleWrapper:
                  classification_term: Optional[Term] = None):
         self.label = label  # type: Optional[Union[Term, Dict[Term, Probability]]]
         self.key = key
-        self.logic_program = logic_program  # type: Optional[LogicProgram]
+        self.logic_program = logic_program  # type: Optional[Union[PrologString,LogicProgram]]
         self.classification_term = classification_term  # type: Term
 
     def get_label(self) -> Optional[Term]:
@@ -96,8 +96,11 @@ class ExampleWrapper:
 
 
 class SimpleProgramExampleWrapper(ExampleWrapper):
-    def __init__(self, label=None, key: Optional = None, logic_program: Optional[LogicProgram] = None):
-        super().__init__(label=label, key=key, logic_program=SimpleProgram())
+    def __init__(self, label=None, key: Optional = None, logic_program: LogicProgram = None):
+        if logic_program is None:
+            logic_program = SimpleProgram()
+
+        super().__init__(label=label, key=key, logic_program=logic_program)
 
 
 class ClauseDBExampleWrapper(ExampleWrapper):
