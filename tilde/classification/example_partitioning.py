@@ -1,4 +1,4 @@
-from typing import Iterable, Set, Optional
+from typing import Iterable, Set, Optional, Tuple
 
 import problog
 from problog.engine import DefaultEngine, ClauseDB
@@ -16,7 +16,7 @@ class ExamplePartitioner:
 
         self.to_query = Term('to_query')
 
-    def get_examples_satisfying_query(self, examples: Iterable[ExampleWrapper], query) -> Set[ExampleWrapper]:
+    def get_examples_satisfying_query(self, examples: Iterable[ExampleWrapper], query) -> Tuple[Set[ExampleWrapper], Set[ExampleWrapper]]:
         raise NotImplementedError("abstract method")
 
     # def _query(self, db_to_query: ClauseDB) -> Dict[Term, float]:
@@ -35,8 +35,10 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
         else:
             self.db = self.engine.prepare(background_knowledge)
 
-    def get_examples_satisfying_query(self, examples: Iterable[SimpleProgramExampleWrapper], query) -> Set[SimpleProgramExampleWrapper]:
+# TODO: return hier een tuple van sets -> satisfying and not satisfying
+    def get_examples_satisfying_query(self, examples: Iterable[SimpleProgramExampleWrapper], query) -> Tuple[Set[ExampleWrapper], Set[ExampleWrapper]]:
         examples_satisfying_query = set()
+        examples_not_satifying_query = set()
 
         for example in examples:  # type: SimpleProgramExampleWrapper
             db_to_query = self.db.extend()  # type: ClauseDB
@@ -51,16 +53,19 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
 
             if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(example)
+            else:
+                examples_not_satifying_query.add(example)
 
-        return examples_satisfying_query
+        return examples_satisfying_query, examples_not_satifying_query
 
 
 class ClauseDBExamplePartitioner(ExamplePartitioner):
     def __init__(self):
         super().__init__()
 
-    def get_examples_satisfying_query(self, clause_db_examples: Iterable[ClauseDBExampleWrapper], query) -> Set[ClauseDBExampleWrapper]:
+    def get_examples_satisfying_query(self, clause_db_examples: Iterable[ClauseDBExampleWrapper], query) -> Tuple[Set[ExampleWrapper], Set[ExampleWrapper]]:
         examples_satisfying_query = set()
+        examples_not_satifying_query = set()
 
         for clause_db_ex in clause_db_examples:  # type: ClauseDBExampleWrapper
             db_to_query = clause_db_ex.extend()  # type: ClauseDB
@@ -75,8 +80,10 @@ class ClauseDBExamplePartitioner(ExamplePartitioner):
 
             if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(clause_db_ex)
+            else:
+                examples_not_satifying_query.add(clause_db_ex)
 
-        return examples_satisfying_query
+        return examples_satisfying_query, examples_not_satifying_query
 
 
 class PartitionerBuilder:
