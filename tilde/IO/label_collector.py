@@ -1,4 +1,4 @@
-from typing import Iterable, Set
+from typing import Iterable, Set, Tuple
 
 from problog.engine import DefaultEngine
 

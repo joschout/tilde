@@ -1,3 +1,5 @@
+from math import sqrt
+from statistics import mean, variance
 from typing import Set, List, Optional
 
 from problog.logic import Constant
@@ -7,6 +9,7 @@ from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
 from tilde.IO.parsing_settings.utils import ConstantBuilder
 from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
+from tilde.classification.classification_statistics_handler import ClassificationStatisticsHandler
 from tilde.representation.example import InternalExampleFormat, ExampleWrapper, ClauseDBExampleWrapper, \
     SimpleProgramExampleWrapper
 from tilde.run.program_phase import preprocessing_examples_keys, build_tree, convert_tree_to_program, prune_tree
@@ -52,8 +55,7 @@ def main_cross_validation(fname_examples: str,
                           debug_printing_tree_pruning=False,
                           debug_printing_program_conversion=False,
                           debug_printing_get_classifier=False,
-                          debug_printing_classification=False ):
-
+                          debug_printing_classification=False):
     settings_file_parser = SettingsParserMapper.get_settings_parser(KnowledgeBaseFormat.KEYS)
     parsed_settings = settings_file_parser.parse(fname_settings)
 
@@ -88,6 +90,8 @@ def main_cross_validation(fname_examples: str,
 
     fold_file_names = get_fold_info_filenames(fold_start_index, nb_folds, dir_fold_files, fname_prefix_fold,
                                               fold_suffix)
+
+    accuracies_folds = []
 
     # read in all the keysets
     key_sets = []  # type: List[Set[Constant]]
@@ -151,7 +155,9 @@ def main_cross_validation(fname_examples: str,
                                          debug_printing=debug_printing_get_classifier)
 
         statistics_handler = do_labeled_examples_get_correctly_classified(classifier, test_examples, possible_labels,
-                                                                          debug_printing_classification)
+                                                                          debug_printing_classification)  # type: ClassificationStatisticsHandler
+        accuracy, _ = statistics_handler.get_accuracy()
+        accuracies_folds.append(accuracy)
 
         statistics_fname = dir_output_files + fname_prefix_fold + '_fold' + str(fold_index) + ".statistics"
         statistics_handler.write_out_statistics_to_file(statistics_fname)
@@ -194,6 +200,42 @@ def main_cross_validation(fname_examples: str,
             f.write(str(program_statement) + '.\n')
 
     print('=== end converting tree to program for ALL examples')
+
+    all_examples = examples_collection_usable_for_training.get_labeled_examples()
+
+    print('\t=== start classifying total set')
+    # EVALUATE MODEL using test set
+    classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
+                                     index_of_label_var, stripped_background_knowledge,
+                                     debug_printing=debug_printing_get_classifier)
+
+    statistics_handler = do_labeled_examples_get_correctly_classified(classifier, all_examples, possible_labels,
+                                                                      debug_printing_classification)  # type: ClassificationStatisticsHandler
+    accuracy, _ = statistics_handler.get_accuracy()
+
+    statistics_fname = dir_output_files + fname_prefix_fold + ".statistics"
+    statistics_handler.write_out_statistics_to_file(statistics_fname)
+
+    mean_accuracy_of_folds = mean(accuracies_folds)
+    var_accuracy_of_folds = variance(accuracies_folds, mean_accuracy_of_folds)
+    std_accuracy_of_folds = sqrt(var_accuracy_of_folds)
+
+    with open(statistics_fname, 'a') as f:
+        f.write("list of accuracies:\n")
+        f.write("\t" + str(accuracies_folds))
+        f.write("mean accuracy: " + str(mean_accuracy_of_folds) + "\n")
+        f.write("var accuracy: " + str(var_accuracy_of_folds) + "\n")
+        f.write("std accuracy " + str(std_accuracy_of_folds) + "\n")
+        f.write("accuracy of total tree: " + str(statistics_handler.get_accuracy()) + "\n")
+
+    print("list of accuracies:")
+    print("\t" + str(accuracies_folds))
+    print("mean accuracy: " + str(mean_accuracy_of_folds))
+    print("var accuracy: " + str(var_accuracy_of_folds))
+    print("std accuracy " + str(std_accuracy_of_folds))
+    print("accuracy of total tree: " + str(statistics_handler.get_accuracy()))
+
+    print('\t=== end classifying total set')
 
 
 def filter_examples(examples: List[ExampleWrapper], key_set: Set[ExampleWrapper]):

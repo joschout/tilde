@@ -3,7 +3,7 @@ from typing import Iterable, Optional, List
 # python 3.6
 from problog.engine import DefaultEngine, ClauseDB
 from problog.logic import Term
-from problog.program import PrologFile, LogicProgram
+from problog.program import LogicProgram, SimpleProgram
 
 from tilde.IO.parsing_examples_keys_format import parse_examples_key_format_with_key
 from tilde.IO.parsing_examples_models_format import ModelsExampleParser
@@ -34,7 +34,7 @@ class ExampleBuilder:
         self.debug_printing = debug_printing
 
     def parse(self, internal_ex_format: InternalExampleFormat, fname_examples: str,
-              background_knowledge: Optional[PrologFile] = None) -> ExampleCollection:
+              background_knowledge: Optional[SimpleProgram] = None) -> ExampleCollection:
 
         if internal_ex_format is InternalExampleFormat.CLAUSEDB:
             return self._parse_ex_clausedb(fname_examples, background_knowledge)
@@ -59,7 +59,7 @@ class ExampleBuilder:
             print('end parsing kb examples into SimpleProgramExampleWrappers')
         return self.training_example_collection
 
-    def _parse_ex_clausedb(self, fname_examples: str, background_knowledge: Optional[PrologFile] = None) -> ExampleCollection:
+    def _parse_ex_clausedb(self, fname_examples: str, background_knowledge: Optional[SimpleProgram] = None) -> ExampleCollection:
         self._parse_ex_simpleprogram(fname_examples)  # type: List[SimpleProgramExampleWrapper]
 
         if self.debug_printing:

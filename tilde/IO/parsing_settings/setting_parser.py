@@ -38,6 +38,7 @@ class ModelsSettingsParser(SettingParser):
     def __init__(self):
         super().__init__()
 
+        # TODO: ACE also supports the use of the predict() predicate in the Models format!
         classes_token_parser = ClassesTokenParser()
         type_token_parser = TypeTokenParser()
         rmode_token_parser = RmodeTokenParser()

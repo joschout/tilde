@@ -39,6 +39,8 @@ class SettingTokenParser:
 
 
 class ClassesTokenParser(SettingTokenParser):
+    # TODO: In ACE, the classes setting defaults to [pos, neg]
+
     classes_regex = r'classes\(\[(.*)\]\)\.'
     classes_pattern = re.compile(classes_regex)  # type: Pattern[str]
 
@@ -53,23 +55,23 @@ class ClassesTokenParser(SettingTokenParser):
         settings.add_labels(possible_classes)
 
 
-class TypedLanguageTokenParser(SettingTokenParser):
-    typed_language_regex = r'typed_language\((\s*yes\s*|\s*no\s*)\).'
-    typed_language_pattern = re.compile(typed_language_regex)
-
-    def can_parse_pre(self, line: str) -> Optional[Match[str]]:
-        return self.typed_language_pattern.match(line)
-
-    def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
-        typed = match.group(1)
-        typed = typed.replace(' ', '')
-        if typed == 'yes':
-            settings.is_typed = True
-        elif typed == 'no':
-            settings.is_typed = False
-        else:
-            raise SettingsParsingError("invalid setting line: " + line)
-
+# TODO: support for untyped languages?
+# class TypedLanguageTokenParser(SettingTokenParser):
+#     typed_language_regex = r'typed_language\((\s*yes\s*|\s*no\s*)\).'
+#     typed_language_pattern = re.compile(typed_language_regex)
+#
+#     def can_parse_pre(self, line: str) -> Optional[Match[str]]:
+#         return self.typed_language_pattern.match(line)
+#
+#     def parse_token(self, line: str, settings: FileSettings, match: Match[str]):
+#         typed = match.group(1)
+#         typed = typed.replace(' ', '')
+#         if typed == 'yes':
+#             settings.is_typed = True
+#         elif typed == 'no':
+#             settings.is_typed = False
+#         else:
+#             raise SettingsParsingError("invalid setting line: " + line)
 
 class PredictionTokenParser(SettingTokenParser):
     predict_regex = r'predict\((.*)\)\.'
