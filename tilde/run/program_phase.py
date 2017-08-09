@@ -24,7 +24,8 @@ from tilde.trees.tree_converter import TreeToProgramConverterMapper
 def preprocessing_examples_keys(
         fname_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
         fname_background_knowledge: Optional[str] = None,
-        debug_printing_example_parsing=False) \
+        debug_printing_example_parsing=False,
+        filter_out_unlabeled_examples = False, fold_data: Optional['FoldData'] = None) \
         -> Tuple[ExampleCollection, Term, int, List[Label], BackgroundKnowledgeWrapper]:
     prediction_goal_handler = settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler
     prediction_goal = prediction_goal_handler.get_prediction_goal()  # type: Term
@@ -44,7 +45,17 @@ def preprocessing_examples_keys(
     # LABELS
     index_of_label_var = prediction_goal_handler.get_predicate_goal_index_of_label_var()  # type: int
     label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var)
-    label_collector.extract_labels(training_examples_collection)
+
+    keys_of_unlabeled_examples = label_collector.extract_labels(training_examples_collection)
+
+    nb_of_unlabeled_examples = len(keys_of_unlabeled_examples)
+    # TODO: change this back if necessary
+    if filter_out_unlabeled_examples and nb_of_unlabeled_examples > 0:
+        if fold_data is not None:
+            fold_data.total_nb_of_examples = len(training_examples_collection.example_wrappers_sp)
+        training_examples_collection = training_examples_collection.filter_examples_not_in_key_set(keys_of_unlabeled_examples)
+        print("DANGEROUS: FILTERED OUT UNLABELED EXAMPLES")
+
     possible_labels = label_collector.get_labels()  # type: Set[Label]
     possible_labels = list(possible_labels)  # type: List[Label]
 
@@ -111,11 +122,12 @@ def prune_tree(tree: TreeNode, debug_printing_tree_pruning=False) -> TreeNode:
         print("PRUNED tree:")
         print("-------------")
     print(tree)
-    nb_of_nodes = tree.get_nb_of_nodes()
-    nb_inner_nodes = tree.get_nb_of_inner_nodes()
-    print("nb of nodes in unpruned tree: " + str(nb_of_nodes))
-    print("\tinner nodes: " + str(nb_inner_nodes))
-    print("\tleaf nodes: " + str(nb_of_nodes - nb_inner_nodes))
+    if debug_printing_tree_pruning:
+        nb_of_nodes = tree.get_nb_of_nodes()
+        nb_inner_nodes = tree.get_nb_of_inner_nodes()
+        print("nb of nodes in unpruned tree: " + str(nb_of_nodes))
+        print("\tinner nodes: " + str(nb_inner_nodes))
+        print("\tleaf nodes: " + str(nb_of_nodes - nb_inner_nodes))
 
     return tree
 

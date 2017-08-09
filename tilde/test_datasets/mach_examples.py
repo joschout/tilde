@@ -9,7 +9,7 @@ file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-
 
 
 use_clausedb = True
-use_mle = False
+use_mle = True
 
 debug_printing_example_parsing = False
 debug_printing_tree_building = False

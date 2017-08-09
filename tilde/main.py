@@ -128,7 +128,7 @@ def run_program(settings: ProgramSettings):
         elif settings.kb_format is KnowledgeBaseFormat.KEYS:
             training_examples_collection, prediction_goal, index_of_label_var, possible_labels, background_knowledge_wrapper = \
                 preprocessing_examples_keys(fname_labeled_examples, parsed_settings, settings.internal_examples_format,
-                                            fname_background_knowledge)
+                                            fname_background_knowledge, filter_out_unlabeled_examples=False)
         else:
             raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 

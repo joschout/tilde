@@ -37,6 +37,7 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
              ) -> SimpleProgram:
     language = settings.language  # type: TypeModeLanguage
 
+    # TODO: unify this with models --> let models use a prediction goal predicate label()
     prediction_goal_handler = settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler
     prediction_goal = prediction_goal_handler.get_prediction_goal()  # type: Term
 
