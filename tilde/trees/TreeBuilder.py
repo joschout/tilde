@@ -22,7 +22,8 @@ from tilde.representation.example import calculate_majority_class, calculate_lab
 from tilde.trees.TreeBuilder_helper import print_partition_subset_sizes
 from tilde.trees.TreeBuilder_helper_probabilistic import print_partition_statistics_prob, \
     create_probabilistic_leaf_node
-from tilde.trees.TreeNode import TreeNode, MLEDeterministicLeafStrategy, DeterministicLeafStrategy
+from tilde.trees.TreeNode import TreeNode
+from tilde.trees.leaf_strategy import DeterministicLeafStrategy, MLEDeterministicLeafStrategy
 from tilde.trees.stop_criterion import StopCriterionHandler, StopCriterionMinimalCoverage
 
 

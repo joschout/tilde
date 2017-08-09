@@ -1,3 +1,4 @@
+from problog import get_evaluatable
 from problog.program import PrologString
 from problog.engine import DefaultEngine
 from problog.logic import Term
@@ -18,3 +19,11 @@ db = engine.prepare(p)    # This compiles the Prolog model into an internal form
 query1 = Term('heads', None)   # query for 'heads(_)'
 results = engine.query(db, query1)
 print([query1(*args) for args in results])
+
+
+for statement in p:
+    print(statement)
+
+knowledge = get_evaluatable().create_from(p)
+
+print(knowledge.evaluate())

@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from problog.logic import Var, Term
 from problog.program import SimpleProgram
 
 from tilde.IO.input_format import KnowledgeBaseFormat
@@ -37,6 +38,10 @@ def run_models(fname_examples: str, settings: FileSettings, internal_ex_format: 
 
     # LABELS
     possible_labels = settings.possible_labels  # type: List[Label]
+
+    # TODO: experimental (works, but not necessary)
+    # prediction_goal = Term('class')(Var('X'))
+    # index_of_label_var = 0
 
     print('=== START parsing background ===')
     background_knowledge_wrapper \

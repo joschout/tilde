@@ -18,7 +18,7 @@
 #         total_conj_right_node = And(conj_of_neg_left_class_ables, previous_conjunction)
 #         right_class_labels = decision_tree_to_simple_program(node.right_subtree, simple_program, total_conj_right_node)
 #         return left_class_labels + right_class_labels
-from typing import Optional, Dict
+from typing import Optional, Dict, Iterator
 
 from problog.logic import Term, And, Var, Constant, AnnotatedDisjunction
 from problog.program import SimpleProgram
@@ -29,12 +29,12 @@ from tilde.IO.input_format import KnowledgeBaseFormat
 from tilde.representation.example import Label
 from tilde.trees import TreeNode
 from tilde.trees.TreeBuilder import TreeBuilderType
-from tilde.trees.TreeNode import get_predicate_generator, MLEDeterministicLeafStrategy
+from tilde.trees.leaf_strategy import MLEDeterministicLeafStrategy
 
 
-def decision_tree_to_simple_program2(node: TreeNode, simple_program: SimpleProgram,
-                                     predicate_generator, previous_conjunction=Term('true'),
-                                     debug_printing=False):
+def decision_tree_to_simple_program(node: TreeNode, simple_program: SimpleProgram,
+                                    predicate_generator, previous_conjunction=Term('true'),
+                                    debug_printing=False):
     if node.has_both_children():
         # assign a new predicate to this node
         p = next(predicate_generator)
@@ -50,9 +50,9 @@ def decision_tree_to_simple_program2(node: TreeNode, simple_program: SimpleProgr
         simple_program += clause
 
         # recurse on left subtree
-        decision_tree_to_simple_program2(node.left_subtree, simple_program, predicate_generator, conj_left)
+        decision_tree_to_simple_program(node.left_subtree, simple_program, predicate_generator, conj_left)
         # recurse on right subtree
-        decision_tree_to_simple_program2(node.right_subtree, simple_program, predicate_generator, conj_right)
+        decision_tree_to_simple_program(node.right_subtree, simple_program, predicate_generator, conj_right)
     else:
         if node.can_classify():
             clause = (node.strategy.classification << previous_conjunction)
@@ -69,7 +69,7 @@ def convert_tree_to_simple_program(tree_root: TreeNode, language: TypeModeLangua
         print(str(tree_root))
     predicate_generator = get_predicate_generator(language)
     program = SimpleProgram()
-    decision_tree_to_simple_program2(tree_root, program, predicate_generator, debug_printing=debug_printing)
+    decision_tree_to_simple_program(tree_root, program, predicate_generator, debug_printing=debug_printing)
     if debug_printing:
         print('resulting program:')
         for statement in program:
@@ -236,3 +236,15 @@ class TreeToProgramConverterMapper:
             return NotImplementedError('No defined treebuilder choice for: ' + str(tree_builder_type))
         else:
             raise NotImplementedError('No defined treebuilder choice for: ' + str(tree_builder_type))
+
+
+def get_predicate_generator(language: TypeModeLanguage) -> Iterator[Term]:
+    count = 0  # type: int
+    while True:
+        new_name_found = False
+        while not new_name_found:
+            name = 'pred%d' % count
+            count += 1
+            if not language.does_predicate_exist(name, 1):
+                new_name_found = True
+        yield Term(name)

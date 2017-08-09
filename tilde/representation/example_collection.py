@@ -109,6 +109,11 @@ class ExampleCollection:
         raise EmptyExampleCollection("The collection contains no SimpleProgram and no ClauseDB examples")
 
     def filter_examples(self, key_set: Set[Constant]):
+        """
+        Only KEEPS the examples IN the key_set
+        :param key_set:
+        :return:
+        """
         filtered_collection = ExampleCollection()
 
         example_wrappers_sp = self.example_wrappers_sp
@@ -133,6 +138,44 @@ class ExampleCollection:
             return filtered_collection
         elif example_wrappers_clausedb is not None:
             filtered_clausedb = [ex_clausedb for ex_clausedb in example_wrappers_clausedb if ex_clausedb.key in key_set]
+
+            filtered_collection.set_example_wrappers_clausedb(filtered_clausedb)
+            return filtered_collection
+
+        return filtered_collection
+
+    # TODO: merge with function above, they only differ in boolean check
+    def filter_examples_not_in_key_set(self, key_set: Set[Constant]):
+        """
+
+        Only KEEPS the examples IN the key_set
+        :param key_set:
+        :return:
+        """
+        filtered_collection = ExampleCollection()
+
+        example_wrappers_sp = self.example_wrappers_sp
+        example_wrappers_clausedb = self.example_wrappers_clausedb
+
+        if example_wrappers_sp is not None and example_wrappers_clausedb is not None:
+            filtered_sp = []
+            filtered_clausedb = []
+
+            for ex_index, ex_sp in enumerate(example_wrappers_sp):
+                if ex_sp.key not in key_set:
+                    filtered_sp.append(ex_sp)
+                    filtered_clausedb.append(example_wrappers_clausedb[ex_index])
+            filtered_collection.set_example_wrappers_sp(filtered_sp)
+            filtered_collection.set_example_wrappers_clausedb(filtered_clausedb)
+            return filtered_collection
+
+        elif example_wrappers_sp is not None:
+            filtered_sp = [ex_sp for ex_sp in example_wrappers_sp if ex_sp.key not in key_set]
+
+            filtered_collection.set_example_wrappers_sp(filtered_sp)
+            return filtered_collection
+        elif example_wrappers_clausedb is not None:
+            filtered_clausedb = [ex_clausedb for ex_clausedb in example_wrappers_clausedb if ex_clausedb.key not in key_set]
 
             filtered_collection.set_example_wrappers_clausedb(filtered_clausedb)
             return filtered_collection

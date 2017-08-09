@@ -1,4 +1,5 @@
-from tilde.trees.TreeNode import TreeNode, DeterministicLeafStrategy
+from tilde.trees.TreeNode import TreeNode
+from tilde.trees.leaf_strategy import DeterministicLeafStrategy
 
 
 def prune_leaf_nodes_with_same_label(node: TreeNode):
