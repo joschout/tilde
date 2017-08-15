@@ -10,7 +10,7 @@ class UnlabeledExampleException(Exception):
     pass
 
 
-class EmptyExampleCollection(Exception):
+class EmptyExampleCollectionException(Exception):
     pass
 
 
@@ -24,7 +24,7 @@ class ExampleCollection:
 
     def get_example_wrappers_sp(self) -> List[SimpleProgramExampleWrapper]:
         if self.example_wrappers_sp is None:
-            raise EmptyExampleCollection("There are no SimpleProgram examples")
+            raise EmptyExampleCollectionException("There are no SimpleProgram examples")
 
         if not self.are_sp_examples_labeled:
             warnings.warn("The SimpleProgram examples are not labeled")
@@ -32,7 +32,7 @@ class ExampleCollection:
 
     def get_example_wrappers_clausedb(self) -> List[ClauseDBExampleWrapper]:
         if self.example_wrappers_clausedb is None:
-            raise EmptyExampleCollection("There are no ClauseDB examples")
+            raise EmptyExampleCollectionException("There are no ClauseDB examples")
 
         if not self.are_clausedb_examples_labeled:
             warnings.warn("The ClauseDB examples are not labeled")
@@ -40,7 +40,7 @@ class ExampleCollection:
 
     def get_labeled_example_wrappers_sp(self) -> List[SimpleProgramExampleWrapper]:
         if self.example_wrappers_sp is None:
-            raise EmptyExampleCollection("There are no SimpleProgram examples")
+            raise EmptyExampleCollectionException("There are no SimpleProgram examples")
 
         # if they are labeled:
         if self.are_sp_examples_labeled:
@@ -61,7 +61,7 @@ class ExampleCollection:
 
     def get_labeled_example_wrappers_clausedb(self) -> List[ClauseDBExampleWrapper]:
         if self.example_wrappers_clausedb is None:
-            raise EmptyExampleCollection("There are no ClauseDB examples")
+            raise EmptyExampleCollectionException("There are no ClauseDB examples")
 
         if self.are_clausedb_examples_labeled:
             return self.example_wrappers_clausedb
@@ -99,16 +99,16 @@ class ExampleCollection:
             return self.get_example_wrappers_clausedb()
         if self.example_wrappers_sp is not None:
             return self.get_example_wrappers_sp()
-        raise EmptyExampleCollection("The collection contains no SimpleProgram and no ClauseDB examples")
+        raise EmptyExampleCollectionException("The collection contains no SimpleProgram and no ClauseDB examples")
 
     def get_labeled_examples(self) -> List[ExampleWrapper]:
         if self.example_wrappers_clausedb is not None:
             return self.get_labeled_example_wrappers_clausedb()
         if self.example_wrappers_sp is not None:
             return self.get_labeled_example_wrappers_sp()
-        raise EmptyExampleCollection("The collection contains no SimpleProgram and no ClauseDB examples")
+        raise EmptyExampleCollectionException("The collection contains no SimpleProgram and no ClauseDB examples")
 
-    def filter_examples(self, key_set: Set[Constant]):
+    def filter_examples(self, key_set: Set[Constant]) -> 'ExampleCollection':
         """
         Only KEEPS the examples IN the key_set
         :param key_set:
@@ -145,7 +145,7 @@ class ExampleCollection:
         return filtered_collection
 
     # TODO: merge with function above, they only differ in boolean check
-    def filter_examples_not_in_key_set(self, key_set: Set[Constant]):
+    def filter_examples_not_in_key_set(self, key_set: Set[Constant]) -> 'ExampleCollection':
         """
 
         Only KEEPS the examples IN the key_set

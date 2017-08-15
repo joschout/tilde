@@ -72,14 +72,14 @@ class TreeNode:
         node_indentation = indentation
         child_indentation = indentation
 
-        if current_node_number == 0:
-            child_indentation = '\t'
-        elif current_node_number == 1:
+        if current_node_number == 0:  # root node
+            child_indentation = ''
+        elif current_node_number == 1:  # this node is the LEFT child node of its parent
             node_indentation += '+--'
-            child_indentation += '|\t\t'
-        else:
+            child_indentation += '|       '
+        else:  # this node is the RIGHT child node of its parent
             node_indentation += '+--'
-            child_indentation += '\t\t'
+            child_indentation += '        '
 
         if self.is_leaf_node():
             if current_node_number == 0:

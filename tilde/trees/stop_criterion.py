@@ -1,5 +1,5 @@
 class StopCriterionHandler:
-    def is_stop_criterion_reached(self, score, examples_satisfying_best_query, examples_not_satisfying_best_query) -> bool:
+    def is_stop_criterion_reached(self, score: float, examples_satisfying_best_query, examples_not_satisfying_best_query) -> bool:
         raise NotImplementedError('abstract method')
 
 

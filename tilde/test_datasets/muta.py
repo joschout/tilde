@@ -9,18 +9,17 @@ file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-
 file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.s'
 file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.bg'
 
-use_mle = True
 
 debug_printing_example_parsing = True
-debug_printing_tree_building = False
-debug_printing_tree_pruning = False
-debug_printing_program_conversion = False
-debug_printing_get_classifier = False
+debug_printing_tree_building = True
+debug_printing_tree_pruning = True
+debug_printing_program_conversion = True
+debug_printing_get_classifier = True
 debug_printing_classification = True
 
 parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
-treebuilder_type = TreeBuilderType.DETERMINISTIC
+treebuilder_type = TreeBuilderType.MLEDETERMINISTIC
 
 internal_ex_format = InternalExampleFormat.CLAUSEDB
 

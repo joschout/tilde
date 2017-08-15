@@ -1,3 +1,4 @@
+import warnings
 from typing import List, Dict, Tuple
 
 from problog.logic import Term
@@ -118,6 +119,14 @@ class ClassificationStatisticsHandler:
         return result
 
     def get_classification_report_str(self) -> str:
+        if len(self.true_labels_str) == 0:
+            warnings.warn("PROBLEM: len(self.true_labels_str) == 0:" +  str(self.true_labels_str))
+        if len(self.predicted_labels_str) == 0:
+            warnings.warn("PROBLEM: len(self.predicted_labels_str) == 0:" + str(self.predicted_labels_str))
+        if len(self.true_labels_str) != len(self.predicted_labels_str):
+            warnings.warn("PROBLEM: len(self.true_labels_str)  != len(self.predicted_labels_str):")
+            warnings.warn("self.true_labels_str: " + str(self.true_labels_str))
+            warnings.warn("self.predicted_labels_str: " + str(self.predicted_labels_str))
         classification_rep = classification_report(self.true_labels_str, self.predicted_labels_str)
         result = '--- Classification report (scikit-learn) ---\n\n'
         result += classification_rep

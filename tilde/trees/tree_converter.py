@@ -135,7 +135,7 @@ class TreeToProgramConverter:
         clause = self.get_leaf_node_clause(node, previous_conjunction)
         self.program += clause
 
-    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
+    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term) -> Term:
         raise NotImplementedError('abstract method')
 
 
@@ -154,7 +154,7 @@ class DeterministicTreeToProgramConverter(TreeToProgramConverter):
             else:
                 self.index = index
 
-    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
+    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term) -> Term:
         if self.kb_format == KnowledgeBaseFormat.MODELS:
             return node.strategy.classification << previous_conjunction
         elif self.kb_format == KnowledgeBaseFormat.KEYS:
@@ -191,7 +191,7 @@ class MLETreeToProgramConverter(DeterministicTreeToProgramConverter):
                  prediction_goal: Optional[Term] = None, index: Optional[int] = None):
         super().__init__(kb_format, debug_printing, prediction_goal=prediction_goal, index=index)
 
-    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term):
+    def get_leaf_node_clause(self, node: TreeNode, previous_conjunction: Term) -> Term:
         if self.kb_format == KnowledgeBaseFormat.MODELS:
             # TODO: TEST THIS
             strategy = node.strategy  # type: MLEDeterministicLeafStrategy

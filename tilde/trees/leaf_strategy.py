@@ -69,8 +69,10 @@ class MLEDeterministicLeafStrategy(LeafStrategy):
         return result
 
     def to_string_compact(self) -> str:
-        result = "class label frequencies: " + str(
-            self.label_frequencies) + ", class label counts" + str(
+        # result = "class label frequencies: " + str(
+        #     self.label_frequencies) + ", class label counts" + str(
+        #     self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
+        result = str(
             self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
         return result
 

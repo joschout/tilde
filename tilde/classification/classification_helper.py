@@ -4,6 +4,8 @@ from typing import Iterable, List
 # from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, precision_score, recall_score
 
 # python 3.6
+import time
+
 from tilde.classification.classification_statistics_handler import ClassificationStatisticsHandler
 from tilde.model_validation.model_validation import ClassifierMapper, Classifier
 from tilde.representation.query_result_label_extractor import ModelsQueryResultLabelExtractor, \

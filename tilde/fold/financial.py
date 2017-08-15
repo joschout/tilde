@@ -1,5 +1,7 @@
 import os
 
+import sys
+
 from tilde.fold.fold_file_parser import main_cross_validation
 from tilde.main import kb_suffix, s_suffix, bg_suffix
 
@@ -14,6 +16,7 @@ debug_printing_get_classifier = False
 debug_printing_classification = False
 
 filter_out_unlabeled_examples = False
+hide_printouts = True
 
 # --- directories ---
 droot = 'D:\\KUL\\KUL MAI\\Masterproef\\TILDE\\tilde\\fold\\data\\'
@@ -40,6 +43,11 @@ fold_suffix = '.txt'
 if not os.path.exists(doutput):
     os.makedirs(doutput)
 
+print("start financial")
+save_stdout = sys.stdout
+if hide_printouts:
+    sys.stdout = open(os.devnull, "w")
+
 main_cross_validation(fname_examples=fname_examples, fname_settings=fname_settings, fname_background=fname_background,
                       dir_fold_files=dfold, fname_prefix_fold=fname_prefix_fold, fold_start_index=fold_start_index,
                       nb_folds=nb_folds, fold_suffix=fold_suffix, dir_output_files=doutput,
@@ -48,3 +56,6 @@ main_cross_validation(fname_examples=fname_examples, fname_settings=fname_settin
                       debug_printing_program_conversion=debug_printing_program_conversion,
                       debug_printing_get_classifier=debug_printing_get_classifier,
                       debug_printing_classification=debug_printing_classification)
+if hide_printouts:
+    sys.stdout = save_stdout
+print("finished financial")
