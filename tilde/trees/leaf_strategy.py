@@ -73,7 +73,7 @@ class MLEDeterministicLeafStrategy(LeafStrategy):
         #     self.label_frequencies) + ", class label counts" + str(
         #     self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
         result = str(
-            self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + "]" + '\n'
+            self.label_absolute_counts) + "/" + str(self.nb_of_examples_in_this_node) + '\n'
         return result
 
     # def get_leaf_clause(self,  previous_conjunction: Term):
