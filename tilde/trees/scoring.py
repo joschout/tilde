@@ -112,3 +112,19 @@ def information_gain(example_list, sublist_left, sublist_right,
     ig -= len(sublist_right) / len(example_list) * entropy(sublist_right, list_of_possible_labels, probabilistic)
     return ig
 
+
+def information_gain2(example_list, sublist_left, sublist_right,
+                     list_of_possible_labels: List[Label],
+                     nb_of_examples:int,
+                     entropy_value:float) -> float:
+    """
+    Calculates the information gain of splitting a set of examples into two subsets.
+    """
+    if nb_of_examples == 0:
+        return 0
+
+    ig = entropy_value  # type: float
+
+    ig -= len(sublist_left) / len(example_list) * entropy(sublist_left, list_of_possible_labels)
+    ig -= len(sublist_right) / len(example_list) * entropy(sublist_right, list_of_possible_labels)
+    return ig

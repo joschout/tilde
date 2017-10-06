@@ -182,3 +182,4 @@ ENV/
 /data
 .idea/TILDE.iml
 tilde/fold/data
+*.cprofile

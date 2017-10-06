@@ -1,3 +1,5 @@
+# import cProfile
+
 from typing import Set, Optional, List
 
 from problog.logic import Term
@@ -78,7 +80,16 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
                                                           example_partitioner, stop_criterion_handler)
 
     tree_builder.debug_printing(debug_printing_tree_building)
+
+    # pr = cProfile.Profile()
+    # pr.enable()
+
     tree_builder.build_tree(training_examples_collection.get_labeled_examples(), prediction_goal)
+
+    # pr.disable()
+    #
+    # pr.dump_stats("build_tree.cprofile")
+
     tree = tree_builder.get_tree()  # type: TreeNode
     print('=== END tree building ===\n')
 

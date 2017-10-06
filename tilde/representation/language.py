@@ -426,7 +426,7 @@ class TypeModeLanguage(BaseLanguage):
         else:
             return True
 
-    def get_variable_types(self, *literals: Iterable[Term]) -> Dict[TypeName, List[Term]]:
+    def get_variable_types(self, *literals: Iterable[Term]) -> Dict[TypeName, Set[Term]]:
         """Get the types of all variables that occur in the given literals.
 
         :param literals: literals to extract variables from
