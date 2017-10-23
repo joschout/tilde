@@ -6,6 +6,8 @@ from typing import Iterable, List
 # python 3.6
 import time
 
+from problog.engine import GenericEngine
+
 from tilde.classification.classification_statistics_handler import ClassificationStatisticsHandler
 from tilde.model_validation.model_validation import ClassifierMapper, Classifier
 from tilde.representation.query_result_label_extractor import ModelsQueryResultLabelExtractor, \
@@ -48,22 +50,24 @@ def print_cm(cm, labels, hide_zeroes=False, hide_diagonal=False, hide_threshold=
 
 def get_models_classifier(internal_ex_format: InternalExampleFormat, model: SimpleProgram,
                           possible_labels: Iterable[Label],
-                          background_knowledge: LogicProgram, debug_printing: bool = False) -> Classifier:
+                          background_knowledge: LogicProgram, debug_printing: bool = False,
+                          engine: GenericEngine = None) -> Classifier:
     query_terms = [Term('query')(label) for label in possible_labels]
     query_result_label_extractor = ModelsQueryResultLabelExtractor()
     classifier = ClassifierMapper.get_classifier(internal_ex_format, model, query_terms, query_result_label_extractor,
-                                                 background_knowledge, debug_printing=debug_printing)
+                                                 background_knowledge, debug_printing=debug_printing, engine=engine)
     return classifier
 
 
 def get_keys_classifier(internal_ex_format: InternalExampleFormat, model: SimpleProgram,
                         prediction_goal: Term, index_of_label_arg: int,
-                        background_knowledge: LogicProgram, debug_printing: bool = False):
+                        background_knowledge: LogicProgram, debug_printing: bool = False,
+                        engine: GenericEngine = None):
     query_terms = [Term('query')(prediction_goal)]
     query_result_label_extractor = KeysQueryResultLabelExtractor()
     query_result_label_extractor.set_index_of_label_arg(index_of_label_arg)
     classifier = ClassifierMapper.get_classifier(internal_ex_format, model, query_terms, query_result_label_extractor,
-                                                 background_knowledge, debug_printing=debug_printing)
+                                                 background_knowledge, debug_printing=debug_printing, engine=engine)
     return classifier
 
 

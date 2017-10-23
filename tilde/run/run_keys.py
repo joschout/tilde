@@ -23,6 +23,7 @@ from tilde.trees.TreeBuilder import TreeBuilderBuilder, \
 from tilde.trees.pruning import prune_leaf_nodes_with_same_label
 from tilde.trees.stop_criterion import StopCriterionMinimalCoverage
 from tilde.trees.tree_converter import TreeToProgramConverterMapper
+from problog.engine import DefaultEngine, GenericEngine
 
 
 def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
@@ -35,8 +36,13 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
              debug_printing_tree_pruning=False,
              debug_printing_program_conversion=False,
              debug_printing_get_classifier=False,
-             debug_printing_classification=False
+             debug_printing_classification=False,
+             engine:GenericEngine=None
              ) -> SimpleProgram:
+    if engine is None:
+        engine = DefaultEngine()
+        engine.unknown = 1
+
     language = settings.language  # type: TypeModeLanguage
 
     # TODO: unify this with models --> let models use a prediction goal predicate label()
@@ -64,7 +70,7 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
     print('=== START collecting labels ===')
     # LABELS
     index_of_label_var = prediction_goal_handler.get_predicate_goal_index_of_label_var()  # type: int
-    label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var)
+    label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var, engine=engine)
     label_collector.extract_labels(training_examples_collection)
 
     possible_labels = label_collector.get_labels()  # type: Set[Label]
@@ -74,7 +80,7 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
     # =================================================================================================================
 
     print('=== START tree building ===')
-    example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, full_background_knowledge_sp)
+    example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, full_background_knowledge_sp, engine=engine)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, possible_labels,
                                                           example_partitioner, stop_criterion_handler)
@@ -156,7 +162,7 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
     #                       IF DOES:
     classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
                                      index_of_label_var, stripped_background_knowledge,
-                                     debug_printing=debug_printing_get_classifier)
+                                     debug_printing=debug_printing_get_classifier, engine=engine)
     do_labeled_examples_get_correctly_classified(classifier, test_examples, possible_labels,
                                                  debug_printing_classification)
 

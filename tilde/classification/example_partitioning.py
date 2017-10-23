@@ -1,7 +1,7 @@
 from typing import Iterable, Set, Optional, Tuple
 
 import problog
-from problog.engine import DefaultEngine, ClauseDB
+from problog.engine import DefaultEngine, ClauseDB, GenericEngine
 from problog.program import SimpleProgram, LogicProgram
 from problog.program import Term
 
@@ -10,10 +10,12 @@ from tilde.representation.example import InternalExampleFormat, InternalExampleF
 
 
 class ExamplePartitioner:
-    def __init__(self):
-        self.engine = DefaultEngine()
-        self.engine.unknown = 1
-
+    def __init__(self, engine: GenericEngine=None):
+        if engine is None:
+            self.engine = DefaultEngine()
+            self.engine.unknown = 1
+        else:
+            self.engine = engine
         self.to_query = Term('to_query')
 
     def get_examples_satisfying_query(self, examples: Iterable[ExampleWrapper], query) -> Tuple[Set[ExampleWrapper], Set[ExampleWrapper]]:
@@ -28,8 +30,8 @@ class ExamplePartitioner:
 
 
 class SimpleProgramExamplePartitioner(ExamplePartitioner):
-    def __init__(self, background_knowledge: Optional[LogicProgram]=None):
-        super().__init__()
+    def __init__(self, background_knowledge: Optional[LogicProgram]=None, engine:GenericEngine = None):
+        super().__init__(engine=engine)
         if background_knowledge is None:
             self.db = self.engine.prepare(SimpleProgram())
         else:
@@ -60,8 +62,8 @@ class SimpleProgramExamplePartitioner(ExamplePartitioner):
 
 
 class ClauseDBExamplePartitioner(ExamplePartitioner):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, engine:GenericEngine=None):
+        super().__init__(engine=engine)
 
     def get_examples_satisfying_query(self, clause_db_examples: Iterable[ClauseDBExampleWrapper], query) -> Tuple[Set[ExampleWrapper], Set[ExampleWrapper]]:
         examples_satisfying_query = set()
@@ -91,11 +93,11 @@ class PartitionerBuilder:
     # def __init__(self, internal_ex_format: InternalExampleFormat):
     #     self.internal_ex_format = internal_ex_format
 
-    def build_partitioner(self, internal_ex_format: InternalExampleFormat, background_knowledge: Optional[LogicProgram]=None) -> ExamplePartitioner:
+    def build_partitioner(self, internal_ex_format: InternalExampleFormat, background_knowledge: Optional[LogicProgram]=None, engine:GenericEngine=None) -> ExamplePartitioner:
         if internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:
-            return SimpleProgramExamplePartitioner(background_knowledge)
+            return SimpleProgramExamplePartitioner(background_knowledge, engine=engine)
         elif internal_ex_format is InternalExampleFormat.CLAUSEDB:
-            return ClauseDBExamplePartitioner()
+            return ClauseDBExamplePartitioner(engine=engine)
         else:
             raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported, got: " + str(internal_ex_format))
 

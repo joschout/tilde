@@ -1,23 +1,18 @@
+import time
 from math import sqrt
 from statistics import mean, variance
-from typing import Set, List, Optional, Tuple
+from typing import Set, List, Tuple
 
-import time
+from problog.engine import DefaultEngine, GenericEngine
 from problog.logic import Constant
-from problog.program import SimpleProgram
 
-from tilde.IO.input_format import KnowledgeBaseFormat
-from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
 from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
 from tilde.classification.classification_statistics_handler import ClassificationStatisticsHandler
 from tilde.classification.confidence_intervals import mean_confidence_interval
-from tilde.fold.fold_helper import write_out_tree, write_out_program, FoldData, get_fold_info_filenames, \
-    get_keys_in_fold_file
-from tilde.representation.example import InternalExampleFormat, ExampleWrapper, ClauseDBExampleWrapper, \
-    SimpleProgramExampleWrapper
+from tilde.fold.fold_helper import write_out_tree, write_out_program, FoldData
+from tilde.representation.example import ExampleWrapper, ClauseDBExampleWrapper
 from tilde.representation.example_collection import ExampleCollection
-from tilde.run.program_phase import preprocessing_examples_keys, build_tree, convert_tree_to_program, prune_tree
-from tilde.trees.TreeBuilder import TreeBuilderType
+from tilde.run.program_phase import build_tree, convert_tree_to_program, prune_tree
 
 
 # dir_logic_files = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ecml06 - met ace bestanden\\bongard4\\results\\t-0-0-0\\'
@@ -78,7 +73,7 @@ def do_one_fold(fold_index: int, test_key_set: Set[Constant], fd: FoldData
     tree = build_tree(fd.internal_ex_format, fd.treebuilder_type, fd.parsed_settings.language,
                       fd.possible_labels, training_example_collection, prediction_goal=fd.prediction_goal,
                       full_background_knowledge_sp=fd.full_background_knowledge_sp,
-                      debug_printing_tree_building=fd.debug_printing_tree_building)
+                      debug_printing_tree_building=fd.debug_printing_tree_building, engine=fd.engine)
 
     tree = prune_tree(tree, debug_printing_tree_pruning=fd.debug_printing_tree_pruning)
     nb_of_nodes = tree.get_nb_of_nodes()
@@ -110,7 +105,7 @@ def do_one_fold(fold_index: int, test_key_set: Set[Constant], fd: FoldData
     # EVALUATE MODEL using test set
     classifier = get_keys_classifier(fd.internal_ex_format, program, fd.prediction_goal,
                                      fd.index_of_label_var, fd.stripped_background_knowledge,
-                                     debug_printing=fd.debug_printing_get_classifier)
+                                     debug_printing=fd.debug_printing_get_classifier, engine=fd.engine)
 
     statistics_handler = do_labeled_examples_get_correctly_classified(
         classifier, test_examples, fd.possible_labels,
@@ -159,7 +154,7 @@ def do_all_examples(fd: FoldData):
                       fd.possible_labels, fd.examples_collection_usable_for_training,
                       prediction_goal=fd.prediction_goal,
                       full_background_knowledge_sp=fd.full_background_knowledge_sp,
-                      debug_printing_tree_building=fd.debug_printing_tree_building)
+                      debug_printing_tree_building=fd.debug_printing_tree_building, engine=fd.engine)
 
     tree = prune_tree(tree, debug_printing_tree_pruning=fd.debug_printing_tree_pruning)
     nb_of_nodes = tree.get_nb_of_nodes()
@@ -189,7 +184,7 @@ def do_all_examples(fd: FoldData):
     # EVALUATE MODEL using test set
     classifier = get_keys_classifier(fd.internal_ex_format, program, fd.prediction_goal,
                                      fd.index_of_label_var, fd.stripped_background_knowledge,
-                                     debug_printing=fd.debug_printing_get_classifier)
+                                     debug_printing=fd.debug_printing_get_classifier, engine=fd.engine)
 
     statistics_handler = do_labeled_examples_get_correctly_classified(classifier, all_examples, fd.possible_labels,
                                                                       fd.debug_printing_classification)  # type: ClassificationStatisticsHandler
@@ -302,6 +297,9 @@ def main_cross_validation(fname_examples: str, fname_settings: str, fname_backgr
                           debug_printing_program_conversion=False,
                           debug_printing_get_classifier=False,
                           debug_printing_classification=False):
+    engine = DefaultEngine()
+    engine.unknown = 1
+
     fd = FoldData.build_fold_data(fname_examples, fname_settings, fname_background,
                                   dir_fold_files, fname_prefix_fold, fold_start_index, nb_folds, fold_suffix,
                                   dir_output_files,
@@ -311,7 +309,8 @@ def main_cross_validation(fname_examples: str, fname_settings: str, fname_backgr
                                   debug_printing_tree_pruning,
                                   debug_printing_program_conversion,
                                   debug_printing_get_classifier,
-                                  debug_printing_classification
+                                  debug_printing_classification,
+                                  engine=engine
                                   )
 
     # take one key set as test, the others as training

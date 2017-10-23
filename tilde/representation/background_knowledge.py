@@ -49,12 +49,13 @@ class BackgroundKnowledgeWrapper:
         else:
             return self.prediction_goals_clauses
 
-    def get_full_background_knowledge_clausedb(self) -> ClauseDB:
+    def get_full_background_knowledge_clausedb(self, engine=None) -> ClauseDB:
         if self.full_background_knowledge_clausedb is not None:
             return self.full_background_knowledge_clausedb
         else:
-            engine = DefaultEngine()
-            engine.unknown = 1
+            if engine is None:
+                engine = DefaultEngine()
+                engine.unknown = 1
 
             full_bg_kw = self.get_full_background_knowledge_simple_program()
 

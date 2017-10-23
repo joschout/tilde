@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from problog.engine import GenericEngine, DefaultEngine
 from problog.logic import Var, Term
 from problog.program import SimpleProgram
 
@@ -32,8 +33,14 @@ def run_models(fname_examples: str, settings: FileSettings, internal_ex_format: 
                debug_printing_tree_pruning=False,
                debug_printing_program_conversion=False,
                debug_printing_get_classifier=False,
-               debug_printing_classification=False
+               debug_printing_classification=False,
+               engine: GenericEngine=None
                ) -> SimpleProgram:
+
+    if engine is None:
+        engine = DefaultEngine()
+        engine.unknown = 1
+
     language = settings.language  # type: TypeModeLanguage
 
     # LABELS
@@ -61,7 +68,7 @@ def run_models(fname_examples: str, settings: FileSettings, internal_ex_format: 
     # =================================================================================================================
 
     print('=== START tree building ===')
-    example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, full_background_knowledge_sp)
+    example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, full_background_knowledge_sp, engine = engine)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, possible_labels,
                                                           example_partitioner, stop_criterion_handler)
@@ -124,7 +131,7 @@ def run_models(fname_examples: str, settings: FileSettings, internal_ex_format: 
         test_examples = stripped_examples_clausedb
 
     classifier = get_models_classifier(internal_ex_format, program, possible_labels, stripped_background_knowledge,
-                                       debug_printing=debug_printing_get_classifier)
+                                       debug_printing=debug_printing_get_classifier, engine=engine)
 
     do_labeled_examples_get_correctly_classified(classifier, test_examples, possible_labels,
                                                  debug_printing_classification)

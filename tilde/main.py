@@ -5,6 +5,8 @@ import os
 import sys
 from typing import Optional
 
+from problog.engine import DefaultEngine
+
 from tilde.IO.input_format import KnowledgeBaseFormat, KnowledgeBaseFormatException
 from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
 from tilde.representation.example import InternalExampleFormat
@@ -132,11 +134,14 @@ def run_program(settings: ProgramSettings):
         else:
             raise KnowledgeBaseFormatException('Only the input formats Models and Key are supported.')
 
+        engine = DefaultEngine()
+        engine.unknown = 1
+
         full_background_knowledge_sp = background_knowledge_wrapper.get_full_background_knowledge_simple_program()
         tree = build_tree(settings.internal_examples_format, settings.treebuilder_type, parsed_settings.language,
                           possible_labels, training_examples_collection, prediction_goal=prediction_goal,
                           full_background_knowledge_sp=full_background_knowledge_sp,
-                          debug_printing_tree_building=debug_printing)
+                          debug_printing_tree_building=debug_printing, engine=engine)
 
         tree = prune_tree(tree)
 

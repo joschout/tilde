@@ -111,9 +111,11 @@ class KeysExampleBuilder(ExampleBuilder):
 @deprecated
 def get_example_databases(simple_program_examples: Iterable[SimpleProgramExampleWrapper],
                           background_knowledge: Optional[LogicProgram] = None,
-                          models=False) -> List[ClauseDBExampleWrapper]:
-    engine = DefaultEngine()
-    engine.unknown = 1
+                          models=False,
+                          engine=None) -> List[ClauseDBExampleWrapper]:
+    if engine is None:
+        engine = DefaultEngine()
+        engine.unknown = 1
 
     clausedb_examples = []  # type: List[ClauseDBExampleWrapper]
 

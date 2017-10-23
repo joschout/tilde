@@ -1,7 +1,7 @@
 from typing import Iterable, List, Optional, Dict
 
 import problog
-from problog.engine import DefaultEngine, ClauseDB
+from problog.engine import DefaultEngine, ClauseDB, GenericEngine
 from problog.logic import Term
 from problog.program import SimpleProgram, LogicProgram
 
@@ -56,9 +56,13 @@ class Classifier:
 
     def __init__(self,
                  query_result_label_extractor: QueryResultLabelExtractor,
-                 debug_printing: Optional[bool] = None):
-        self.engine = DefaultEngine()
-        self.engine.unknown = 1
+                 debug_printing: Optional[bool] = None,
+                 engine: GenericEngine=None):
+        if engine is None:
+            self.engine = DefaultEngine()
+            self.engine.unknown = 1
+        else:
+            self.engine = engine
         self.debug_printing = debug_printing
 
         self.query_result_label_extractor = query_result_label_extractor
@@ -84,8 +88,9 @@ class SimpleProgramClassifier(Classifier):
                  query_facts: List[Term],
                  query_result_label_extractor: QueryResultLabelExtractor,
                  background_knowledge: Optional[LogicProgram] = None,
-                 debug_printing: Optional[bool] = None):
-        super().__init__(query_result_label_extractor, debug_printing)
+                 debug_printing: Optional[bool] = None,
+                 engine: GenericEngine = None):
+        super().__init__(query_result_label_extractor, debug_printing, engine=engine)
 
         if background_knowledge is None:
             self.db = self.engine.prepare(model)
@@ -133,8 +138,9 @@ class ClauseDBClassifier(Classifier):
     def __init__(self, model: SimpleProgram,
                  query_facts: List[Term],
                  query_result_label_extractor: QueryResultLabelExtractor,
-                 debug_printing: Optional[bool] = None):
-        super().__init__(query_result_label_extractor, debug_printing)
+                 debug_printing: Optional[bool] = None,
+                 engine: GenericEngine = None):
+        super().__init__(query_result_label_extractor, debug_printing, engine=engine)
         self.model = model  # type: SimpleProgram
         self.query_terms = query_facts
 
@@ -172,13 +178,14 @@ class ClassifierMapper:
                        query_facts: List[Term],
                        query_result_label_extractor: QueryResultLabelExtractor,
                        background_knowledge: Optional[LogicProgram] = None,
-                       debug_printing: Optional[bool] = None
+                       debug_printing: Optional[bool] = None,
+                       engine: GenericEngine=None
                        ):
         if internal_ex_format is InternalExampleFormat.CLAUSEDB:
-            return ClauseDBClassifier(model, query_facts, query_result_label_extractor, debug_printing)
+            return ClauseDBClassifier(model, query_facts, query_result_label_extractor, debug_printing, engine=engine)
         elif internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:
             return SimpleProgramClassifier(model, query_facts, query_result_label_extractor,
-                                           background_knowledge, debug_printing)
+                                           background_knowledge, debug_printing, engine=engine)
         else:
             raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported, "
                                                  "got: " + str(internal_ex_format))

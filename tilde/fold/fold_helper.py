@@ -1,8 +1,11 @@
 from typing import TYPE_CHECKING, Optional, List, Set
 
+from problog.engine import GenericEngine
+
 from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
 from tilde.run.program_phase import preprocessing_examples_keys
 
+from problog.engine import DefaultEngine
 
 from problog.program import SimpleProgram
 from tilde.trees import TreeNode
@@ -64,7 +67,9 @@ class FoldData:
                  debug_printing_tree_pruning=False,
                  debug_printing_program_conversion=False,
                  debug_printing_get_classifier=False,
-                 debug_printing_classification=False):
+                 debug_printing_classification=False,
+                 engine: GenericEngine=None
+                 ):
 
         self.fname_prefix_fold = fname_prefix_fold
         self.nb_folds = nb_folds
@@ -77,6 +82,12 @@ class FoldData:
         self.debug_printing_program_conversion = debug_printing_program_conversion
         self.debug_printing_get_classifier = debug_printing_get_classifier
         self.debug_printing_classification = debug_printing_classification
+
+        if engine is None:
+            self.engine = DefaultEngine()
+            self.engine.unknown = 1
+        else:
+            self.engine = engine
 
     @staticmethod
     def build_fold_data(fname_examples: str,
@@ -94,7 +105,8 @@ class FoldData:
                         debug_printing_tree_pruning=False,
                         debug_printing_program_conversion=False,
                         debug_printing_get_classifier=False,
-                        debug_printing_classification=False):
+                        debug_printing_classification=False,
+                        engine: GenericEngine=None):
 
         fd = FoldData(fname_prefix_fold,
                       nb_folds,
@@ -104,7 +116,8 @@ class FoldData:
                       debug_printing_tree_pruning,
                       debug_printing_program_conversion,
                       debug_printing_get_classifier,
-                      debug_printing_classification)
+                      debug_printing_classification,
+                      engine=engine)
 
         settings_file_parser = SettingsParserMapper.get_settings_parser(KnowledgeBaseFormat.KEYS)
         fd.parsed_settings = settings_file_parser.parse(fname_settings)
