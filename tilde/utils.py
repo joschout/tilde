@@ -1,5 +1,8 @@
+import statistics
 import warnings
 import functools
+
+import time
 
 
 def deprecated(func):
@@ -16,3 +19,16 @@ def deprecated(func):
         return func(*args, **kwargs)
 
     return new_func
+
+class Timer:
+    def __init__(self, name=None):
+        self.name = name
+        self.start_time = None
+        self.end_time = None
+
+    def start(self) -> None:
+        self.start_time = time.time()
+
+    def end(self) -> float:
+        self.end_time = time.time()
+        return self.end_time

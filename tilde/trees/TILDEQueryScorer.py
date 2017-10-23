@@ -2,12 +2,12 @@ import math
 from typing import Iterable, Set, List, Optional
 
 from problog.logic import And
-from tilde.representation.example import ExampleWrapper
 
 from tilde.classification.example_partitioning import ExamplePartitioner
-from tilde.representation.example import Label
 from tilde.representation.TILDE_query import TILDEQuery
-from tilde.trees.scoring import information_gain
+from tilde.representation.example import ExampleWrapper
+from tilde.representation.example import Label
+from tilde.trees.scoring import entropy, information_gain2
 
 
 class QueryScoreInfo:
@@ -30,8 +30,11 @@ class TILDEQueryScorer:
         # Tuple[Optional[TILDEQuery], float, Optional[Set[ExampleWrapper]], Optional[Set[ExampleWrapper]]]:
         best_query = None  # type: Optional[TILDEQuery]
         score_best_query = - math.inf  # type: float
-        examples_satisfying_best_query = set()  # type: Optional[Set[ExampleWrapper]]
-        examples_not_satisfying_best_query = set()  # type: Optional[Set[ExampleWrapper]]
+        examples_satisfying_best_query = None # type: Optional[Set[ExampleWrapper]]
+        examples_not_satisfying_best_query = None  # type: Optional[Set[ExampleWrapper]]
+
+        entropy_complete_set = entropy(examples, possible_targets)
+        nb_of_examples_complete_set = len(examples)
 
         for q in refined_queries:  # type: TILDEQuery
             # compute the score of the queries
@@ -40,46 +43,15 @@ class TILDEQueryScorer:
             examples_satisfying_q, examples_not_satisfying_q = example_partitioner.get_examples_satisfying_query(
                 examples, conj_of_tilde_query)  # type: Set[ExampleWrapper]
             # examples_not_satisfying_q = examples - examples_satisfying_q  # type: Set[ExampleWrapper]
-            score = information_gain(examples, examples_satisfying_q,
-                                     examples_not_satisfying_q, possible_targets, probabilistic)
+
+            #TODO: no longer probabilistic!
+            score = information_gain2(examples_satisfying_q, examples_not_satisfying_q, possible_targets, nb_of_examples_complete_set, entropy_complete_set)
 
             if score > score_best_query:
                 best_query = q
                 score_best_query = score
                 examples_satisfying_best_query = examples_satisfying_q
                 examples_not_satisfying_best_query = examples_not_satisfying_q
-
-        return QueryScoreInfo(best_query, score_best_query, examples_satisfying_best_query,
-                              examples_not_satisfying_best_query)
-
-
-class TIlDEQueryScorerAlternative:
-    @staticmethod
-    def get_best_refined_query(refined_queries: Iterable[TILDEQuery], examples: Set[ExampleWrapper],
-                               example_partitioner: ExamplePartitioner, possible_targets: List[Label],
-                               probabilistic: Optional[bool] = False) -> QueryScoreInfo:
-        # Tuple[Optional[TILDEQuery], float, Optional[Set[ExampleWrapper]], Optional[Set[ExampleWrapper]]]:
-        best_query = None  # type: Optional[TILDEQuery]
-        score_best_query = - math.inf  # type: float
-
-
-        for q in refined_queries:  # type: TILDEQuery
-            # compute the score of the queries
-            conj_of_tilde_query = q.to_conjunction()  # type: And
-
-            examples_satisfying_q, examples_not_satisfying_q = example_partitioner.get_examples_satisfying_query(
-                examples, conj_of_tilde_query)  # type: Set[ExampleWrapper]
-            # examples_not_satisfying_q = examples - examples_satisfying_q  # type: Set[ExampleWrapper]
-            score = information_gain(examples, examples_satisfying_q,
-                                     examples_not_satisfying_q, possible_targets, probabilistic)
-
-            if score > score_best_query:
-                best_query = q
-                score_best_query = score
-
-        #TODO: change this
-        examples_satisfying_best_query = set()  # type: Optional[Set[ExampleWrapper]]
-        examples_not_satisfying_best_query = set()  # type: Optional[Set[ExampleWrapper]]
 
         return QueryScoreInfo(best_query, score_best_query, examples_satisfying_best_query,
                               examples_not_satisfying_best_query)

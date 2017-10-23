@@ -1,26 +1,42 @@
 """"
 Definitions of labeled Examples, a background knowledge and a TypeModeLanguage
 """
+from problog.engine import ClauseDB
 from problog.program import SimpleProgram
 
 from tilde.representation.language import TypeModeLanguage
-from tilde.representation.example import Example
+from tilde.representation.example import ClauseDBExampleWrapper
 
 from tilde.probeersel.mach_tests.mach_definitions_logic import *
-ex1, ex2, ex3, ex4 = Example(), Example(), Example(), Example()
 
+ex1 = ClauseDBExampleWrapper(label=fix, logic_program=ClauseDB())
 ex1 += worn(gear)
 ex1 += worn(chain)
-ex1.label = fix
 
+ex2 = ClauseDBExampleWrapper(label=sendback, logic_program=ClauseDB())
 ex2 += worn(engine)
 ex2 += worn(chain)
-ex2.label = sendback
 
+
+ex3 = ClauseDBExampleWrapper(label=sendback, logic_program=ClauseDB())
 ex3 += worn(wheel)
-ex3.label = sendback
 
-ex4.label = ok
+ex4 = ClauseDBExampleWrapper(label=ok, logic_program=ClauseDB())
+
+# ex1, ex2, ex3, ex4 = Example(), Example(), Example(), Example()
+#
+# ex1 += worn(gear)
+# ex1 += worn(chain)
+# ex1.label = fix
+#
+# ex2 += worn(engine)
+# ex2 += worn(chain)
+# ex2.label = sendback
+#
+# ex3 += worn(wheel)
+# ex3.label = sendback
+#
+# ex4.label = ok
 
 labeled_examples = [ex1, ex2, ex3, ex4]
 
