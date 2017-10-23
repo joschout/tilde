@@ -117,6 +117,25 @@ class TreeBuilder:
                                                                      score.examples_not_satisfying_best_query)
 
     def get_tree(self) -> TreeNode:
+
+        print("nb of partitioning calls:", self.example_partitioner.nb_partitions_calculated)
+        print("-----")
+        print("total structure creation duration:", self.example_partitioner.sum_structure_creation_duration)
+        print("nb of structure creation duration == 0s:", self.example_partitioner.nb_structure_creation_zero)
+        print("% structure creation duration  == 0s:", self.example_partitioner.nb_structure_creation_zero / self.example_partitioner.nb_partitions_calculated)
+        print("mean structure creation duration:", self.example_partitioner.sum_structure_creation_duration / self.example_partitioner.nb_partitions_calculated)
+        print("min structure creation duration:", self.example_partitioner.min_structure_creation_duration)
+        print("max structure creation duration:", self.example_partitioner.max_structure_creation_duration)
+        print("-----")
+        print("total evaluation duration:", self.example_partitioner.sum_evaluation_duration)
+        print("nb of times evaluation duration == 0s:", self.example_partitioner.nb_evaluation_zero)
+        print("% evaluation duration  == 0s:", self.example_partitioner.nb_evaluation_zero / self.example_partitioner.nb_partitions_calculated)
+        print("mean evaluation duration:", self.example_partitioner.sum_evaluation_duration / self.example_partitioner.nb_partitions_calculated)
+        print("min evaluation duration:", self.example_partitioner.min_evaluation_duration)
+        print("max evaluation duration:", self.example_partitioner.max_evaluation_duration)
+        print("-----")
+        print()
+
         return self.tree_root
 
 

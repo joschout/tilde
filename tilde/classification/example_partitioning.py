@@ -1,7 +1,8 @@
 from typing import Iterable, Set, Optional, Tuple
 
 import problog
-from problog.engine import DefaultEngine, ClauseDB, GenericEngine
+import time
+from problog.engine import DefaultEngine, ClauseDB, GenericEngine, math
 from problog.program import SimpleProgram, LogicProgram
 from problog.program import Term
 
@@ -17,6 +18,17 @@ class ExamplePartitioner:
         else:
             self.engine = engine
         self.to_query = Term('to_query')
+
+        self.nb_partitions_calculated = 0
+        self.sum_structure_creation_duration = 0
+        self.min_structure_creation_duration = math.inf
+        self.max_structure_creation_duration = - math.inf
+        self.nb_structure_creation_zero = 0
+
+        self.sum_evaluation_duration = 0
+        self.min_evaluation_duration = math.inf
+        self.max_evaluation_duration = - math.inf
+        self.nb_evaluation_zero = 0
 
     def get_examples_satisfying_query(self, examples: Iterable[ExampleWrapper], query) -> Tuple[Set[ExampleWrapper], Set[ExampleWrapper]]:
         raise NotImplementedError("abstract method")
@@ -77,8 +89,37 @@ class ClauseDBExamplePartitioner(ExamplePartitioner):
             # db_to_query = example_db.extend()
             db_to_query += Term('query')(self.to_query)
             db_to_query += (self.to_query << query)
-            query_result = problog.get_evaluatable().create_from(db_to_query, engine=self.engine).evaluate()
-            # query_result = self._query(db_to_query)
+
+            start_time = time.time()
+            something = problog.get_evaluatable().create_from(db_to_query, engine=self.engine)
+            mid_time = time.time()
+            query_result = something.evaluate()
+            end_time = time.time()
+
+            self.nb_partitions_calculated += 1
+            structure_creation_duration = mid_time - start_time
+            self.sum_structure_creation_duration += structure_creation_duration
+
+            if structure_creation_duration > self.max_structure_creation_duration:
+                self.max_structure_creation_duration = structure_creation_duration
+            if structure_creation_duration < self.min_structure_creation_duration:
+                self.min_structure_creation_duration = structure_creation_duration
+
+            if structure_creation_duration < 0.000001:
+                self.nb_structure_creation_zero += 1
+
+            evalutation_duration = end_time - mid_time
+
+            self.sum_evaluation_duration += evalutation_duration
+            if evalutation_duration > self.max_evaluation_duration:
+                self.max_evaluation_duration = evalutation_duration
+            if evalutation_duration < self.min_evaluation_duration:
+                self.min_evaluation_duration = evalutation_duration
+
+            if evalutation_duration < 0.000001:
+                self.nb_evaluation_zero += 1
+
+            # query_result = problog.get_evaluatable().create_from(db_to_query, engine=self.engine).evaluate()
 
             if query_result[self.to_query] > 0.5:
                 examples_satisfying_query.add(clause_db_ex)

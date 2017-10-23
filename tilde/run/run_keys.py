@@ -135,35 +135,35 @@ def run_keys(fname_examples: str, settings: FileSettings, internal_ex_format: In
         print(str(statement) + ".")
 
     # =================================================================================================================
-    # model verification
-    stripped_background_knowledge = background_knowledge_wrapper.get_stripped_background_knowledge()  # type: Optional[SimpleProgram]
-    print('\nbackground knowledge used in classification:\n')
-    if stripped_background_knowledge is not None:
-        for statement in stripped_background_knowledge:
-            print(statement)
-    print()
-
-    stripped_examples_simple_program = training_examples_collection.get_labeled_example_wrappers_sp()  # type: List[SimpleProgramExampleWrapper]
-    test_examples = stripped_examples_simple_program
-
-    if internal_ex_format == InternalExampleFormat.CLAUSEDB:
-        stripped_examples_clausedb = ClauseDBExampleWrapper.get_clause_db_examples(stripped_examples_simple_program,
-                                                                                   background_knowledge=stripped_background_knowledge)
-        test_examples = stripped_examples_clausedb
-
-    # for the KEYS case:
-    #   IF SimpleProgram:
-    #               - examples_format_handler.example_wrappers_sp: Labeled
-    #               - examples_format_handler.example_wrappers_sp_db == None
-    #   IF ClauseDB:
-    #               - examples_format_handler.example_wrappers_sp: UNLabeled
-    #               - examples_format_handler.example_wrappers_sp_db == Labeled BUT CONTAIN POSSIBLY FULL BACKGROUND KNOWLEDGE
-    #                   -> IF NOT bgkw contains prediction_clauses: reuse examples_db
-    #                       IF DOES:
-    classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
-                                     index_of_label_var, stripped_background_knowledge,
-                                     debug_printing=debug_printing_get_classifier, engine=engine)
-    do_labeled_examples_get_correctly_classified(classifier, test_examples, possible_labels,
-                                                 debug_printing_classification)
+    # # model verification
+    # stripped_background_knowledge = background_knowledge_wrapper.get_stripped_background_knowledge()  # type: Optional[SimpleProgram]
+    # print('\nbackground knowledge used in classification:\n')
+    # if stripped_background_knowledge is not None:
+    #     for statement in stripped_background_knowledge:
+    #         print(statement)
+    # print()
+    #
+    # stripped_examples_simple_program = training_examples_collection.get_labeled_example_wrappers_sp()  # type: List[SimpleProgramExampleWrapper]
+    # test_examples = stripped_examples_simple_program
+    #
+    # if internal_ex_format == InternalExampleFormat.CLAUSEDB:
+    #     stripped_examples_clausedb = ClauseDBExampleWrapper.get_clause_db_examples(stripped_examples_simple_program,
+    #                                                                                background_knowledge=stripped_background_knowledge)
+    #     test_examples = stripped_examples_clausedb
+    #
+    # # for the KEYS case:
+    # #   IF SimpleProgram:
+    # #               - examples_format_handler.example_wrappers_sp: Labeled
+    # #               - examples_format_handler.example_wrappers_sp_db == None
+    # #   IF ClauseDB:
+    # #               - examples_format_handler.example_wrappers_sp: UNLabeled
+    # #               - examples_format_handler.example_wrappers_sp_db == Labeled BUT CONTAIN POSSIBLY FULL BACKGROUND KNOWLEDGE
+    # #                   -> IF NOT bgkw contains prediction_clauses: reuse examples_db
+    # #                       IF DOES:
+    # classifier = get_keys_classifier(internal_ex_format, program, prediction_goal,
+    #                                  index_of_label_var, stripped_background_knowledge,
+    #                                  debug_printing=debug_printing_get_classifier, engine=engine)
+    # do_labeled_examples_get_correctly_classified(classifier, test_examples, possible_labels,
+    #                                              debug_printing_classification)
 
     return program

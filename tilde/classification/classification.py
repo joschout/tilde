@@ -1,6 +1,7 @@
 from typing import Iterable, List
 
 import problog
+import time
 from problog.engine import DefaultEngine, ClauseDB
 from problog.program import SimpleProgram
 from problog.program import Term
@@ -40,17 +41,30 @@ def get_labels_single_example_models(example: SimpleProgram, rules: SimpleProgra
             print('\t' + str(statement))
             # print('\n')
 
-    result_list = [eng.query(db, x) for x in possible_labels]
-    zipped = zip(result_list, possible_labels)
-    labels_ex = []
-    if debug_printing:
-        print('\nQueries on the database:')
-    for result_ex, label in zipped:
-        if result_ex == [()]:
-            labels_ex.append(label)
-        if debug_printing:
-            print('\tquery: ' + str(label) + ', result: ' + str(bool(result_ex)))
-    return labels_ex
+    result_list = []
+    for label in possible_labels:
+        db_to_query = db.extend()
+        db_to_query += Term('query')(label)
+        start_time = time.time()
+        result = problog.get_evaluatable().create_from(db_to_query, engine=eng).evaluate()
+        end_time = time.time()
+        print("call time:", end_time-start_time)
+
+        if result[label] > 0.5:
+            result_list.append(label)
+
+    return result_list
+    # # result_list = [eng.query(db, x) for x in possible_labels]
+    # zipped = zip(result_list, possible_labels)
+    # labels_ex = []
+    # if debug_printing:
+    #     print('\nQueries on the database:')
+    # for result_ex, label in zipped:
+    #     if result_ex == [()]:
+    #         labels_ex.append(label)
+    #     if debug_printing:
+    #         print('\tquery: ' + str(label) + ', result: ' + str(bool(result_ex)))
+    # return labels_ex
 
 
 @deprecated
