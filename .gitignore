@@ -8,6 +8,9 @@
 # User-specific stuff:
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/TILDE.xml
+.idea/misc.xml
+.idea/inspectionProfiles/
 
 # Sensitive or high-churn files:
 .idea/dataSources/

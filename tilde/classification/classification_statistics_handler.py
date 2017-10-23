@@ -2,7 +2,7 @@ import warnings
 from typing import List, Dict, Tuple
 
 from problog.logic import Term
-from sklearn.metrics import classification_report, accuracy_score
+# from sklearn.metrics import classification_report, accuracy_score
 
 from tilde.representation.example import Label
 

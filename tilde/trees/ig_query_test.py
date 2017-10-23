@@ -1,9 +1,9 @@
 from problog.logic import And
 
-import tilde.classification
+# from  tilde.classification import
 import tilde.trees.scoring
 
-from tilde.probeersel.mach_tests.mach_definitions_logic import *
+# from tilde.probeersel.mach_tests.mach_definitions_logic import *
 from tilde.probeersel.mach_tests.mach_definitions_TILDE_paper import *
 
 # Testing the four examples from the problog paper using the following queries:
@@ -20,19 +20,19 @@ query4 = And(worn(X), not_replaceable(X))
 queries = [query1, query2, query3, query4]
 
 # a dictionary of sets, one for each query
-results_of_queries = {}
-
-for query in queries:
-    examples_satisfying_query = classification.get_examples_satisfying_query(labeled_examples, query, background_knowledge)
-    results_of_queries[query] = examples_satisfying_query
-
-print(results_of_queries)
+# results_of_queries = {}
+#
+# for query in queries:
+#     examples_satisfying_query = classification.get_examples_satisfying_query(labeled_examples, query, background_knowledge)
+#     results_of_queries[query] = examples_satisfying_query
+#
+# print(results_of_queries)
 
 # entropy test
 l1 = [ex2, ex3]
 l2 = [ex1, ex2]
-print("Entropy of 2 examples labeled 'sendback' : ", tilde.trees.scoring.entropy(l1, possible_targets), ", should be 0.0")
-print("Entropy of one example labeled 'fix', another labeled 'sendback' : ", tilde.trees.scoring.entropy(l2, possible_targets), ", should be 1.0")
+print("Entropy of 2 examples labeled 'sendback' : ", tilde.trees.scoring.entropy_probeersel(l1, possible_targets), ", should be 0.0")
+print("Entropy of one example labeled 'fix', another labeled 'sendback' : ", tilde.trees.scoring.entropy_probeersel(l2, possible_targets), ", should be 1.0")
 
 
 # information gain tests like in the TILDE paper on page 293
