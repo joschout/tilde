@@ -1,5 +1,6 @@
 from typing import Optional, List, Set, Tuple
 
+from problog.engine import GenericEngine
 from problog.logic import Term
 from problog.program import PrologFile, SimpleProgram
 
@@ -44,7 +45,7 @@ def preprocessing_examples_keys(
 
     # LABELS
     index_of_label_var = prediction_goal_handler.get_predicate_goal_index_of_label_var()  # type: int
-    label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var)
+    label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var,engine=engine)
 
     keys_of_unlabeled_examples = label_collector.extract_labels(training_examples_collection)
 
@@ -93,9 +94,10 @@ def build_tree(internal_ex_format: InternalExampleFormat,
                prediction_goal=None,
                full_background_knowledge_sp: Optional[PrologFile] = None,
                debug_printing_tree_building=False,
-               stop_criterion_handler: Optional = StopCriterionMinimalCoverage()
+               stop_criterion_handler: Optional = StopCriterionMinimalCoverage(),
+               engine:GenericEngine=None
                ) -> TreeNode:
-    example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, full_background_knowledge_sp)
+    example_partitioner = PartitionerBuilder().build_partitioner(internal_ex_format, full_background_knowledge_sp, engine=engine)
 
     tree_builder = TreeBuilderBuilder().build_treebuilder(treebuilder_type, language, possible_labels,
                                                           example_partitioner, stop_criterion_handler)

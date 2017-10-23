@@ -21,6 +21,7 @@ class InternalExampleFormat(Enum):
 class LabelError(Exception):
     pass
 
+
 # class Example:
 #     def __init__(self, label=None, key: Optional = None):
 #         self.label = label  # type: Optional[Union[Term, Dict[Term, Probability]]]
@@ -92,6 +93,7 @@ class ExampleWrapper:
     def __iter__(self):
         return self.logic_program.__iter__()
 
+
 # Example = ExampleWrapper
 
 
@@ -116,10 +118,11 @@ class ClauseDBExampleWrapper(ExampleWrapper):
 
     @staticmethod
     def get_clause_db_examples(simple_program_examples: Iterable[SimpleProgramExampleWrapper],
-                               background_knowledge: Optional[LogicProgram] = None) -> List['ClauseDBExampleWrapper']:
-        engine = DefaultEngine()
-        engine.unknown = 1
-
+                               background_knowledge: Optional[LogicProgram] = None,
+                               engine=None) -> List['ClauseDBExampleWrapper']:
+        if engine is None:
+            engine = DefaultEngine()
+            engine.unknown = 1
         clausedb_examples = []  # type: List[ClauseDBExampleWrapper]
 
         if background_knowledge is not None:

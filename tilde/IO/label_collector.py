@@ -1,9 +1,9 @@
-from typing import Iterable, Set, Tuple
+from typing import Set, Tuple
 
-from problog.engine import DefaultEngine
+from problog.engine import DefaultEngine, GenericEngine
 
 from tilde.representation.example import InternalExampleFormat, InternalExampleFormatException, Label, \
-    SimpleProgramExampleWrapper, ClauseDBExampleWrapper, ExampleWrapper
+    SimpleProgramExampleWrapper, ClauseDBExampleWrapper
 from tilde.representation.example_collection import ExampleCollection
 
 
@@ -15,9 +15,12 @@ class LabelCollector:
         * has a lot of overlap with Classifier
     """
 
-    def __init__(self, predicate_to_query, index_of_label_var, background_knowledge=None, debug_printing = False):
-        self.engine = DefaultEngine()
-        self.engine.unknown = 1
+    def __init__(self, predicate_to_query, index_of_label_var, background_knowledge=None, debug_printing=False, engine: GenericEngine=None):
+        if engine is None:
+            self.engine = DefaultEngine()
+            self.engine.unknown = 1
+        else:
+            self.engine = engine
         if background_knowledge is not None:
             self.db = self.engine.prepare(background_knowledge)
         else:
@@ -124,11 +127,11 @@ class ClauseDBLabelCollector(LabelCollector):
 class LabelCollectorMapper:
     @staticmethod
     def get_label_collector(internal_ex_format: InternalExampleFormat, predicate_to_query, index_of_label_var,
-                            background_knowledge=None):
+                            background_knowledge=None, engine: GenericEngine=None):
         if internal_ex_format is internal_ex_format.CLAUSEDB:
-            return ClauseDBLabelCollector(predicate_to_query, index_of_label_var, background_knowledge)
+            return ClauseDBLabelCollector(predicate_to_query, index_of_label_var, background_knowledge, engine=engine)
         elif internal_ex_format is InternalExampleFormat.SIMPLEPROGRAM:
-            return SimpleProgramLabelCollector(predicate_to_query, index_of_label_var, background_knowledge)
+            return SimpleProgramLabelCollector(predicate_to_query, index_of_label_var, background_knowledge, engine=engine)
         else:
             raise InternalExampleFormatException("Only the internal formats SimpleProgram and ClauseDB are supported, "
                                                  "got: " + str(internal_ex_format))
