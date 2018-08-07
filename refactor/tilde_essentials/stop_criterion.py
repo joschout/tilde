@@ -58,6 +58,9 @@ class StopCriterion:
         ) < self.min_samples_leaf
 
     def cannot_split_on_test(self, split_info: SplitInfo):
+        if split_info is None:
+            return True
+
         if not split_info.passing_score():
             return True
 

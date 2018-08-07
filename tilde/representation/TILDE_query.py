@@ -75,7 +75,11 @@ class TILDEQuery(Rule):
     def __str__(self) -> str:
         literals = self.get_literals()
 
-        if len(literals) > 0 and isinstance(literals[0], TILDEQueryHiddenLiteral):
+        root = self._get_root()
+
+
+        if len(literals) > 0 and isinstance(root, TILDEQueryHiddenLiteral):
+        # if len(literals) > 0 and isinstance(literals[0], TILDEQueryHiddenLiteral):
             head = literals[0]
             if len(literals) == 1:
                 return '%s :- true.' % (head,)
@@ -93,6 +97,16 @@ class TILDEQuery(Rule):
             return len(self.parent) + 1
         else:
             return 1
+
+    def _get_root(self):
+
+        current_node = self
+        root = self
+        while current_node is not None:
+            if current_node.parent is not None:
+                root = current_node.parent
+            current_node = current_node.parent
+        return root
 
 
 class TILDEQueryHiddenLiteral(TILDEQuery):

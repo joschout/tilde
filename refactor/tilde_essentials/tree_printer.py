@@ -1,5 +1,3 @@
-from refactor.tilde_essentials.tree_node import TreeNode
-
 
 class TreeNodePrinter:
 
@@ -13,7 +11,7 @@ class TreeNodePrinter:
             TreeNodePrinter.to_string_compact(tree_node)
 
     @staticmethod
-    def to_string_full_query(tree_node: TreeNode, indentation='', current_node_number=0):
+    def to_string_full_query(tree_node: TreeNode, indentation='', current_node_number=0) -> str:
         """
         Represents the tree as a string using some layouting
         :param tree_node:
@@ -83,8 +81,9 @@ class TreeNodePrinter:
             return result
         else:
             if current_node_number == 0:
-                #TODO: remove dependency from TILDEQueryHiddenLiteral
-                if tree_node.test.parent is not None and isinstance(tree_node.test.parent, TILDEQueryHiddenLiteral):
+                # TODO: remove dependency from TILDEQueryHiddenLiteral
+                if tree_node.test.parent is not None:
+                # if tree_node.test.parent is not None and isinstance(tree_node.test.parent, TILDEQueryHiddenLiteral):
                     result = str(tree_node.test.parent.literal) + '\n'
                 else:
                     result = ""

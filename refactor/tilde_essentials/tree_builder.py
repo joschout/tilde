@@ -10,14 +10,14 @@ class TreeBuilder:
                  leaf_builder,
                  stop_criterion: StopCriterion = StopCriterion()
                  ):
-        self.splitter = splitter
+        self.splitter = splitter  # type: Splitter
         self.leaf_builder = leaf_builder
-        self.stop_criterion = stop_criterion
+        self.stop_criterion = stop_criterion  # type: StopCriterion
         self.tree_root = None  # type: TreeNode
 
     def build(self, examples):
         if self._builder_check:
-            self.tree_root = TreeNode(depth=0, parent=None)
+            self.tree_root = TreeNode(parent=None, depth=0)
 
             self._build_recursive(examples, self.tree_root)
             return
@@ -26,28 +26,28 @@ class TreeBuilder:
     def _build_recursive(self, examples, current_node):
 
         if self.stop_criterion.cannot_split_before_test(examples, current_node.depth):
-            self.leaf_builder.build(current_node, split_info=None)
+            current_node.leaf_strategy = self.leaf_builder.build(examples)
         else:
 
             split_info = self.splitter.get_split(examples, current_node)
 
             if self.stop_criterion.cannot_split_on_test(split_info):
-                self.leaf_builder.build(current_node, split_info)
+                current_node.leaf_strategy = self.leaf_builder.build(examples)
             else:
                 current_node.test = split_info.test
 
                 child_depth = current_node.depth + 1
                 # left_child
-                current_node.left_child = TreeNode(child_depth, current_node)
+                current_node.left_child = TreeNode(current_node, child_depth)
                 left_examples = split_info.examples_left
                 self._build_recursive(left_examples, current_node.left_child)
 
-                current_node.right_child = TreeNode(child_depth, current_node)
+                current_node.right_child = TreeNode(current_node, child_depth)
                 right_examples = split_info.examples_right
                 self._build_recursive(right_examples, current_node.right_child)
 
     @property
-    def _builder_check(self):
+    def _builder_check(self) -> bool:
         """
         Returns True if the builder has been initialized correctly
 

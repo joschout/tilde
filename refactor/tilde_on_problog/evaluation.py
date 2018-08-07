@@ -6,11 +6,12 @@ from problog.logic import Term, Var
 from problog.program import LogicProgram, SimpleProgram, PrologString
 
 from refactor.tilde_essentials.evaluation import TestEvaluator
+from refactor.tilde_essentials.example import Example
 from tilde.representation.TILDE_query import TILDEQuery
 
 
 class ProblogQueryEvaluator(TestEvaluator):
-    def evaluate(self, instance, test):
+    def evaluate(self, instance, test) -> bool:
         raise NotImplementedError('abstract method')
 
     def __init__(self, engine: GenericEngine = None):
@@ -34,14 +35,18 @@ class SimpleProgramQueryEvaluator(ProblogQueryEvaluator):
 
         self.db += Term('query')(self.to_query)
 
-    def evaluate(self, instance: SimpleProgram, query: TILDEQuery):
+    def evaluate(self, instance: Example, test: TILDEQuery) -> bool:
 
-        query_conj = query.to_conjunction()
+        query_conj = test.to_conjunction()
 
         db_to_query = self.db.extend()
 
-        for statement in instance:
+        for statement in instance.data:
             db_to_query += statement
+
+        # TODO: remove ugly hack
+        if hasattr(instance,  'classification_term'):
+            db_to_query += instance.classification_term
 
         db_to_query += (self.to_query << query_conj)
 

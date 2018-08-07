@@ -75,6 +75,6 @@ class InformationGain(SplitCriterion):
 
 class SplitCriterionBuilder:
     @staticmethod
-    def get_split_criterion(split_criterion_str: str, examples, node):
+    def get_split_criterion(split_criterion_str: str, examples, node_labels):
         if split_criterion_str == 'entropy':
-            return InformationGain(examples, node.get_labels())
+            return InformationGain(examples, node_labels)
