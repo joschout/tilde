@@ -1,20 +1,21 @@
 import time
 
+from problog.engine import DefaultEngine
+
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.leaf_strategy import LeafBuilder
-from refactor.tilde_essentials.splitter import Splitter
 from refactor.tilde_essentials.stop_criterion import StopCriterion
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.tilde_on_problog.evaluation import SimpleProgramQueryEvaluator
-from refactor.tilde_on_problog.test_generation import ProbLogTestGeneratorBuilder
+from refactor.tilde_on_django.clause_handling import build_clause, destruct_tree_tests
+from refactor.tilde_on_django.evaluation import DjangoQueryEvaluator
+from refactor.tilde_on_django.splitter import DjangoSplitter
+from refactor.tilde_on_django.test_generation import DjangoTestGeneratorBuilder
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
-
-from problog.engine import DefaultEngine
 
 file_name_labeled_examples = '/home/joschout/Documents/tilde_data/ACE-examples-data/ace/bongard/keys/bongard.kb'
 file_name_settings = '/home/joschout/Documents/tilde_data/ACE-examples-data/ace/bongard/keys/bongard.s'
@@ -73,7 +74,8 @@ print('=== END collecting labels ===\n')
 
 examples = []
 for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
-    example = Example(data=ex_wr_sp.logic_program, label=ex_wr_sp.label)
+    example_clause = build_clause(ex_wr_sp)
+    example = Example(data=example_clause, label=ex_wr_sp.label)
     example.classification_term = ex_wr_sp.classification_term
     examples.append(example)
 
@@ -82,19 +84,19 @@ for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
 
 print('=== START tree building ===')
 
-test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
-
-test_generator_builder = ProbLogTestGeneratorBuilder(language=language,
-                                                     query_head_if_keys_format=prediction_goal)
-splitter = Splitter(split_criterion_str='entropy', test_evaluator=test_evaluator,
-                    test_generator_builder=test_generator_builder)
+# test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
 # splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
 #                            query_head_if_keys_format=prediction_goal)
+test_evaluator = DjangoQueryEvaluator()
+test_generator_builder = DjangoTestGeneratorBuilder(language=language,
+                                                    query_head_if_keys_format=prediction_goal)
+
+splitter = DjangoSplitter(split_criterion_str='entropy', test_evaluator=test_evaluator,
+                          test_generator_builder=test_generator_builder)
 leaf_builder = LeafBuilder()
 stop_criterion = StopCriterion()
 tree_builder = TreeBuilder(splitter=splitter, leaf_builder=leaf_builder, stop_criterion=stop_criterion)
 decision_tree = DecisionTree()
-
 
 start_time = time.time()
 decision_tree.fit(examples=examples, tree_builder=tree_builder)
@@ -103,11 +105,20 @@ run_time_sec = end_time - start_time
 run_time_ms = 1000.0 * run_time_sec
 print("run time (ms):", run_time_ms)
 
-
 print('=== END tree building ===\n')
 
-
 print(decision_tree)
+
+
+print("=== start destructing examples ===")
+for instance in examples:
+    instance.data.destruct()
+print("=== end destructing examples ===")
+
+print("=== start destructing tree queries ===")
+destruct_tree_tests(decision_tree.tree)
+print("=== start destructing tree queries ===")
+
 # =================================================================================================================
 #
 # if debug_printing_tree_pruning:

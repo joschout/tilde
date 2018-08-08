@@ -10,7 +10,7 @@ from refactor.tilde_essentials.example import Example
 from tilde.representation.TILDE_query import TILDEQuery
 
 
-class ProblogQueryEvaluator(TestEvaluator):
+class ProbLogQueryEvaluator(TestEvaluator):
     def evaluate(self, instance, test) -> bool:
         raise NotImplementedError('abstract method')
 
@@ -23,7 +23,7 @@ class ProblogQueryEvaluator(TestEvaluator):
         self.to_query = Term('to_query')
 
 
-class SimpleProgramQueryEvaluator(ProblogQueryEvaluator):
+class SimpleProgramQueryEvaluator(ProbLogQueryEvaluator):
     def __init__(self,
                  background_knowledge: Optional[LogicProgram] = None,
                  engine: GenericEngine = None):

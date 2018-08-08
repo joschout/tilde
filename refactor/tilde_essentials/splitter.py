@@ -2,6 +2,7 @@ from typing import Optional
 
 from refactor.tilde_essentials.evaluation import TestEvaluator
 from refactor.tilde_essentials.split_criterion import SplitCriterionBuilder
+from refactor.tilde_essentials.test_generation import TestGeneratorBuilder
 from refactor.tilde_essentials.tree_node import TreeNode
 
 
@@ -48,9 +49,11 @@ class SplitInfo:
 
 class Splitter:
 
-    def __init__(self, split_criterion_str, test_evaluator: TestEvaluator):
+    def __init__(self, split_criterion_str, test_evaluator: TestEvaluator,
+                 test_generator_builder: TestGeneratorBuilder):
         self.split_criterion_str = split_criterion_str
         self.test_evaluator = test_evaluator
+        self.test_generator_builder = test_generator_builder
 
     def get_split(self, examples, current_node: TreeNode) -> Optional[SplitInfo]:
         current_best_split_info = None
@@ -58,7 +61,7 @@ class Splitter:
             self.split_criterion_str,
             examples, current_node.get_labels(examples))
 
-        generator = self._generate_possible_tests(examples, current_node)
+        generator = self.test_generator_builder.generate_possible_tests(examples, current_node)
         for candidate_test in generator:
             print(candidate_test)
             examples_satisfying_test, examples_not_satisfying_test = self._split_examples(candidate_test, examples)
@@ -81,9 +84,6 @@ class Splitter:
 
         return current_best_split_info
 
-    def _generate_possible_tests(self, examples, current_node):
-        raise NotImplementedError('abstract method')
-
     def _split_examples(self, test, examples):
         examples_satisfying_test = set()
         examples_not_satifying_test = set()
@@ -95,3 +95,4 @@ class Splitter:
             else:
                 examples_not_satifying_test.add(example)
         return examples_satisfying_test, examples_not_satifying_test
+
