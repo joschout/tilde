@@ -1,7 +1,4 @@
-from typing import Iterable
-
 from problog.logic import Term
-from problog.program import LogicProgram
 
 from refactor.tilde_essentials.tree_node import TreeNode
 from src.ClauseWrapper import ClauseWrapper, HypothesisWrapper
