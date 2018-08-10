@@ -2,6 +2,12 @@ import math
 
 
 class SplitCriterion:
+    """
+    Abstract class for calculating a split criterion heuristic using the training examples in a node, split into the
+    subsets of examples satisfying a test and those not satisfying that test.
+
+    """
+
     def calculate(self, examples_satisfying_test, examples_not_satisfying_test):
         raise NotImplementedError('abstract method')
 
@@ -13,7 +19,9 @@ class SplitCriterion:
 
 
 class InformationGain(SplitCriterion):
-
+    """
+    Calculates the information gain (for use as a split criterion)
+    """
     threshold = 0.001
 
     def __init__(self, examples, possible_labels):
@@ -74,6 +82,9 @@ class InformationGain(SplitCriterion):
 
 
 class SplitCriterionBuilder:
+    """
+    Get a split criterion based on its name as a string.
+    """
     @staticmethod
     def get_split_criterion(split_criterion_str: str, examples, node_labels):
         if split_criterion_str == 'entropy':

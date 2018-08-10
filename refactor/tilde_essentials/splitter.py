@@ -7,6 +7,10 @@ from refactor.tilde_essentials.tree_node import TreeNode
 
 
 class SplitInfo:
+    """
+    Contains the information about a split using a test on a set of training examples.
+
+    """
 
     def __init__(self,
                  test,
@@ -48,7 +52,11 @@ class SplitInfo:
 
 
 class Splitter:
-
+    """
+    Finds the best test for splitting a node based on the node's training examples.
+    It must be initialized with a SplitCriterion and TestEvaluator.
+    Reports the split info using a SplitInfo object.
+    """
     def __init__(self, split_criterion_str, test_evaluator: TestEvaluator,
                  test_generator_builder: TestGeneratorBuilder):
         self.split_criterion_str = split_criterion_str

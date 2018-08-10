@@ -37,6 +37,3 @@ class DecisionTree:
 
     def __str__(self):
         return self.tree.__str__()
-
-
-

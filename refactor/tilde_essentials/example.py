@@ -2,6 +2,11 @@ from typing import Iterable
 
 
 class Example:
+    """
+    Container class for an example, storing its data and label (types undefined)
+
+    """
+
     def __init__(self, data, label):
         self.data = data
         self.label = label
