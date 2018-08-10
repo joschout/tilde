@@ -1,23 +1,22 @@
 import time
 
 from refactor.tilde_essentials.example import Example
-from refactor.tilde_essentials.leaf_strategy import LeafBuilder
-from refactor.tilde_essentials.splitter import Splitter
-from refactor.tilde_essentials.stop_criterion import StopCriterion
 from refactor.tilde_essentials.tree import DecisionTree
-from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.tilde_on_problog.evaluation import SimpleProgramQueryEvaluator
-from refactor.tilde_on_problog.test_generation import ProbLogTestGeneratorBuilder
+from refactor.tilde_on_problog.default_tree_builder import get_default_decision_tree_builder
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
+from tilde_config import kb_file, s_file
 
 from problog.engine import DefaultEngine
 
-file_name_labeled_examples = '/home/joschout/Documents/tilde_data/ACE-examples-data/ace/bongard/keys/bongard.kb'
-file_name_settings = '/home/joschout/Documents/tilde_data/ACE-examples-data/ace/bongard/keys/bongard.s'
+file_name_labeled_examples = kb_file()
+file_name_settings = s_file()
+
+engine = DefaultEngine
+engine.unknown = 1
 
 parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
@@ -30,10 +29,6 @@ debug_printing_classification = False
 fname_background_knowledge = None
 
 internal_ex_format = InternalExampleFormat.CLAUSEDB
-
-
-engine = DefaultEngine()
-engine.unknown = 1
 
 language = parsed_settings.language  # type: TypeModeLanguage
 
@@ -82,17 +77,7 @@ for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
 
 print('=== START tree building ===')
 
-test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
-
-test_generator_builder = ProbLogTestGeneratorBuilder(language=language,
-                                                     query_head_if_keys_format=prediction_goal)
-splitter = Splitter(split_criterion_str='entropy', test_evaluator=test_evaluator,
-                    test_generator_builder=test_generator_builder)
-# splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
-#                            query_head_if_keys_format=prediction_goal)
-leaf_builder = LeafBuilder()
-stop_criterion = StopCriterion()
-tree_builder = TreeBuilder(splitter=splitter, leaf_builder=leaf_builder, stop_criterion=stop_criterion)
+tree_builder = get_default_decision_tree_builder(language, prediction_goal)
 decision_tree = DecisionTree()
 
 
@@ -108,38 +93,3 @@ print('=== END tree building ===\n')
 
 
 print(decision_tree)
-# =================================================================================================================
-#
-# if debug_printing_tree_pruning:
-#     print("UNPRUNED tree:")
-#     print("--------------")
-#     print(tree)
-#     nb_of_nodes = tree.get_nb_of_nodes()
-#     nb_inner_nodes = tree.get_nb_of_inner_nodes()
-#     print("nb of nodes in unpruned tree: " + str(nb_of_nodes))
-#     print("\tinner nodes: " + str(nb_inner_nodes))
-#     print("\tleaf nodes: " + str(nb_of_nodes - nb_inner_nodes))
-#
-# prune_leaf_nodes_with_same_label(tree)
-# if debug_printing_tree_pruning:
-#     print("PRUNED tree:")
-#     print("------------")
-# print(tree)
-# nb_of_nodes = tree.get_nb_of_nodes()
-# nb_inner_nodes = tree.get_nb_of_inner_nodes()
-# print("nb of nodes in unpruned tree: " + str(nb_of_nodes))
-# print("\tinner nodes: " + str(nb_inner_nodes))
-# print("\tleaf nodes: " + str(nb_of_nodes - nb_inner_nodes))
-# # =================================================================================================================
-#
-# tree_to_program_converter = TreeToProgramConverterMapper.get_converter(treebuilder_type, kb_format,
-#                                                                        debug_printing=debug_printing_program_conversion,
-#                                                                        prediction_goal=prediction_goal,
-#                                                                        index=index_of_label_var)
-# program = tree_to_program_converter.convert_tree_to_simple_program(tree, language)
-#
-# print("%resulting program:")
-# print("%------------------")
-# for statement in program:
-#     print(str(statement) + ".")
-

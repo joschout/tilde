@@ -57,11 +57,13 @@ class Splitter:
     It must be initialized with a SplitCriterion and TestEvaluator.
     Reports the split info using a SplitInfo object.
     """
+
     def __init__(self, split_criterion_str, test_evaluator: TestEvaluator,
-                 test_generator_builder: TestGeneratorBuilder):
+                 test_generator_builder: TestGeneratorBuilder, verbose=False):
         self.split_criterion_str = split_criterion_str
         self.test_evaluator = test_evaluator
         self.test_generator_builder = test_generator_builder
+        self.verbose=verbose
 
     def get_split(self, examples, current_node: TreeNode) -> Optional[SplitInfo]:
         current_best_split_info = None
@@ -71,7 +73,8 @@ class Splitter:
 
         generator = self.test_generator_builder.generate_possible_tests(examples, current_node)
         for candidate_test in generator:
-            print(candidate_test)
+            if self.verbose:
+                print(candidate_test)
             examples_satisfying_test, examples_not_satisfying_test = self._split_examples(candidate_test, examples)
 
             candidate_test_score = split_criterion.calculate(examples_satisfying_test,

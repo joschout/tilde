@@ -15,7 +15,8 @@ class DjangoSplitter(Splitter):
 
         generator = self.test_generator_builder.generate_possible_tests(examples, current_node)
         for candidate_test in generator:
-            print(candidate_test)
+            if self.verbose:
+                print(candidate_test)
             examples_satisfying_test, examples_not_satisfying_test = self._split_examples(candidate_test, examples)
 
             candidate_test_score = split_criterion.calculate(examples_satisfying_test,
