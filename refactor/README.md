@@ -23,7 +23,9 @@ The structure of this package is as follows:
   These are converted to strings in a format that should be accepted by the subsumption engine.
   The subsumption engine should be started as a separate Java process before running this code.
   The communication is done using [Py4J](https://www.py4j.org/).
- 
+* tilde_on_subtle: This package uses the [Subtle](https://dtai.cs.kuleuven.be/software/subtle/) subsumption engine. It requires SWI-Prolog to be installed. 
+  The communication with SWI-Prolog is done using [PySwip](https://github.com/yuce/pyswip).
+  From Python, SWI-Prolog is called as a library, in which the Subtle engine is consulted. 
 ## TILDE essentials package
 
 ### Overview
