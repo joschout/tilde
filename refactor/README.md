@@ -79,3 +79,40 @@ For more up-to-date info, see the source files.
 * tree_pruning:
   - abstract TreePruner: Prunes a TreeNode tree structure.
 
+### Usage
+
+```python
+from refactor.tilde_essentials.example import Example
+from refactor.tilde_essentials.leaf_strategy import LeafBuilder
+from refactor.tilde_essentials.splitter import Splitter
+from refactor.tilde_essentials.stop_criterion import StopCriterion
+from refactor.tilde_essentials.tree import DecisionTree
+from refactor.tilde_essentials.tree_builder import TreeBuilder
+from refactor.tilde_on_problog.evaluation import SimpleProgramQueryEvaluator
+from refactor.tilde_on_problog.test_generation import ProbLogTestGeneratorBuilder
+
+from problog.logic import Term, Var, Constant
+
+# NOTE: include a non-empty example list
+language = ...
+examples = ...  # type: List[Example]
+prediction_goal = Term('bongard')(Var('A',Constant('pos')))
+engine = ... # ProbLog engine
+
+test_evaluator = SimpleProgramQueryEvaluator()
+
+test_generator_builder = ProbLogTestGeneratorBuilder(language=language,
+                                                     query_head_if_keys_format=prediction_goal)
+splitter = Splitter(split_criterion_str='entropy', test_evaluator=test_evaluator,
+                    test_generator_builder=test_generator_builder)
+leaf_builder = LeafBuilder()
+stop_criterion = StopCriterion()
+tree_builder = TreeBuilder(splitter=splitter, leaf_builder=leaf_builder, stop_criterion=stop_criterion)
+decision_tree = DecisionTree()
+
+
+decision_tree.fit(examples=examples, tree_builder=tree_builder)
+
+print(decision_tree)
+
+```
