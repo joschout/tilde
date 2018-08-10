@@ -2,7 +2,7 @@ from py4j.java_gateway import JavaGateway
 
 from refactor.tilde_essentials.evaluation import TestEvaluator
 from refactor.tilde_essentials.example import Example
-from refactor.tilde_on_flgg_py4j.query_wrapping import QueryWrapper
+from refactor.tilde_essentials.query_wrapping import QueryWrapper
 
 
 class FLGGQueryEvaluator(TestEvaluator):
