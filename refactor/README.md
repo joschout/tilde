@@ -31,18 +31,18 @@ A short overview of the functionality of the high-level FOL decision tree packag
 For more up-to-date info, see the source files.
 
 * evaluation: 
-  - abstract TestEvaluator class: used for evaluating a test on an example
+  - TestEvaluator (abstract class): used for evaluating a test on an example
 
 * example:
   - Example: Container class for an example, storing its data and label (types undefined)
 
 * leaf_strategy:
-  - abstract LeafStrategy class: used in a leaf node for making a prediction for an example
+  - LeafStrategy (abstract class): used in a leaf node for making a prediction for an example
   - MajorityClassLS: predict for an example the majority class of a leaf
   - LeafBuilder: create a leaf strategy based on the training examples (sorted into a leaf node)
 
 * split_criterion:
-  - SplitCriterion: Abstract class for calculating a split criterion heuristic 
+  - SplitCriterion (abstract class): Calculates a split criterion heuristic 
     using the training examples in a node, split into the subsets of examples satisfying a test and those not satisfying that test.
   - InformationGain: calculates the information gain (for use as a split criterion)
   - SplitCriterionBuilder: Get a split criterion based on its name as a string.
@@ -54,20 +54,28 @@ For more up-to-date info, see the source files.
   - SplitInfo: Contains the information about a split using a test on a set of training examples.
   
 * stop_criterion:
-  - StopCriterion: 
+  - StopCriterion: Checks whether a the node should be split; i.e. whether a stop criterion is reached.
   
 * test_generation:
-  - abstract TestGeneratorBuilder
-  - abstract FOLTestGeneratorBuilder
+  - TestGeneratorBuilder (abstract class): Builds a generator to produce possible tests in a node to be split.
+  - FOLTestGeneratorBuilder (abstract class): Builds a generator to produce possible tests in a node to be split.
+    Finds the associated test of the node, which is the test of the ancestor of the current node whose test should be refined. 
   
 * tree:
-  - DecisionTree
+  - DecisionTree: Decision tree used for making predictions. Initially empty. 
+    An internal TreeNode tree is fitted on training examples using a TreeBuilder.
   
 * tree_builder:
+  - TreeBuilder: Builds a TreeNode tree in a top-down fashion by recursively splitting nodes.
+    Uses:
+     - a Splitter to determine the best split of a node
+     - a LeafBuilder to determine the leaf prediction strategy of leaf nodes
+     - a StopCriterion to halt the recursion
 
 * tree_node:
-
-* tree_printer:
+  - TreeNode: Binary tree data structure. Should have 0 or 2 child nodes.
+  - TreeNodePrinter: Pretty prints a TreeNode tree structure.
 
 * tree_pruning:
+  - abstract TreePruner: Prunes a TreeNode tree structure.
 

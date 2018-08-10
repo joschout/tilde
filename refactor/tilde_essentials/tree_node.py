@@ -11,6 +11,9 @@ from refactor.tilde_essentials.example import get_labels
 
 
 class TreeNode:
+    """
+
+    """
     def __init__(self, parent=None, depth=0):
         self.parent = parent  # type: Optional['TreeNode']
         self.depth = depth  # type: int
@@ -38,6 +41,9 @@ class TreeNode:
 
 
 class TreeNodePrinter:
+    """
+    Pretty prints a TreeNode tree structure.
+    """
 
     setting = "full"
 

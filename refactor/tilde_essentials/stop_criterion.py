@@ -3,6 +3,11 @@ import math
 
 
 class StopCriterion:
+    """
+    Checks whether a the node should be split; i.e. whether a stop criterion is reached.
+
+    """
+
     # def should_investigate_node(self):
     #     raise NotImplementedError('abstract method')
 

@@ -6,6 +6,11 @@ from refactor.tilde_essentials.tree_node import TreeNode
 
 
 class DecisionTree:
+    """
+    Decision tree used for making predictions. Initially empty.
+    An internal TreeNode tree is fitted on training examples using a TreeBuilder.
+
+    """
 
     def __init__(self):
         self.tree = None  # type: Optional[TreeNode]

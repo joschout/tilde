@@ -2,11 +2,21 @@ from refactor.tilde_essentials.tree_node import TreeNode
 
 
 class TestGeneratorBuilder:
+    """
+    Builds a generator to produce possible tests in a node to be split.
+
+    """
     def generate_possible_tests(self, examples, current_node):
         raise NotImplementedError('abstract method')
 
 
 class FOLTestGeneratorBuilder(TestGeneratorBuilder):
+    """
+    Builds a generator to produce possible tests in a node to be split.
+    Finds the associated test of the node, which is the test of the ancestor of the current node whose test should be refined.
+
+    """
+
     def generate_possible_tests(self, examples, current_node):
         raise NotImplementedError('abstract method')
 

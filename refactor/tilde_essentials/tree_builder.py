@@ -4,7 +4,14 @@ from refactor.tilde_essentials.tree_node import TreeNode
 
 
 class TreeBuilder:
+    """
+    Builds a TreeNode tree in a top-down fashion by recursively splitting nodes.
+    Uses:
+     - a Splitter to determine the best split of a node
+     - a LeafBuilder to determine the leaf prediction strategy of leaf nodes
+     - a StopCriterion to halt the recursion
 
+    """
     def __init__(self,
                  splitter: Splitter,
                  leaf_builder,
