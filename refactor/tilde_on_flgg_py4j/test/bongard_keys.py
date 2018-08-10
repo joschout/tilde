@@ -1,17 +1,17 @@
 import time
 
 from problog.engine import DefaultEngine
+from py4j.java_gateway import JavaGateway
 
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.leaf_strategy import LeafBuilder
+from refactor.tilde_essentials.splitter import Splitter
 from refactor.tilde_essentials.stop_criterion import StopCriterion
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-# from refactor.tilde_on_django.clause_handling import build_clause, destruct_tree_tests
-# from refactor.tilde_on_django.evaluation import DjangoQueryEvaluator
-# from refactor.tilde_on_django.splitter import DjangoSplitter
-# from refactor.tilde_on_django.test_generation import DjangoTestGeneratorBuilder
 from refactor.tilde_on_flgg_py4j.clause_handling import build_clause
+from refactor.tilde_on_flgg_py4j.evaluation import FLGGQueryEvaluator
+from refactor.tilde_on_flgg_py4j.test_generation import FLGGTestGeneratorBuilder
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
@@ -32,7 +32,6 @@ debug_printing_classification = False
 fname_background_knowledge = None
 
 internal_ex_format = InternalExampleFormat.CLAUSEDB
-
 
 engine = DefaultEngine()
 engine.unknown = 1
@@ -88,12 +87,14 @@ print('=== START tree building ===')
 # test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
 # splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
 #                            query_head_if_keys_format=prediction_goal)
-test_evaluator = DjangoQueryEvaluator()
-test_generator_builder = DjangoTestGeneratorBuilder(language=language,
-                                                    query_head_if_keys_format=prediction_goal)
 
-splitter = DjangoSplitter(split_criterion_str='entropy', test_evaluator=test_evaluator,
-                          test_generator_builder=test_generator_builder)
+java_gateway = JavaGateway()
+test_evaluator = FLGGQueryEvaluator(java_gateway)
+test_generator_builder = FLGGTestGeneratorBuilder(language=language,
+                                                  query_head_if_keys_format=prediction_goal)
+
+splitter = Splitter(split_criterion_str='entropy', test_evaluator=test_evaluator,
+                    test_generator_builder=test_generator_builder)
 leaf_builder = LeafBuilder()
 stop_criterion = StopCriterion()
 tree_builder = TreeBuilder(splitter=splitter, leaf_builder=leaf_builder, stop_criterion=stop_criterion)
@@ -110,15 +111,6 @@ print('=== END tree building ===\n')
 
 print(decision_tree)
 
-
-print("=== start destructing examples ===")
-for instance in examples:
-    instance.data.destruct()
-print("=== end destructing examples ===")
-
-print("=== start destructing tree queries ===")
-destruct_tree_tests(decision_tree.tree)
-print("=== start destructing tree queries ===")
 
 # =================================================================================================================
 #
@@ -154,4 +146,3 @@ print("=== start destructing tree queries ===")
 # print("%------------------")
 # for statement in program:
 #     print(str(statement) + ".")
-

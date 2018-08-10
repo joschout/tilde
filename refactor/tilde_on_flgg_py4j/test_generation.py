@@ -1,8 +1,13 @@
 from typing import Optional
 
+from problog.logic import Term
+
 from refactor.tilde_essentials.test_generation import FOLTestGeneratorBuilder
 from refactor.tilde_on_flgg_py4j.clause_handling import build_hypothesis
+from refactor.tilde_on_flgg_py4j.query_wrapping import FLGGQueryWrapper
 from tilde.representation.TILDE_query import TILDEQueryHiddenLiteral, TILDEQuery
+from tilde.representation.language import TypeModeLanguage
+from tilde.trees.RefinementController import RefinementController
 
 
 class FLGGTestGeneratorBuilder(FOLTestGeneratorBuilder):
@@ -12,14 +17,14 @@ class FLGGTestGeneratorBuilder(FOLTestGeneratorBuilder):
         self.language = language
 
     def generate_possible_tests(self, examples, current_node):
-        hypothesis_wrapper_query_to_refine = self._get_associated_query(current_node)  # type: HypothesisWrapper
-        query_to_refine = hypothesis_wrapper_query_to_refine._prolog_hypothesis
+        query_wrapper = self._get_associated_query(current_node)  # type: FLGGQueryWrapper
+        query_to_refine = query_wrapper.tilde_query  # type: TILDEQuery
         generator = RefinementController.get_refined_query_generator(
             query_to_refine, self.language)
         for tilde_query in generator:
             # turn TILDEQuery into a HypothesisWrapper
-            hypothesis_wrapper = build_hypothesis(tilde_query)
-            yield hypothesis_wrapper
+            tilde_query_str = build_hypothesis(tilde_query)  # type: str
+            yield FLGGQueryWrapper(tilde_query, tilde_query_str)
 
     @staticmethod
     def get_initial_query(query_head_if_keys_format: Optional[Term] = None):
@@ -28,6 +33,6 @@ class FLGGTestGeneratorBuilder(FOLTestGeneratorBuilder):
         else:
             initial_tilde_query = TILDEQuery(None, None)
 
-        hypothesis_string_initial_query = build_hypothesis(initial_tilde_query)
+        wrapper_initial_tilde_query = FLGGQueryWrapper(initial_tilde_query, build_hypothesis(initial_tilde_query))
 
-        return hypothesis_string_initial_query
+        return wrapper_initial_tilde_query
