@@ -4,6 +4,7 @@ from problog.engine import DefaultEngine
 
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree
+from refactor.tilde_essentials.tree_builder import TreeBuilder
 from refactor.tilde_on_django.clause_handling import build_clause, destruct_tree_tests
 from refactor.tilde_on_django.default_tree_builder import get_default_decision_tree_builder
 from tilde.IO.label_collector import LabelCollectorMapper
@@ -83,7 +84,7 @@ print('=== START tree building ===')
 # test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
 # splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
 #                            query_head_if_keys_format=prediction_goal)
-tree_builder = get_default_decision_tree_builder(language, prediction_goal)
+tree_builder = get_default_decision_tree_builder(language, prediction_goal)  # type: TreeBuilder
 decision_tree = DecisionTree()
 start_time = time.time()
 decision_tree.fit(examples=examples, tree_builder=tree_builder)
