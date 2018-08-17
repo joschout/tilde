@@ -2,7 +2,7 @@ import time
 
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree
-from refactor.tilde_on_problog.default_tree_builder import get_default_decision_tree_builder
+from refactor.tilde_on_problog.defaults import get_default_decision_tree_builder
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder

@@ -5,7 +5,8 @@ from typing import Set, List, Tuple
 
 from problog.logic import Constant
 
-from mai_experiments.experiment_settings import FileNameData, DebugPrintingOptions, FoldController
+from mai_experiments.experiment_settings import FileNameData, DebugPrintingOptions
+from mai_experiments.fold_control import FoldInfoController
 from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
 from tilde.classification.classification_statistics_handler import ClassificationStatisticsHandler
 from tilde.classification.confidence_intervals import mean_confidence_interval
@@ -273,7 +274,7 @@ def do_all_examples(fd: FoldData):
 
 
 def main_cross_validation(file_name_data:FileNameData,
-                          fold_settings: FoldController,
+                          fold_settings: FoldInfoController,
                           filter_out_unlabeled_examples=False,
                           debug_printing_options:DebugPrintingOptions= DebugPrintingOptions()):
 
