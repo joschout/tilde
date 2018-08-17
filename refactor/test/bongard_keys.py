@@ -1,17 +1,20 @@
+import statistics
 import time
 
 from problog.engine import DefaultEngine
 
-from refactor.tilde_essentials.example import Example
+from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from refactor.tilde_essentials.tree import DecisionTree
-from refactor.tilde_on_flgg_py4j.clause_handling import build_clause
-from refactor.tilde_on_flgg_py4j.defaults import get_default_decision_tree_builder
+from refactor.tilde_essentials.tree_builder import TreeBuilder
+from refactor.tilde_on_django.clause_handling import destruct_tree_tests
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde_config import kb_file, s_file
+
+# default_handler = get_back_end_default(QueryBackEnd.DJANGO)
 
 file_name_labeled_examples = kb_file()
 file_name_settings = s_file()
@@ -27,6 +30,7 @@ debug_printing_classification = False
 fname_background_knowledge = None
 
 internal_ex_format = InternalExampleFormat.CLAUSEDB
+
 
 engine = DefaultEngine()
 engine.unknown = 1
@@ -65,35 +69,67 @@ possible_labels = label_collector.get_labels()  # type: Set[Label]
 possible_labels = list(possible_labels)
 print('=== END collecting labels ===\n')
 
-# =================================================================================================================
 
-examples = []
-for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
-    example_clause = build_clause(ex_wr_sp)
-    example = Example(data=example_clause, label=ex_wr_sp.label)
-    example.classification_term = ex_wr_sp.classification_term
-    examples.append(example)
-
-# =================================================================================================================
+default_handlers = [
+    ('django', get_back_end_default(QueryBackEnd.DJANGO)),
+    # ('problog-simple', get_back_end_default(QueryBackEnd.SIMPLE_PROGRAM)),
+    ('subtle', get_back_end_default(QueryBackEnd.SUBTLE)),
+    ('FLGG', get_back_end_default(QueryBackEnd.FLGG))
+]
 
 
-print('=== START tree building ===')
+average_run_time_list = []
 
-# test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
-# splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
-#                            query_head_if_keys_format=prediction_goal)
+for name, default_handler in default_handlers:
+    # =================================================================================================================
 
-tree_builder = get_default_decision_tree_builder(language, prediction_goal)
-decision_tree = DecisionTree()
+    examples = default_handler.get_transformed_example_list(training_examples_collection)
 
-start_time = time.time()
-decision_tree.fit(examples=examples, tree_builder=tree_builder)
-end_time = time.time()
-run_time_sec = end_time - start_time
-run_time_ms = 1000.0 * run_time_sec
-print("run time (ms):", run_time_ms)
+    # =================================================================================================================
 
-print('=== END tree building ===\n')
+    run_time_list = []
 
-print(decision_tree)
+    for i in range(0, 10):
+        print('=== START tree building ===')
 
+        # test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
+        # splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
+        #                            query_head_if_keys_format=prediction_goal)
+        tree_builder = default_handler.get_default_decision_tree_builder(language, prediction_goal)  # type: TreeBuilder
+        decision_tree = DecisionTree()
+        start_time = time.time()
+        decision_tree.fit(examples=examples, tree_builder=tree_builder)
+        end_time = time.time()
+        run_time_sec = end_time - start_time
+        run_time_ms = 1000.0 * run_time_sec
+        run_time_list.append(run_time_ms)
+        print("run time (ms):", run_time_ms)
+
+        print('=== END tree building ===\n')
+
+    average_run_time_ms = statistics.mean(run_time_list)
+    average_run_time_list.append((name, average_run_time_ms))
+
+    print("average tree build time (ms):", average_run_time_ms)
+    print(decision_tree)
+
+    if name == 'django':
+        print("=== start destructing examples ===")
+        for instance in examples:
+            instance.data.destruct()
+        print("=== end destructing examples ===")
+
+        print("=== start destructing tree queries ===")
+        destruct_tree_tests(decision_tree.tree)
+        print("=== start destructing tree queries ===")
+
+
+print ("\n=== average run times (ms) =======")
+for name, average_run_time_ms in average_run_time_list:
+    print(name, ':', average_run_time_ms)
+
+
+# === average run times (ms) =======
+# django : 175.32496452331543
+# subtle : 2955.9953451156616
+# FLGG : 2411.164665222168

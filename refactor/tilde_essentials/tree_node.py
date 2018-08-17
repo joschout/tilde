@@ -1,5 +1,6 @@
 from typing import Optional
 
+from refactor.tilde_essentials.destuctable import Destructible
 from refactor.tilde_essentials.example import get_labels
 
 #
@@ -10,7 +11,7 @@ from refactor.tilde_essentials.example import get_labels
 # from refactor.tilde_essentials.tree_printer import TreeNodePrinter
 
 
-class TreeNode:
+class TreeNode(Destructible):
     """
 
     """
@@ -38,6 +39,15 @@ class TreeNode:
 
     def __str__(self):
         return TreeNodePrinter.to_string(self)
+
+    def destruct(self):
+        destruct_method = getattr(self.test, 'destruct', None)
+        if callable(destruct_method):
+            self.test.destruct()
+        if self.left_child is not None:
+            self.left_child.destruct()
+        if self.right_child is not None:
+            self.right_child.destruct()
 
 
 class TreeNodePrinter:

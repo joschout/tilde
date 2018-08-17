@@ -15,6 +15,10 @@ class LeafStrategy:
         raise NotImplementedError('abstract method')
 
 
+class MajorityClassLSMergeException(Exception):
+    pass
+
+
 class MajorityClassLS(LeafStrategy):
     """
     Predict for an example the majority class of a leaf
@@ -34,6 +38,17 @@ class MajorityClassLS(LeafStrategy):
 
     def predict(self, example):
         return self.majority_label
+
+    def merge(self, other: 'MajorityClassLS'):
+        if other.majority_label != self.majority_label:
+            raise MajorityClassLSMergeException('2 MajorityClassLS objects could not be merged, as one has'
+                                                'majority class' + str(self.majority_label) +
+                                                ' while the other has majority class ' + str(other.majority_label))
+        self.n_examples += other.n_examples
+
+        for label in other.label_frequencies:
+            self.label_frequencies[label] = self.label_frequencies.get(label, 0) + other.label_frequencies[label]
+            self.label_counts[label] = self.label_counts.get(label, 0) + other.label_counts[label]
 
 
 class LeafBuilder:

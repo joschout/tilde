@@ -3,7 +3,8 @@ import sys
 
 from problog.engine import DefaultEngine
 
-from mai_experiments.experiment_settings import DebugPrintingOptions, FileNameData, FoldController
+from mai_experiments.experiment_settings import DebugPrintingOptions, FileNameData
+from mai_experiments.fold_control import FoldInfoController
 
 # CHANGE THESE TWO FOR EACH TEST
 from tilde.IO.label_collector import LabelCollectorMapper
@@ -45,10 +46,10 @@ fold_start_index = 0
 nb_folds = 10
 fold_suffix = '.txt'
 
-fold_settings = FoldController(fold_fname_prefix=fname_prefix_fold,
-                               fold_start_index=fold_start_index,
-                               nb_folds=nb_folds,
-                               fold_suffix=fold_suffix)
+fold_settings = FoldInfoController(fold_fname_prefix=fname_prefix_fold,
+                                   fold_start_index=fold_start_index,
+                                   nb_folds=nb_folds,
+                                   fold_suffix=fold_suffix)
 
 # -- create output directory
 if not os.path.exists(file_name_data.output_dir):

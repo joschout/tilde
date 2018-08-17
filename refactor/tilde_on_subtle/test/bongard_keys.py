@@ -5,7 +5,7 @@ from problog.engine import DefaultEngine
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_on_subtle.clause_handling import build_clause
-from refactor.tilde_on_subtle.default_tree_builder import get_default_decision_tree_builder
+from refactor.tilde_on_subtle.defaults import get_default_decision_tree_builder
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
@@ -81,6 +81,17 @@ print('=== START tree building ===')
 
 tree_builder = get_default_decision_tree_builder(language, prediction_goal)
 decision_tree = DecisionTree()
+
+test_examples = []
+for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
+    example_clause = build_clause(ex_wr_sp, training=False)
+    example = Example(data=example_clause, label=ex_wr_sp.label)
+    example.classification_term = ex_wr_sp.classification_term
+    test_examples.append(example)
+
+first_test_example = test_examples[0]
+decision_tree.predict(first_test_example)
+
 
 start_time = time.time()
 decision_tree.fit(examples=examples, tree_builder=tree_builder)

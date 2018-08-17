@@ -1,7 +1,9 @@
 from typing import Iterable
 
+from refactor.tilde_essentials.destuctable import Destructible
 
-class Example:
+
+class Example(Destructible):
     """
     Container class for an example, storing its data and label (types undefined)
 
@@ -10,6 +12,11 @@ class Example:
     def __init__(self, data, label):
         self.data = data
         self.label = label
+
+    def destruct(self):
+        destruct_method = getattr(self.data, 'destruct', None)
+        if callable(destruct_method):
+            self.data.destruct()
 
 
 def get_labels(examples: Iterable):

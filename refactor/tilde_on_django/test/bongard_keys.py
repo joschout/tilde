@@ -1,18 +1,20 @@
+import statistics
 import time
 
 from problog.engine import DefaultEngine
 
-from refactor.tilde_essentials.example import Example
+from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.tilde_on_django.clause_handling import build_clause, destruct_tree_tests
-from refactor.tilde_on_django.default_tree_builder import get_default_decision_tree_builder
+from refactor.tilde_on_django.clause_handling import destruct_tree_tests
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde_config import kb_file, s_file
+
+default_handler = get_back_end_default(QueryBackEnd.DJANGO)
 
 file_name_labeled_examples = kb_file()
 file_name_settings = s_file()
@@ -69,32 +71,32 @@ print('=== END collecting labels ===\n')
 
 # =================================================================================================================
 
-examples = []
-for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
-    example_clause = build_clause(ex_wr_sp)
-    example = Example(data=example_clause, label=ex_wr_sp.label)
-    example.classification_term = ex_wr_sp.classification_term
-    examples.append(example)
+examples = default_handler.get_transformed_example_list(training_examples_collection)
 
 # =================================================================================================================
 
+run_time_list = []
 
-print('=== START tree building ===')
+for i in range(0, 10):
+    print('=== START tree building ===')
 
-# test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
-# splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
-#                            query_head_if_keys_format=prediction_goal)
-tree_builder = get_default_decision_tree_builder(language, prediction_goal)  # type: TreeBuilder
-decision_tree = DecisionTree()
-start_time = time.time()
-decision_tree.fit(examples=examples, tree_builder=tree_builder)
-end_time = time.time()
-run_time_sec = end_time - start_time
-run_time_ms = 1000.0 * run_time_sec
-print("run time (ms):", run_time_ms)
+    # test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
+    # splitter = ProblogSplitter(language=language,split_criterion_str='entropy', test_evaluator=test_evaluator,
+    #                            query_head_if_keys_format=prediction_goal)
+    tree_builder = default_handler.get_default_decision_tree_builder(language, prediction_goal)  # type: TreeBuilder
+    decision_tree = DecisionTree()
+    start_time = time.time()
+    decision_tree.fit(examples=examples, tree_builder=tree_builder)
+    end_time = time.time()
+    run_time_sec = end_time - start_time
+    run_time_ms = 1000.0 * run_time_sec
+    run_time_list.append(run_time_ms)
+    print("run time (ms):", run_time_ms)
 
-print('=== END tree building ===\n')
+    print('=== END tree building ===\n')
 
+average_run_time_ms = statistics.mean(run_time_list)
+print("average tree build time (ms):", average_run_time_ms)
 print(decision_tree)
 
 

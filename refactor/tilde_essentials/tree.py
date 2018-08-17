@@ -1,11 +1,12 @@
 from typing import Optional
 
+from refactor.tilde_essentials.destuctable import Destructible
 from refactor.tilde_essentials.evaluation import TestEvaluator
 from refactor.tilde_essentials.tree_builder import TreeBuilder
 from refactor.tilde_essentials.tree_node import TreeNode
 
 
-class DecisionTree:
+class DecisionTree(Destructible):
     """
     Decision tree used for making predictions. Initially empty.
     An internal TreeNode tree is fitted on training examples using a TreeBuilder.
@@ -27,6 +28,9 @@ class DecisionTree:
         if self.tree_pruner is not None:
             self.tree = self.tree_pruner.prune(self.tree)
 
+    def prune(self, pruning_function):
+        pruning_function(self.tree)
+
     def predict(self, example):
         return self._predict_recursive(example, self.tree)
 
@@ -42,3 +46,13 @@ class DecisionTree:
 
     def __str__(self):
         return self.tree.__str__()
+
+    def destruct(self):
+        self.tree.destruct()
+
+
+def write_out_tree(fname: str, tree: DecisionTree):
+    # write out tree
+    print('\t--- writing out tree to: ' + fname)
+    with open(fname, 'w') as f:
+        f.write(str(tree))

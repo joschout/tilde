@@ -11,17 +11,19 @@ def literals_to_clause_string(iterable_literals: Iterable, init_string="") -> st
     if init_string != "":
         init_string = init_string[:-2]
 
+    # print(init_string)
     return init_string
 
 
-def build_clause(example: ExampleWrapper) -> str:
+def build_clause(example: ExampleWrapper, training=True) -> str:
 
     example_string = ""
-    # TODO: remove ugly hack
-    has_classification_term = False
-    if hasattr(example, 'classification_term'):
-        has_classification_term = True
-        example_string += str(example.classification_term)
+    if training:
+        # TODO: remove ugly hack
+        has_classification_term = False
+        if hasattr(example, 'classification_term'):
+            has_classification_term = True
+            example_string += str(example.classification_term)
 
     # TODO: remove double iteration over list
     first_lit = None
