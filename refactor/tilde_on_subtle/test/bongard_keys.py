@@ -4,14 +4,17 @@ from problog.engine import DefaultEngine
 
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree
+from refactor.tilde_essentials.verification import verify
 from refactor.tilde_on_subtle.clause_handling import build_clause
-from refactor.tilde_on_subtle.defaults import get_default_decision_tree_builder
+from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
 from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
 from tilde.representation.example import InternalExampleFormat
 from tilde_config import kb_file, s_file
+
+default_handler = get_back_end_default(QueryBackEnd.SUBTLE)
 
 file_name_labeled_examples = kb_file()
 file_name_settings = s_file()
@@ -36,6 +39,7 @@ language = parsed_settings.language  # type: TypeModeLanguage
 # TODO: unify this with models --> let models use a prediction goal predicate label()
 prediction_goal_handler = parsed_settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler
 prediction_goal = prediction_goal_handler.get_prediction_goal()  # type: Term
+print("prediction goal:", prediction_goal)
 
 print('=== START parsing background ===')
 background_knowledge_wrapper \
@@ -67,20 +71,23 @@ print('=== END collecting labels ===\n')
 
 # =================================================================================================================
 
-examples = []
-for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
-    example_clause = build_clause(ex_wr_sp)
-    example = Example(data=example_clause, label=ex_wr_sp.label)
-    example.classification_term = ex_wr_sp.classification_term
-    examples.append(example)
+examples = default_handler.get_transformed_example_list(training_examples_collection)
+# examples = []
+# for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
+#     example_clause = build_clause(ex_wr_sp)
+#     example = Example(data=example_clause, label=ex_wr_sp.label)
+#     example.classification_term = ex_wr_sp.classification_term
+#     examples.append(example)
 
 # =================================================================================================================
 
 
 print('=== START tree building ===')
 
-tree_builder = get_default_decision_tree_builder(language, prediction_goal)
+tree_builder = default_handler.get_default_decision_tree_builder(language, prediction_goal)
 decision_tree = DecisionTree()
+decision_tree.fit(examples=examples, tree_builder=tree_builder)
+
 
 test_examples = []
 for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
@@ -89,9 +96,13 @@ for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
     example.classification_term = ex_wr_sp.classification_term
     test_examples.append(example)
 
-first_test_example = test_examples[0]
-decision_tree.predict(first_test_example)
+statistics_handler = verify(decision_tree, test_examples)
+accuracy = statistics_handler.get_accuracy()
+print("accuracy:", accuracy)
 
+first_test_example = test_examples[0]
+prediction = decision_tree.predict(first_test_example)
+print("prediction:", prediction)
 
 start_time = time.time()
 decision_tree.fit(examples=examples, tree_builder=tree_builder)

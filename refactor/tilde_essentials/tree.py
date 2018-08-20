@@ -3,7 +3,7 @@ from typing import Optional
 from refactor.tilde_essentials.destuctable import Destructible
 from refactor.tilde_essentials.evaluation import TestEvaluator
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.tilde_essentials.tree_node import TreeNode
+from refactor.tilde_essentials.tree_node import TreeNode, count_nb_of_nodes, count_nb_of_inner_nodes
 
 
 class DecisionTree(Destructible):
@@ -40,15 +40,21 @@ class DecisionTree(Destructible):
         else:
             succeeds_test = self.test_evaluator.evaluate(example, tree_node.test)
             if succeeds_test:
-                self._predict_recursive(example, tree_node.left_child)
+                return self._predict_recursive(example, tree_node.left_child)
             else:
-                self._predict_recursive(example, tree_node.right_child)
+                return self._predict_recursive(example, tree_node.right_child)
 
     def __str__(self):
         return self.tree.__str__()
 
     def destruct(self):
         self.tree.destruct()
+
+    def get_nb_of_nodes(self) -> int:
+        return count_nb_of_nodes(self.tree)
+
+    def get_nb_of_inner_nodes(self):
+        return count_nb_of_inner_nodes(self.tree)
 
 
 def write_out_tree(fname: str, tree: DecisionTree):

@@ -59,3 +59,8 @@ class FoldInfo:
         self.key_set = key_set  # type: Set[Constant]
 
         self.dt_build_time_ms = None  # type: Optional[int]
+        self.execution_time_ms = 0  # type: float
+        self.accuracy = 0  # type: float
+
+        self.n_nodes = 0
+        self.n_inner_nodes = 0

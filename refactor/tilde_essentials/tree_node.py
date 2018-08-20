@@ -50,6 +50,29 @@ class TreeNode(Destructible):
             self.right_child.destruct()
 
 
+def count_nb_of_nodes(node: Optional['TreeNode'] = None) -> int:
+
+    if node is None:
+        return 0
+    else:
+        count = 1  # count the node itself
+        count += count_nb_of_nodes(node.left_child)
+        count += count_nb_of_nodes(node.right_child)
+
+        return count
+
+
+def count_nb_of_inner_nodes(node: Optional['TreeNode'] = None) -> int:
+
+    if node.is_leaf_node():
+        return 0
+    else:
+        count = 1
+        count += count_nb_of_inner_nodes(node.left_child)
+        count += count_nb_of_inner_nodes(node.right_child)
+        return count
+
+
 class TreeNodePrinter:
     """
     Pretty prints a TreeNode tree structure.
