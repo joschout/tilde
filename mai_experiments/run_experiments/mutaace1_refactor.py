@@ -1,37 +1,40 @@
-import os
+from mai_experiments.experiment_settings import DebugPrintingOptions, FileNameData
+from mai_experiments.fold_control import FoldInfoController
 
-import sys
-
-from tilde.fold.fold_file_parser import main_cross_validation
-from tilde.main import kb_suffix, s_suffix, bg_suffix
+# CHANGE THESE TWO FOR EACH TEST
+from mai_experiments.run_experiments.refactor_experiment_template import run_experiment
+from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 
 # CHANGE THESE TWO FOR EACH TEST
 test_name = 'mutaace1'
 logic_name = 'muta-d'
 
 # --- command-line printing settings ---
-debug_printing_tree_building = False
-debug_printing_program_conversion = False
-debug_printing_get_classifier = False
-debug_printing_classification = False
+debug_printing_options = DebugPrintingOptions()
 
 filter_out_unlabeled_examples = False
-hide_printouts = True
+hide_printouts = False
+
+# # --- directories ---
+# droot = 'D:\\KUL\\KUL MAI\\Masterproef\\TILDE\\tilde\\fold\\data\\'
+# dlogic_relative = 't-0-0-0\\'
+# dfold_relative = 'folds\\'
+# dout_relative = 'output\\'
 
 # --- directories ---
-droot = 'D:\\KUL\\KUL MAI\\Masterproef\\TILDE\\tilde\\fold\\data\\'
-dlogic_relative = 't-0-0-0\\'
-dfold_relative = 'folds\\'
-dout_relative = 'output\\'
+droot = '/home/joschout/Repos/tilde/mai_experiments/data'
+dlogic_relative = 't-0-0-0'
+dfold_relative = 'folds'
+dout_relative = 'output'
 
-dlogic = droot + test_name + '\\' + dlogic_relative
-dfold = droot + test_name + '\\' + dfold_relative
-doutput = droot + test_name + '\\' + dout_relative
+file_name_data = FileNameData(root_dir=droot,
+                              logic_relative_dir=dlogic_relative,
+                              fold_relative_dir=dfold_relative,
+                              output_relative_dir=dout_relative,
+                              test_name=test_name,
+                              logic_name=logic_name)
 
-# --- file names ---
-fname_examples = dlogic + logic_name + kb_suffix
-fname_settings = dlogic + logic_name + s_suffix
-fname_background = dlogic + logic_name + bg_suffix
+default_handler = get_back_end_default(QueryBackEnd.SUBTLE)
 
 # --- fold settings ---
 fname_prefix_fold = 'test'
@@ -39,23 +42,13 @@ fold_start_index = 0
 nb_folds = 10
 fold_suffix = '.txt'
 
-# -- create output directory
-if not os.path.exists(doutput):
-    os.makedirs(doutput)
+fold_info_controller = FoldInfoController(
+    fold_file_directory=file_name_data.fold_dir,
+    fold_fname_prefix=fname_prefix_fold,
+    fold_start_index=fold_start_index,
+    nb_folds=nb_folds,
+    fold_suffix=fold_suffix)
 
-print("start mutaace1")
-save_stdout = sys.stdout
-if hide_printouts:
-    sys.stdout = open(os.devnull, "w")
+run_experiment(file_name_data, fold_info_controller, default_handler,
+               hide_printouts, filter_out_unlabeled_examples, debug_printing_options)
 
-main_cross_validation(fname_examples=fname_examples, fname_settings=fname_settings, fname_background=fname_background,
-                      dir_fold_files=dfold, fname_prefix_fold=fname_prefix_fold, fold_start_index=fold_start_index,
-                      nb_folds=nb_folds, fold_suffix=fold_suffix, dir_output_files=doutput,
-                      filter_out_unlabeled_examples=filter_out_unlabeled_examples,
-                      debug_printing_tree_building=debug_printing_tree_building,
-                      debug_printing_program_conversion=debug_printing_program_conversion,
-                      debug_printing_get_classifier=debug_printing_get_classifier,
-                      debug_printing_classification=debug_printing_classification)
-if hide_printouts:
-    sys.stdout = save_stdout
-print("finished mutaace1")

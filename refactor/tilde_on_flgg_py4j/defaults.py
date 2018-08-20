@@ -29,10 +29,10 @@ class FLGGDefaultHandler(DefaultHandler):
         return tree_builder
 
     @staticmethod
-    def get_transformed_example_list(training_examples_collection: ExampleCollection):
+    def get_transformed_example_list(training_examples_collection: ExampleCollection, training=False):
         examples = []
         for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
-            example_clause = build_clause(ex_wr_sp)
+            example_clause = build_clause(ex_wr_sp, training=False)
             example = Example(data=example_clause, label=ex_wr_sp.label)
             example.classification_term = ex_wr_sp.classification_term
             examples.append(example)
