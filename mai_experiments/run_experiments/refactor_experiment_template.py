@@ -72,12 +72,12 @@ def run_experiment(file_name_data: FileNameData, fold_info_controller: FoldInfoC
         write_out_tree(tree_fname, decision_tree)
 
         start_test_example_transformation = time.time()
-        test_examples_reformed = []
-        for ex_wr_sp in test_examples:
-            example_clause = build_clause(ex_wr_sp, training=False)
-            example = Example(data=example_clause, label=ex_wr_sp.label)
-            example.classification_term = ex_wr_sp.classification_term
-            test_examples_reformed.append(example)
+        test_examples_reformed = default_handler.get_transformed_test_example_list(test_examples)
+        # for ex_wr_sp in test_examples:
+        #     example_clause = build_clause(ex_wr_sp, training=False)
+        #     example = Example(data=example_clause, label=ex_wr_sp.label)
+        #     example.classification_term = ex_wr_sp.classification_term
+        #     test_examples_reformed.append(example)
         end_test_example_transformation = time.time()
 
         statistics_handler = verify(decision_tree, test_examples_reformed)

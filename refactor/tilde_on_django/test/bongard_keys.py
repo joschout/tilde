@@ -4,9 +4,11 @@ import time
 from problog.engine import DefaultEngine
 
 from refactor.back_end_picking import get_back_end_default, QueryBackEnd
+from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.tilde_on_django.clause_handling import destruct_tree_tests
+from refactor.tilde_essentials.verification import verify
+from refactor.tilde_on_django.clause_handling import destruct_tree_tests, build_clause
 from tilde.IO.label_collector import LabelCollectorMapper
 from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from tilde.IO.parsing_examples import KeysExampleBuilder
@@ -77,7 +79,7 @@ examples = default_handler.get_transformed_example_list(training_examples_collec
 
 run_time_list = []
 
-for i in range(0, 10):
+for i in range(0, 1):
     print('=== START tree building ===')
 
     # test_evaluator = SimpleProgramQueryEvaluator(engine=engine)
@@ -85,6 +87,7 @@ for i in range(0, 10):
     #                            query_head_if_keys_format=prediction_goal)
     tree_builder = default_handler.get_default_decision_tree_builder(language, prediction_goal)  # type: TreeBuilder
     decision_tree = DecisionTree()
+
     start_time = time.time()
     decision_tree.fit(examples=examples, tree_builder=tree_builder)
     end_time = time.time()
@@ -92,6 +95,24 @@ for i in range(0, 10):
     run_time_ms = 1000.0 * run_time_sec
     run_time_list.append(run_time_ms)
     print("run time (ms):", run_time_ms)
+
+    test_examples = []
+    for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
+        example_clause = build_clause(ex_wr_sp, training=False)
+        example = Example(data=example_clause, label=ex_wr_sp.label)
+        example.classification_term = ex_wr_sp.classification_term
+        test_examples.append(example)
+
+    statistics_handler = verify(decision_tree, test_examples)
+    accuracy = statistics_handler.get_accuracy()
+    print("accuracy:", accuracy)
+
+    # first_test_example = test_examples[0]
+    # prediction = decision_tree.predict(first_test_example)
+    # print("prediction:", prediction)
+
+    for instance in test_examples:
+        instance.destruct()
 
     print('=== END tree building ===\n')
 
@@ -104,6 +125,8 @@ print("=== start destructing examples ===")
 for instance in examples:
     instance.data.destruct()
 print("=== end destructing examples ===")
+
+
 
 print("=== start destructing tree queries ===")
 destruct_tree_tests(decision_tree.tree)

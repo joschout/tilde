@@ -13,7 +13,7 @@ class StopCriterion:
 
     def __init__(self, max_depth: int = math.inf,
                  min_samples_split: int = 2,
-                 min_samples_leaf: int = 1
+                 min_samples_leaf: int = 2  # 1
                  ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
