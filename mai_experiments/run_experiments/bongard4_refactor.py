@@ -8,6 +8,12 @@ from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 test_name = 'bongard4'
 logic_name = 'bongard'
 
+import sys
+
+sys.path.append("/home/joschout/Repos/Django-subsumption")
+
+
+
 # --- command-line printing settings ---
 debug_printing_options = DebugPrintingOptions()
 

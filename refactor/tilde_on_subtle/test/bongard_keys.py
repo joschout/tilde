@@ -86,7 +86,13 @@ print('=== START tree building ===')
 
 tree_builder = default_handler.get_default_decision_tree_builder(language, prediction_goal)
 decision_tree = DecisionTree()
+
+start_time = time.time()
 decision_tree.fit(examples=examples, tree_builder=tree_builder)
+end_time = time.time()
+run_time_sec = end_time - start_time
+run_time_ms = 1000.0 * run_time_sec
+print("run time (ms):", run_time_ms)
 
 
 test_examples = []
@@ -103,13 +109,6 @@ print("accuracy:", accuracy)
 first_test_example = test_examples[0]
 prediction = decision_tree.predict(first_test_example)
 print("prediction:", prediction)
-
-start_time = time.time()
-decision_tree.fit(examples=examples, tree_builder=tree_builder)
-end_time = time.time()
-run_time_sec = end_time - start_time
-run_time_ms = 1000.0 * run_time_sec
-print("run time (ms):", run_time_ms)
 
 print('=== END tree building ===\n')
 
