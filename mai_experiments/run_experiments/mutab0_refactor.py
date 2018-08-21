@@ -1,9 +1,14 @@
+import sys
+
+sys.path.append("/home/joschout/Repos/Django-subsumption")
+
 from mai_experiments.experiment_settings import DebugPrintingOptions, FileNameData
 from mai_experiments.fold_control import FoldInfoController
 
 # CHANGE THESE TWO FOR EACH TEST
 from mai_experiments.run_experiments.refactor_experiment_template import run_experiment
 from refactor.back_end_picking import get_back_end_default, QueryBackEnd
+
 
 test_name = 'mutab0'
 logic_name = 'muta-d'

@@ -6,7 +6,7 @@ from tilde.representation.TILDE_query import TILDEQuery
 from tilde.representation.example import ExampleWrapper
 
 
-def build_clause(example: ExampleWrapper) -> ClauseWrapper:
+def build_clause(example: ExampleWrapper, training=True) -> ClauseWrapper:
 
     clause = ClauseWrapper(clause_id=None)
 
@@ -14,8 +14,9 @@ def build_clause(example: ExampleWrapper) -> ClauseWrapper:
         clause.add_literal_to_body(fact_statement)
 
     # TODO: remove ugly hack
-    if hasattr(example, 'classification_term'):
-        clause.add_literal_to_body(example.classification_term)
+    if training:
+        if hasattr(example, 'classification_term'):
+            clause.add_literal_to_body(example.classification_term)
 
     clause.lock_adding_to_clause()
     clause.add_problog_clause(example)
@@ -25,7 +26,7 @@ def build_clause(example: ExampleWrapper) -> ClauseWrapper:
 def build_hypothesis(tilde_query: TILDEQuery) -> HypothesisWrapper:
     clause = ClauseWrapper(clause_id=None)
 
-    literals = tilde_query.get_literals()
+    literals = tilde_query.get_literals_of_body()  # NOTE: only of query body
     for literal in literals:
         clause.add_literal_to_body(literal)
 

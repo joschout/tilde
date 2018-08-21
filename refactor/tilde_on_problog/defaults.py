@@ -40,3 +40,4 @@ class ProblogDefaultHandler(DefaultHandler):
             example.classification_term = ex_wr_sp.classification_term
             examples.append(example)
         return examples
+
