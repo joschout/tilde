@@ -7,11 +7,11 @@ from mai_experiments.experiment_settings import DebugPrintingOptions, FileNameDa
 from mai_experiments.fold_control import FoldInfoController
 
 # CHANGE THESE TWO FOR EACH TEST
-from tilde.IO.label_collector import LabelCollectorMapper
-from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
-from tilde.IO.parsing_examples import KeysExampleBuilder
-from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
-from tilde.representation.example import InternalExampleFormat
+from mai_version.IO.label_collector import LabelCollectorMapper
+from mai_version.IO.parsing_background_knowledge import parse_background_knowledge_keys
+from mai_version.IO.parsing_examples import KeysExampleBuilder
+from mai_version.IO.parsing_settings.setting_parser import KeysSettingsParser
+from mai_version.representation.example import InternalExampleFormat
 
 test_name = 'bongard4'
 logic_name = 'bongard'

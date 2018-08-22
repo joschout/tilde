@@ -6,12 +6,12 @@ from problog.engine import DefaultEngine
 from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.tilde_on_django.clause_handling import destruct_tree_tests
-from tilde.IO.label_collector import LabelCollectorMapper
-from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
-from tilde.IO.parsing_examples import KeysExampleBuilder
-from tilde.IO.parsing_settings.setting_parser import KeysSettingsParser
-from tilde.representation.example import InternalExampleFormat
+from refactor.query_testing_back_end.django.clause_handling import destruct_tree_tests
+from mai_version.IO.label_collector import LabelCollectorMapper
+from mai_version.IO.parsing_background_knowledge import parse_background_knowledge_keys
+from mai_version.IO.parsing_examples import KeysExampleBuilder
+from mai_version.IO.parsing_settings.setting_parser import KeysSettingsParser
+from mai_version.representation.example import InternalExampleFormat
 from tilde_config import kb_file, s_file
 
 # default_handler = get_back_end_default(QueryBackEnd.DJANGO)
