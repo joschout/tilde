@@ -1,5 +1,5 @@
 import sys
-import tilde.main as real_main
+import mai_version.main as real_main
 
 
 def main(argv=sys.argv[1:]):
