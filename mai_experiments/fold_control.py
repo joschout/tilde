@@ -3,7 +3,7 @@ from typing import List, Tuple, Set, Dict, Optional
 
 from problog.logic import Constant
 
-from tilde.IO.parsing_settings.utils import ConstantBuilder
+from mai_version.IO.parsing_settings.utils import ConstantBuilder
 
 
 class FoldInfoController:

@@ -1,4 +1,4 @@
-from tilde.representation.TILDE_query import TILDEQuery
+from mai_version.representation.TILDE_query import TILDEQuery
 
 
 class QueryWrapper:
