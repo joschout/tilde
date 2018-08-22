@@ -9,5 +9,5 @@ setup(name='tilde',
 
           ]
 
-      }, install_requires=['problog', 'scikit-learn'])
+      }, install_requires=['problog', 'scikit-learn', 'pyswip'])
 
