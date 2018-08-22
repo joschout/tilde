@@ -3,7 +3,7 @@ from typing import Optional
 from problog.logic import Term
 
 from refactor.tilde_essentials.test_generation import FOLTestGeneratorBuilder
-from refactor.query_testing_back_end.subtle import build_hypothesis
+from refactor.query_testing_back_end.subtle.clause_handling import build_hypothesis
 from refactor.query_testing_back_end.subtle.query_wrapping import SubtleQueryWrapper
 from mai_version.representation.TILDE_query import TILDEQueryHiddenLiteral, TILDEQuery
 from mai_version.representation.language import TypeModeLanguage

@@ -1,15 +1,14 @@
+from problog.engine import DefaultEngine
+
+from mai_version.representation.example_collection import ExampleCollection
 from refactor.default_interface import DefaultHandler
+from refactor.query_testing_back_end.problog.evaluation import SimpleProgramQueryEvaluator
+from refactor.query_testing_back_end.problog.test_generation import ProbLogTestGeneratorBuilder
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.leaf_strategy import LeafBuilder
 from refactor.tilde_essentials.splitter import Splitter
 from refactor.tilde_essentials.stop_criterion import StopCriterion
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.query_testing_back_end.problog import SimpleProgramQueryEvaluator
-from refactor.query_testing_back_end.problog.test_generation import ProbLogTestGeneratorBuilder
-
-from problog.engine import DefaultEngine
-
-from mai_version.representation.example_collection import ExampleCollection
 from tilde_config import split_criterion
 
 

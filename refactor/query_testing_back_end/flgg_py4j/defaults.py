@@ -6,9 +6,9 @@ from refactor.tilde_essentials.leaf_strategy import LeafBuilder
 from refactor.tilde_essentials.splitter import Splitter
 from refactor.tilde_essentials.stop_criterion import StopCriterion
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.query_testing_back_end.flgg_py4j import build_clause
+from refactor.query_testing_back_end.flgg_py4j.clause_handling import build_clause
 from refactor.query_testing_back_end.flgg_py4j.evaluation import FLGGQueryEvaluator
-from refactor.query_testing_back_end.flgg_py4j import FLGGTestGeneratorBuilder
+from refactor.query_testing_back_end.flgg_py4j.test_generation import FLGGTestGeneratorBuilder
 from mai_version.representation.example_collection import ExampleCollection
 from tilde_config import split_criterion
 

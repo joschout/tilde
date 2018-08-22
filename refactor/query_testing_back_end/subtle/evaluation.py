@@ -8,9 +8,14 @@ from refactor.tilde_essentials.query_wrapping import QueryWrapper
 
 
 class SubtleQueryEvaluator(TestEvaluator):
-    def __init__(self, subtle_path: str):
-        self.prolog = Prolog()
-        self.prolog.consult(subtle_path)
+    @staticmethod
+    def build(subtle_path: str)-> 'SubtleQueryEvaluator':
+            prolog = Prolog()
+            prolog.consult(subtle_path)
+            return SubtleQueryEvaluator(prolog)
+
+    def __init__(self, prolog:Prolog):
+        self.prolog=prolog
 
         self.subsumes_str = "subsumes({subsumer},{subsumee})"
 

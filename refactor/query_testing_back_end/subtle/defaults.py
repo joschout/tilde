@@ -4,7 +4,7 @@ from refactor.tilde_essentials.leaf_strategy import LeafBuilder
 from refactor.tilde_essentials.splitter import Splitter
 from refactor.tilde_essentials.stop_criterion import StopCriterion
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from refactor.query_testing_back_end.subtle import build_clause
+from refactor.query_testing_back_end.subtle.clause_handling import build_clause
 from refactor.query_testing_back_end.subtle.evaluation import SubtleQueryEvaluator
 from refactor.query_testing_back_end.subtle.test_generation import SubtleTestGeneratorBuilder
 from mai_version.representation.example_collection import ExampleCollection
@@ -15,7 +15,7 @@ class SubtleDefaultHandler(DefaultHandler):
 
     @staticmethod
     def get_default_decision_tree_builder(language, prediction_goal) -> TreeBuilder:
-        test_evaluator = SubtleQueryEvaluator(subtle_path())
+        test_evaluator = SubtleQueryEvaluator.build(subtle_path())
         test_generator_builder = SubtleTestGeneratorBuilder(language=language,
                                                             query_head_if_keys_format=prediction_goal)
 

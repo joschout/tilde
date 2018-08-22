@@ -5,7 +5,7 @@ from problog.engine import DefaultEngine
 from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree
 from refactor.tilde_essentials.verification import verify
-from refactor.query_testing_back_end.subtle import build_clause
+from refactor.query_testing_back_end.subtle.clause_handling import build_clause
 from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from mai_version.IO.label_collector import LabelCollectorMapper
 from mai_version.IO.parsing_background_knowledge import parse_background_knowledge_keys

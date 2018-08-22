@@ -1,16 +1,17 @@
 import time
 
-from refactor.tilde_essentials.example import Example
-from refactor.tilde_essentials.tree import DecisionTree
-from refactor.query_testing_back_end.problog.defaults import get_default_decision_tree_builder
+from problog.engine import DefaultEngine
+
 from mai_version.IO.label_collector import LabelCollectorMapper
 from mai_version.IO.parsing_background_knowledge import parse_background_knowledge_keys
 from mai_version.IO.parsing_examples import KeysExampleBuilder
 from mai_version.IO.parsing_settings.setting_parser import KeysSettingsParser
 from mai_version.representation.example import InternalExampleFormat
+from refactor.back_end_picking import get_back_end_default, QueryBackEnd
+from refactor.tilde_essentials.tree import DecisionTree
 from tilde_config import kb_file, s_file
 
-from problog.engine import DefaultEngine
+default_handler = get_back_end_default(QueryBackEnd.PROBLOG)
 
 file_name_labeled_examples = kb_file()
 file_name_settings = s_file()
@@ -66,18 +67,14 @@ print('=== END collecting labels ===\n')
 
 # =================================================================================================================
 
-examples = []
-for ex_wr_sp in training_examples_collection.get_example_wrappers_sp():
-    example = Example(data=ex_wr_sp.logic_program, label=ex_wr_sp.label)
-    example.classification_term = ex_wr_sp.classification_term
-    examples.append(example)
+examples = default_handler.get_transformed_example_list(training_examples_collection)
 
 # =================================================================================================================
 
 
 print('=== START tree building ===')
 
-tree_builder = get_default_decision_tree_builder(language, prediction_goal)
+tree_builder = default_handler.get_default_decision_tree_builder(language, prediction_goal)
 decision_tree = DecisionTree()
 
 
