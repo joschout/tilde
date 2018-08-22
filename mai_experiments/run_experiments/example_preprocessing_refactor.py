@@ -5,18 +5,18 @@ from problog.logic import Term
 from problog.program import SimpleProgram
 
 from mai_experiments.experiment_settings import FileNameData, DebugPrintingOptions
-from tilde.IO.input_format import KnowledgeBaseFormat
-from tilde.IO.label_collector import LabelCollectorMapper
-from tilde.IO.parsing_background_knowledge import parse_background_knowledge_keys
-from tilde.IO.parsing_examples import KeysExampleBuilder
-from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
-from tilde.IO.parsing_settings.utils import KeysPredictionGoalHandler
-from tilde.representation.background_knowledge import BackgroundKnowledgeWrapper
-from tilde.representation.example import InternalExampleFormat, ClauseDBExampleWrapper, Label, \
+from mai_version.IO.input_format import KnowledgeBaseFormat
+from mai_version.IO.label_collector import LabelCollectorMapper
+from mai_version.IO.parsing_background_knowledge import parse_background_knowledge_keys
+from mai_version.IO.parsing_examples import KeysExampleBuilder
+from mai_version.IO.parsing_settings.setting_parser import SettingsParserMapper
+from mai_version.IO.parsing_settings.utils import KeysPredictionGoalHandler
+from mai_version.representation.background_knowledge import BackgroundKnowledgeWrapper
+from mai_version.representation.example import InternalExampleFormat, ClauseDBExampleWrapper, Label, \
     SimpleProgramExampleWrapper
-from tilde.representation.example_collection import ExampleCollection
-from tilde.representation.language import TypeModeLanguage
-from tilde.trees.TreeBuilder import TreeBuilderType
+from mai_version.representation.example_collection import ExampleCollection
+from mai_version.representation.language import TypeModeLanguage
+from mai_version.trees.TreeBuilder import TreeBuilderType
 
 
 class Experiment:

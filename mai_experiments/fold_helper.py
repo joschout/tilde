@@ -3,22 +3,22 @@ from typing import TYPE_CHECKING, Optional, List, Set
 from problog.engine import GenericEngine
 
 from mai_experiments.experiment_settings import FileNameData, DebugPrintingOptions
-from tilde.IO.parsing_settings.setting_parser import SettingsParserMapper
-from tilde.run.program_phase import preprocessing_examples_keys
+from mai_version.IO.parsing_settings.setting_parser import SettingsParserMapper
+from mai_version.run.program_phase import preprocessing_examples_keys
 
 from problog.engine import DefaultEngine
 
 from problog.program import SimpleProgram
-from tilde.trees import TreeNode
-from tilde.IO.input_format import KnowledgeBaseFormat
-from tilde.IO.parsing_settings.utils import FileSettings, ConstantBuilder
-from tilde.representation.example import InternalExampleFormat, Label, ClauseDBExampleWrapper, \
+from mai_version.trees import TreeNode
+from mai_version.IO.input_format import KnowledgeBaseFormat
+from mai_version.IO.parsing_settings.utils import FileSettings, ConstantBuilder
+from mai_version.representation.example import InternalExampleFormat, Label, ClauseDBExampleWrapper, \
     SimpleProgramExampleWrapper
-from tilde.trees.TreeBuilder import TreeBuilderType
+from mai_version.trees.TreeBuilder import TreeBuilderType
 from problog.logic import Term, Constant
 
-from tilde.representation.background_knowledge import BackgroundKnowledgeWrapper
-from tilde.representation.example_collection import ExampleCollection
+from mai_version.representation.background_knowledge import BackgroundKnowledgeWrapper
+from mai_version.representation.example_collection import ExampleCollection
 
 
 def write_out_tree(fname: str, tree: TreeNode):

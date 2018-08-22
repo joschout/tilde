@@ -4,8 +4,8 @@ from problog.logic import Constant
 
 from mai_experiments.fold_control import FoldInfoController, FoldInfo
 from mai_experiments.run_experiments.example_preprocessing_refactor import Experiment
-from tilde.representation.example import ClauseDBExampleWrapper, ExampleWrapper
-from tilde.representation.example_collection import ExampleCollection
+from mai_version.representation.example import ClauseDBExampleWrapper, ExampleWrapper
+from mai_version.representation.example_collection import ExampleCollection
 
 
 class FoldExampleSplitter:

@@ -6,8 +6,8 @@ from mai_experiments.experiment_settings import FileNameData, DebugPrintingOptio
 from mai_experiments.fold_control import FoldInfoController
 from mai_experiments.run_experiments.refactor_experiment_template import run_experiment
 from refactor.back_end_picking import get_back_end_default, QueryBackEnd
-from tilde.fold.fold_file_parser import main_cross_validation
-from tilde.main import kb_suffix, s_suffix, bg_suffix
+from mai_version.fold.fold_file_parser import main_cross_validation
+from mai_version.main import kb_suffix, s_suffix, bg_suffix
 
 # CHANGE THESE TWO FOR EACH TEST
 test_name = 'canc'

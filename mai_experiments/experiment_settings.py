@@ -1,6 +1,6 @@
 import os
 
-from tilde.main import kb_suffix, s_suffix, bg_suffix
+from mai_version.main import kb_suffix, s_suffix, bg_suffix
 
 
 class DebugPrintingOptions:

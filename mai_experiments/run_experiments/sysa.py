@@ -1,7 +1,7 @@
 import os
 
-from tilde.fold.fold_file_parser import main_cross_validation
-from tilde.main import kb_suffix, s_suffix, bg_suffix
+from mai_version.fold.fold_file_parser import main_cross_validation
+from mai_version.main import kb_suffix, s_suffix, bg_suffix
 
 # CHANGE THESE TWO FOR EACH TEST
 test_name = 'sisya'

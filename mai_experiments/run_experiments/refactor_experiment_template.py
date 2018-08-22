@@ -10,14 +10,12 @@ from mai_experiments.fold_control import FoldInfoController
 from mai_experiments.fold_example_splitting import FoldExampleSplitter
 from mai_experiments.run_experiments.example_preprocessing_refactor import Experiment
 from refactor.default_interface import DefaultHandler
-from refactor.tilde_essentials.example import Example
 from refactor.tilde_essentials.tree import DecisionTree, write_out_tree
 from refactor.tilde_essentials.tree_builder import TreeBuilder
 from refactor.tilde_essentials.tree_pruning import prune_leaf_nodes_with_same_label
 from refactor.tilde_essentials.verification import verify
-from refactor.tilde_on_subtle.clause_handling import build_clause
-from tilde.representation.example import ExampleWrapper
-from tilde.representation.example_collection import ExampleCollection
+from mai_version.representation.example import ExampleWrapper
+from mai_version.representation.example_collection import ExampleCollection
 
 
 def run_experiment(file_name_data: FileNameData, fold_info_controller: FoldInfoController,

@@ -7,13 +7,13 @@ from problog.logic import Constant
 
 from mai_experiments.experiment_settings import FileNameData, DebugPrintingOptions
 from mai_experiments.fold_control import FoldInfoController
-from tilde.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
-from tilde.classification.classification_statistics_handler import ClassificationStatisticsHandler
-from tilde.classification.confidence_intervals import mean_confidence_interval
+from mai_version.classification.classification_helper import get_keys_classifier, do_labeled_examples_get_correctly_classified
+from mai_version.classification.classification_statistics_handler import ClassificationStatisticsHandler
+from mai_version.classification.confidence_intervals import mean_confidence_interval
 from mai_experiments.fold_helper import write_out_tree, write_out_program, FoldData
-from tilde.representation.example import ExampleWrapper, ClauseDBExampleWrapper
-from tilde.representation.example_collection import ExampleCollection
-from tilde.run.program_phase import build_tree, convert_tree_to_program, prune_tree
+from mai_version.representation.example import ExampleWrapper, ClauseDBExampleWrapper
+from mai_version.representation.example_collection import ExampleCollection
+from mai_version.run.program_phase import build_tree, convert_tree_to_program, prune_tree
 
 
 def split_examples_into_training_and_test_sets(

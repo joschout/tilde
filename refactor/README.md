@@ -10,22 +10,24 @@ The structure of this package is as follows:
 
 * tilde_essentials: This package contains the high-level FOL decision tree learning code.
   The goal is for it to not have any depencencies on the ProbLog library anymore.
-* tilde_on_problog: this uses [ProbLog](https://dtai.cs.kuleuven.be/problog/) both for representation and evaluation of examples and queries.
-  It should evolve to have the same functionality as was present in the master thesis code.
-  At the moment, it only uses SimplePrograms for representing examples; it does not yet support ClauseDBs.
-* tilde_on_django: This package uses the [Django](https://tao.lri.fr/tiki-index.php?page=Django) subsumption engine for evaluating queries on examples.
-  It uses ProbLog for IO and initial representation of examples and queries.
-  These are converted to Python wrappers around the C-based Django structures which are fed into the Django subsumption procedure.
-* tilde_on_FLGG: this uses the Java subsumption engine as described by 
-  > Fuksová, A. (2007). Fast relational learning using bounded LGG. Journal of Machine Learning Research, 8, 549–587.
-  
-  It uses ProbLog for IO and initial representation of examples and queries. 
-  These are converted to strings in a format that should be accepted by the subsumption engine.
-  The subsumption engine should be started as a separate Java process before running this code.
-  The communication is done using [Py4J](https://www.py4j.org/).
-* tilde_on_subtle: This package uses the [Subtle](https://dtai.cs.kuleuven.be/software/subtle/) subsumption engine. It requires SWI-Prolog to be installed. 
-  The communication with SWI-Prolog is done using [PySwip](https://github.com/yuce/pyswip).
-  From Python, SWI-Prolog is called as a library, in which the Subtle engine is consulted. 
+* query_testing_back_end: different implementations of the interfaces to test queries on examples 
+    * problog: this uses [ProbLog](https://dtai.cs.kuleuven.be/problog/) both for representation and evaluation of examples and queries.
+      It should evolve to have the same functionality as was present in the master thesis code.
+      At the moment, it only uses SimplePrograms for representing examples; it does not yet support ClauseDBs.
+    * django: This package uses the [Django](https://tao.lri.fr/tiki-index.php?page=Django) subsumption engine for evaluating queries on examples.
+      It uses ProbLog for IO and initial representation of examples and queries.
+      These are converted to Python wrappers around the C-based Django structures which are fed into the Django subsumption procedure.
+    * flgg_py4j: this uses the Java subsumption engine as described by 
+      > Fuksová, A. (2007). Fast relational learning using bounded LGG. Journal of Machine Learning Research, 8, 549–587.
+      
+      It uses ProbLog for IO and initial representation of examples and queries. 
+      These are converted to strings in a format that should be accepted by the subsumption engine.
+      The subsumption engine should be started as a separate Java process before running this code.
+      The communication is done using [Py4J](https://www.py4j.org/).
+    * subtle: This package uses the [Subtle](https://dtai.cs.kuleuven.be/software/subtle/) subsumption engine. It requires SWI-Prolog to be installed. 
+      The communication with SWI-Prolog is done using [PySwip](https://github.com/yuce/pyswip).
+      From Python, SWI-Prolog is called as a library, in which the Subtle engine is consulted. 
+
 ## TILDE essentials package
 
 ### Overview
