@@ -4,7 +4,11 @@ from problog.logic import Term
 
 from refactor.tilde_essentials.test_generation import FOLTestGeneratorBuilder
 from refactor.query_testing_back_end.django.clause_handling import build_hypothesis
-from src.ClauseWrapper import HypothesisWrapper
+try:
+    from src.ClauseWrapper import HypothesisWrapper
+except ImportError as err:
+    from refactor.query_testing_back_end.django.django_wrapper.ClauseWrapper import HypothesisWrapper
+
 from mai_version.representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
 from mai_version.representation.language import TypeModeLanguage
 from mai_version.trees.RefinementController import RefinementController

@@ -1,7 +1,11 @@
 from refactor.tilde_essentials.evaluation import TestEvaluator
 from refactor.tilde_essentials.example import Example
-from src.ClauseWrapper import HypothesisWrapper, ClauseWrapper
-from src.subsumption_checking import check_subsumption
+try:
+    from src.ClauseWrapper import ClauseWrapper, HypothesisWrapper
+    from src.subsumption_checking import check_subsumption
+except ImportError as err:
+    from refactor.query_testing_back_end.django.django_wrapper.ClauseWrapper import ClauseWrapper, HypothesisWrapper
+    from refactor.query_testing_back_end.django.django_wrapper.subsumption_checking import check_subsumption
 
 
 class DjangoQueryEvaluator(TestEvaluator):
