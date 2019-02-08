@@ -7,7 +7,7 @@ from refactor.query_testing_back_end.django.clause_handling import build_clause
 from refactor.query_testing_back_end.django.evaluation import DjangoQueryEvaluator
 from refactor.query_testing_back_end.django.splitter import DjangoSplitter
 from refactor.query_testing_back_end.django.test_generation import DjangoTestGeneratorBuilder
-from mai_version.representation.example_collection import ExampleCollection
+from refactor.representation.example_collection import ExampleCollection
 from tilde_config import split_criterion
 
 

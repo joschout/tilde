@@ -7,7 +7,7 @@ from refactor.tilde_essentials.tree_builder import TreeBuilder
 from refactor.query_testing_back_end.subtle.clause_handling import build_clause
 from refactor.query_testing_back_end.subtle.evaluation import SubtleQueryEvaluator
 from refactor.query_testing_back_end.subtle.test_generation import SubtleTestGeneratorBuilder
-from mai_version.representation.example_collection import ExampleCollection
+from refactor.representation.example_collection import ExampleCollection
 from tilde_config import subtle_path, split_criterion
 
 

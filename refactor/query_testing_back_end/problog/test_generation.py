@@ -3,9 +3,9 @@ from typing import Optional
 from problog.logic import Term
 
 from refactor.tilde_essentials.test_generation import FOLTestGeneratorBuilder
-from mai_version.representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
-from mai_version.representation.language import TypeModeLanguage
-from mai_version.trees.RefinementController import RefinementController
+from refactor.representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
+from refactor.representation.language import TypeModeLanguage
+from refactor.tilde_essentials.refinement_controller import RefinementController
 
 
 class ProbLogTestGeneratorBuilder(FOLTestGeneratorBuilder):
