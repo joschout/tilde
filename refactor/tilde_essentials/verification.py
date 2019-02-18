@@ -1,5 +1,5 @@
 from refactor.tilde_essentials.tree import DecisionTree
-from mai_version.classification.classification_statistics_handler import ClassificationStatisticsHandler
+from refactor.tilde_essentials.classification_statistics_handler import ClassificationStatisticsHandler
 
 
 def verify(decision_tree: DecisionTree, test_examples, debug_printing=False):

@@ -9,7 +9,7 @@ from pyswip import Prolog
 prolog = Prolog()
 prolog.assertz("father(michael,john)")
 prolog.assertz("father(michael,gina)")
-query_results = list(prolog.query("father(michael,X)"))\
+query_results = list(prolog.query("father(michael,X)"))
 
 # check if results are correct:
 if query_results == [{'X': 'john'}, {'X': 'gina'}]:

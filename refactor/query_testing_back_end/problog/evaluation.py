@@ -7,7 +7,7 @@ from problog.program import LogicProgram, SimpleProgram, PrologString
 
 from refactor.tilde_essentials.evaluation import TestEvaluator
 from refactor.tilde_essentials.example import Example
-from mai_version.representation.TILDE_query import TILDEQuery
+from refactor.representation.TILDE_query import TILDEQuery
 
 
 class ProbLogQueryEvaluator(TestEvaluator):

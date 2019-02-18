@@ -2,11 +2,11 @@ import time
 
 from problog.engine import DefaultEngine
 
-from mai_version.IO.label_collector import LabelCollectorMapper
-from mai_version.IO.parsing_background_knowledge import parse_background_knowledge_keys
-from mai_version.IO.parsing_examples import KeysExampleBuilder
-from mai_version.IO.parsing_settings.setting_parser import KeysSettingsParser
-from mai_version.representation.example import InternalExampleFormat
+from refactor.io.label_collector import LabelCollectorMapper
+from refactor.io.parsing_background_knowledge import parse_background_knowledge_keys
+from refactor.io.parsing_examples import KeysExampleBuilder
+from refactor.io.parsing_settings.setting_parser import KeysSettingsParser
+from refactor.representation.example import InternalExampleFormat
 from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from refactor.tilde_essentials.tree import DecisionTree
 from tilde_config import kb_file, s_file
@@ -32,6 +32,7 @@ fname_background_knowledge = None
 internal_ex_format = InternalExampleFormat.CLAUSEDB
 
 language = parsed_settings.language  # type: TypeModeLanguage
+
 
 # TODO: unify this with models --> let models use a prediction goal predicate label()
 prediction_goal_handler = parsed_settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler

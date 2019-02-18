@@ -1,6 +1,6 @@
 from problog.engine import DefaultEngine
 
-from mai_version.representation.example_collection import ExampleCollection
+from refactor.representation.example_collection import ExampleCollection
 from refactor.default_interface import DefaultHandler
 from refactor.query_testing_back_end.problog.evaluation import SimpleProgramQueryEvaluator
 from refactor.query_testing_back_end.problog.test_generation import ProbLogTestGeneratorBuilder

@@ -1,5 +1,5 @@
 from refactor.tilde_essentials.tree_builder import TreeBuilder
-from mai_version.representation.example_collection import ExampleCollection
+from refactor.representation.example_collection import ExampleCollection
 
 
 class DefaultHandler:

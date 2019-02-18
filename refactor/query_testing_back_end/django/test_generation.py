@@ -9,9 +9,9 @@ try:
 except ImportError as err:
     from refactor.query_testing_back_end.django.django_wrapper.ClauseWrapper import HypothesisWrapper
 
-from mai_version.representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
-from mai_version.representation.language import TypeModeLanguage
-from mai_version.trees.RefinementController import RefinementController
+from refactor.representation.TILDE_query import TILDEQuery, TILDEQueryHiddenLiteral
+from refactor.representation.language import TypeModeLanguage
+from refactor.tilde_essentials.refinement_controller import RefinementController
 
 
 class DjangoTestGeneratorBuilder(FOLTestGeneratorBuilder):

@@ -1,7 +1,7 @@
 from typing import Iterable
 
-from mai_version.representation.TILDE_query import TILDEQuery
-from mai_version.representation.example import ExampleWrapper
+from refactor.representation.TILDE_query import TILDEQuery
+from refactor.representation.example import ExampleWrapper
 
 
 def literals_to_clause_string(iterable_literals: Iterable, init_string="") -> str:
