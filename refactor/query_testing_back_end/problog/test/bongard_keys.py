@@ -11,7 +11,7 @@ from refactor.back_end_picking import get_back_end_default, QueryBackEnd
 from refactor.tilde_essentials.tree import DecisionTree
 from tilde_config import kb_file, s_file
 
-default_handler = get_back_end_default(QueryBackEnd.PROBLOG)
+default_handler = get_back_end_default(QueryBackEnd.SIMPLE_PROGRAM)
 
 file_name_labeled_examples = kb_file()
 file_name_settings = s_file()
