@@ -1,0 +1,7 @@
+{
+    "S_FILE": "ACE-examples-data/ace/bongard/keys/bongard.s",
+    "KB_FILE": "ACE-examples-data/ace/bongard/keys/bongard.kb",
+    "BG_FILE": "",
+    "SUBTLE_PATH": "libs/subtle-2.2.pl",
+    "SPLIT_CRITERION": "entropy"
+}

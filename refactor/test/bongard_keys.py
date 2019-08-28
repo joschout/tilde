@@ -71,10 +71,10 @@ print('=== END collecting labels ===\n')
 
 
 default_handlers = [
-    ('django', get_back_end_default(QueryBackEnd.DJANGO)),
+    # ('django', get_back_end_default(QueryBackEnd.DJANGO)),
     # ('problog-simple', get_back_end_default(QueryBackEnd.SIMPLE_PROGRAM)),
     ('subtle', get_back_end_default(QueryBackEnd.SUBTLE)),
-    ('FLGG', get_back_end_default(QueryBackEnd.FLGG))
+    # ('FLGG', get_back_end_default(QueryBackEnd.FLGG))
 ]
 
 
