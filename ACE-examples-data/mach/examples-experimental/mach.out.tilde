@@ -1,0 +1,97 @@
+--------------------------
+
+** Output of Tilde 2.2 (ilProlog) **
+Run on twoflower : i686 running Linux
+
+Command: t
+Settings:
+** Common ** 
+*  classes  :  [fix,sendback,ok] 
+*  leave_out  :  false (default) 
+*  load  :  examples 
+*  granularity  :  10 (default) 
+*  talking  :  3 (default) 
+*  outerloop  :  queries (default) 
+*  use_packs  :  0 
+*  huge  :  off (default) 
+*  odbc  :  off (default) 
+*  expert_implicit_language  :  off (default) 
+*  mi_distance_maxsample  :  100 (default) 
+*  generation_order  :  old (default) 
+*  old_expand  :  on (default) 
+*  default_preprocessing  :  off (default) 
+*  default_min  :  1 (default) 
+** Tilde ** 
+*  discretization  :  none (default) 
+*  tilde_mode  :  classify (default) 
+*  ftest  :  0.05 (default) 
+*  sampling_strategy  :  none 
+*  multiscore  :  off (default) 
+*  minimal_cases  :  2 (default) 
+*  accuracy  :  1.0 (default) 
+*  pruning  :  c45 (default) 
+*  random_validation_set  :  0 (default) 
+*  confidence_level  :  0.25 (default) 
+*  output_options  :  [c45,prolog] (default) 
+*  heuristic  :  gainratio (default) 
+*  prune_rules  :  false (default) 
+*  resume  :  off 
+*  precompute  :  [] (default) 
+*  complexity_penalty  :  1.0 (default) 
+************** 
+Language:
+  rmode(replaceable(+A))
+  rmode(not_replaceable(+A))
+  rmode(worn(+-A))
+  type(replaceable(comp))
+  type(not_replaceable(comp))
+  type(worn(comp))
+
+--------------------------
+
+
+Discretization time: 0.0 seconds.
+Induction time: 0.0 seconds.
+
+--------------------------
+
+after safe pruning:
+
+
+compact_complexity : 2 nodes (2 literals)
+compact_training_accuracy : 1.0=15/15
+compact_global_accuracy : 1.0=15/15
+compact_C4.5_error_estimation : 3.58571211334849 (relative: 0.239047474223233)
+
+--------------------------
+
+after pruning:
+
+
+pruned_complexity : 2 nodes (2 literals)
+pruned_training_accuracy : 1.0=15/15
+pruned_global_accuracy : 1.0=15/15
+pruned_C4.5_error_estimation : 3.58571211334849 (relative: 0.239047474223233)
+
+--------------------------
+
+Compact notation of pruned tree:
+
+worn(A) ? 
++--yes: not_replaceable(A) ? 
+|       +--yes: [sendback] [6.0/6.0]
+|       +--no:  [fix] [6.0/6.0]
++--no:  [ok] [3.0/3.0]
+
+
+--------------------------
+
+Equivalent prolog program:
+
+class([sendback]) :- worn(A),not_replaceable(A), !.
+% 6.0/6.0=1.0.
+class([fix]) :- worn(A), !.
+% 6.0/6.0=1.0.
+class([ok]).
+% 3.0/3.0=1.0.
+

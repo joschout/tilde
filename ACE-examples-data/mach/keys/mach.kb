@@ -1,0 +1,54 @@
+machine(1, sendback). 
+worn(1,gear).
+worn(1,engine).
+
+machine(2, ok).
+
+machine(3, fix).
+worn(3,gear).
+
+machine(4, sendback).
+worn(4,engine).
+
+machine(5, fix).
+worn(5,gear).
+worn(5,chain).
+
+machine(6, fix).
+worn(6,wheel).
+
+machine(7, sendback).
+worn(7,wheel).
+worn(7,control_unit).
+
+machine(8, ok).
+
+machine(9, fix).
+worn(9,wheel).
+worn(9,chain).
+
+machine(10, sendback).
+worn(10,engine).
+worn(10,chain).
+
+machine(11, sendback).
+worn(11,engine).
+worn(11,control_unit).
+
+machine(12, fix).
+worn(12,chain).
+worn(12,wheel).
+worn(12,gear).
+
+machine(13, sendback).
+worn(13,chain).
+worn(13,wheel).
+worn(13,gear).
+worn(13,engine).
+
+machine(14, ok).
+
+machine(15, fix).
+worn(15,wheel).
+worn(15,gear).
+

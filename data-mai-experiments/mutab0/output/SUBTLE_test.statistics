@@ -1,0 +1,6 @@
+mean accuracy: 0.6811145510835913
+mean decision tree build time (ms):1718.8286781311035
+mean fold execution time (ms):1734.6179723739624
+mean total nb of nodes:4.2
+mean nb of inner nodes:1.6
+total time cross  (sum folds) (ms): 17346.179723739624

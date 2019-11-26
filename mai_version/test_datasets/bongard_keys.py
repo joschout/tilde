@@ -1,3 +1,5 @@
+import os
+
 import matplotlib
 matplotlib.use('Agg')
 import statistics
@@ -13,8 +15,14 @@ from mai_version.representation.example import InternalExampleFormat
 from mai_version.run.run_keys import run_keys
 from mai_version.trees.TreeBuilder import TreeBuilderType
 
-file_name_labeled_examples = '/home/joschout/Documents/tilde_data/ACE-examples-data/ace/bongard/keys/bongard.kb'
-file_name_settings = '/home/joschout/Documents/tilde_data/ACE-examples-data/ace/bongard/keys/bongard.s'
+project_dir = '/home/joschout/Repos/tilde'
+
+dataset_name = 'bongard'
+data_dir = os.path.join(project_dir, 'ACE-examples-data', dataset_name)
+
+file_name_settings = os.path.join(data_dir, 'keys', dataset_name + '.s')
+file_name_labeled_examples = os.path.join(data_dir, 'keys', dataset_name + '.kb')
+
 
 use_clausedb = True
 

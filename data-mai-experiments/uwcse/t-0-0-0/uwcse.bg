@@ -1,0 +1,34 @@
+eq_faculty(A, B) :- A == B.
+eq_level(A, B) :- A == B.
+eq_phase(A, B) :- A == B.
+eq_years(A, B) :- A == B.
+
+theorycte(faculty, c2_faculty_8).
+theorycte(faculty, c2_faculty_adjunct_8).
+theorycte(faculty, c2_faculty_affiliate_8).
+theorycte(faculty, c2_faculty_emeritus_8).
+theorycte(faculty, c2_faculty_visiting_8).
+theorycte(level, c4_level_100_7).
+theorycte(level, c4_level_300_7).
+theorycte(level, c4_level_400_7).
+theorycte(level, c4_level_500_7).
+theorycte(phase, c5_post_generals_9).
+theorycte(phase, c5_post_quals_9).
+theorycte(phase, c5_pre_quals_9).
+theorycte(years, c8_1).
+theorycte(years, c8_10).
+theorycte(years, c8_12).
+theorycte(years, c8_2).
+theorycte(years, c8_3).
+theorycte(years, c8_4).
+theorycte(years, c8_5).
+theorycte(years, c8_6).
+theorycte(years, c8_7).
+theorycte(years, c8_8).
+theorycte(years, c8_9).
+
+phb_ignore(eq_faculty/2).
+phb_ignore(eq_level/2).
+phb_ignore(eq_phase/2).
+phb_ignore(eq_years/2).
+

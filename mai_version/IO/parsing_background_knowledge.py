@@ -7,8 +7,8 @@ from mai_version.representation.background_knowledge import BackgroundKnowledgeW
 
 
 #
-# def parse_background_knowledge(file_name: str)-> PrologFile:
-#     return PrologFile(file_name)
+def parse_background_knowledge(file_name: str)-> PrologFile:
+    return PrologFile(file_name)
 
 
 def parse_background_knowledge_models(file_name: Optional[str] = None,

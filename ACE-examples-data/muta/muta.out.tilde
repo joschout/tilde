@@ -1,0 +1,132 @@
+--------------------------
+
+** Output of Tilde 2.2 (ilProlog) **
+Run on twoflower : i686 running Linux
+
+Command: t
+Settings:
+** Common ** 
+*  classes  :  [neg,pos] 
+*  leave_out  :  false (default) 
+*  load  :  key (default) 
+*  granularity  :  10 (default) 
+*  talking  :  3 (default) 
+*  outerloop  :  queries (default) 
+*  use_packs  :  0 
+*  huge  :  off (default) 
+*  odbc  :  off (default) 
+*  expert_implicit_language  :  off (default) 
+*  mi_distance_maxsample  :  100 (default) 
+*  generation_order  :  old (default) 
+*  old_expand  :  on (default) 
+*  default_preprocessing  :  off (default) 
+*  default_min  :  1 (default) 
+** Tilde ** 
+*  discretization  :  none (default) 
+*  tilde_mode  :  classify (default) 
+*  ftest  :  0.05 (default) 
+*  sampling_strategy  :  none 
+*  multiscore  :  off (default) 
+*  minimal_cases  :  4 
+*  accuracy  :  1.0 (default) 
+*  pruning  :  c45 (default) 
+*  random_validation_set  :  0 (default) 
+*  confidence_level  :  0.25 (default) 
+*  output_options  :  [c45,prolog] (default) 
+*  heuristic  :  gain 
+*  prune_rules  :  false (default) 
+*  resume  :  off 
+*  precompute  :  [] (default) 
+*  complexity_penalty  :  1.0 (default) 
+************** 
+Language:
+  predict(dmuta(+mol,-class))
+  rmode(atom(+A,-B,-C,#[1,3,8,10,14,16,19,21,22,25,26,27,28,29,31,32,34,35,36,38,40,41,42,45,49,50,51,52,72,92,93,94,95,194,195,230,232],-D))
+  rmode(atom(+A,-B,#[br,c,cl,f,h,i,n,o,s],-C,-D))
+  rmode(atom(+A,-B,+-C,-D,-E))
+  rmode(sbond(+A,+B,+-C,-D))
+  type(equals(A,B))
+  type(atom(mol,id,element,type,charge))
+  type(sbond(mol,id,id,bondtype))
+  type(molecule(mol))
+  type(mymember(A,B))
+  type(dmuta(mol,class))
+  type(member(A,B))
+  lookahead(sbond(A,B,C,D),equals(D,#[1,2,3,4,5,7]))
+  lookahead(sbond(A,B,C,D),atom(A,C,#[br,c,cl,f,h,i,n,o,s],E,F))
+  lookahead(sbond(A,B,C,D),atom(A,C,E,#[1,3,8,10,14,16,19,21,22,25,26,27,28,29,31,32,34,35,36,38,40,41,42,45,49,50,51,52,72,92,93,94,95,194,195,230,232],F))
+  lookahead(sbond(A,B,C,D),sbond(A,C,+-E,F))
+
+--------------------------
+
+
+Discretization time: 0.0 seconds.
+Induction time: 4.44 seconds.
+
+--------------------------
+
+after safe pruning:
+
+
+compact_complexity : 12 nodes (13 literals)
+compact_training_accuracy : 0.782608695652174=180/230
+compact_global_accuracy : 0.782608695652174=180/230
+compact_C4.5_error_estimation : 71.4705074516556 (relative: 0.310741336746329)
+
+--------------------------
+
+after pruning:
+
+
+pruned_complexity : 8 nodes (8 literals)
+pruned_training_accuracy : 0.782608695652174=180/230
+pruned_global_accuracy : 0.782608695652174=180/230
+pruned_C4.5_error_estimation : 66.6546112633088 (relative: 0.28980265766656)
+
+--------------------------
+
+Compact notation of pruned tree:
+
+dmuta(A,B)
+atom(A,C,D,27,E) ? 
++--yes: atom(A,F,G,35,H) ? 
+|       +--yes: [neg] [6.0/7.0]
+|       +--no:  atom(A,J,K,29,L) ? 
+|               +--yes: [pos] [20.0/20.0]
+|               +--no:  atom(A,N,O,8,P) ? 
+|                       +--yes: atom(A,Q,R,16,S) ? 
+|                       |       +--yes: [neg] [4.0/4.0]
+|                       |       +--no:  [pos] [4.0/6.0]
+|                       +--no:  [pos] [49.0/60.0]
++--no:  atom(A,V,W,29,X) ? 
+        +--yes: atom(A,Y,Z,1,A1) ? 
+        |       +--yes: [neg] [7.0/12.0]
+        |       +--no:  [pos] [29.0/36.0]
+        +--no:  atom(A,C1,D1,52,E1) ? 
+                +--yes: [pos] [6.0/6.0]
+                +--no:  [neg] [55.0/79]
+
+
+--------------------------
+
+Equivalent prolog program:
+
+dmuta(A,neg) :- atom(A,B,C,27,D),atom(A,E,F,35,G), !.
+% 6.0/7.0=0.857142857142857.
+dmuta(A,pos) :- atom(A,B,C,27,D),atom(A,E,F,29,G), !.
+% 20.0/20.0=1.0.
+dmuta(A,neg) :- atom(A,B,C,27,D),atom(A,E,F,8,G),atom(A,H,I,16,J), !.
+% 4.0/4.0=1.0.
+dmuta(A,pos) :- atom(A,B,C,27,D),atom(A,E,F,8,G), !.
+% 4.0/6.0=0.666666666666667.
+dmuta(A,pos) :- atom(A,B,C,27,D), !.
+% 49.0/60.0=0.816666666666667.
+dmuta(A,neg) :- atom(A,B,C,29,D),atom(A,E,F,1,G), !.
+% 7.0/12.0=0.583333333333333.
+dmuta(A,pos) :- atom(A,B,C,29,D), !.
+% 29.0/36.0=0.805555555555556.
+dmuta(A,pos) :- atom(A,B,C,52,D), !.
+% 6.0/6.0=1.0.
+dmuta(A,neg).
+% 55.0/79=0.69620253164557.
+

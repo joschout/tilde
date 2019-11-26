@@ -1,0 +1,130 @@
+************************************************* 
+******************* W A R M R ******************* 
+************************************************* 
+* Version : 1.1.10-s2 
+* Runtime : no 
+* 
+* Date : dd/mm/yyyy 
+* 
+* Application : bongard 
+* Configuration :  
+* Background file : /home/jan/paper/presentaties/ace-intro-thesis-stud/ace/bongard/keys/bongard.bg -- not found 
+* Settings file : /home/jan/paper/presentaties/ace-intro-thesis-stud/ace/bongard/keys/bongard.s -- loaded 
+* Theory file : bongard.t -- not found 
+* 
+* 
+*** SETTINGS *** 
+** Common ** 
+*  classes  :  [pos,neg] (default) 
+*  leave_out  :  false (default) 
+*  load  :  key (default) 
+*  granularity  :  10 (default) 
+*  talking  :  3 (default) 
+*  outerloop  :  queries (default) 
+*  use_packs  :  0 
+*  huge  :  off (default) 
+*  odbc  :  off (default) 
+*  expert_implicit_language  :  off (default) 
+*  mi_distance_maxsample  :  100 (default) 
+*  generation_order  :  old (default) 
+*  old_expand  :  on (default) 
+*  default_preprocessing  :  off (default) 
+*  default_min  :  1 (default) 
+** Tilde ** 
+*  discretization  :  none (default) 
+*  tilde_mode  :  classify (default) 
+*  ftest  :  0.05 (default) 
+*  sampling_strategy  :  none 
+*  multiscore  :  off (default) 
+*  minimal_cases  :  2 (default) 
+*  accuracy  :  1.0 (default) 
+*  pruning  :  c45 (default) 
+*  random_validation_set  :  0 (default) 
+*  confidence_level  :  0.25 (default) 
+*  output_options  :  [c45,prolog] (default) 
+*  heuristic  :  gain 
+*  prune_rules  :  false (default) 
+*  resume  :  off 
+*  precompute  :  [] (default) 
+*  complexity_penalty  :  1.0 (default) 
+** Warmr ** 
+*  bias  :  warmode (default) 
+*  minfreq  :  0.2 
+*  minconf  :  0.01 (default) 
+*  addclass  :  off (default) 
+*  bw_cell  :  on (default) 
+*  bw_disj  :  off (default) 
+*  bw_regression  :  off (default) 
+*  jan_warmr_make_freq_files  :  on (default) 
+*  jan_warmr_output_to_disk  :  on (default) 
+*  jan_warmr_output_to_memory  :  off (default) 
+*  jan_warmr_incremental_base  :  [] (default) 
+*  jan_warmr_sig_constraint  :  A,true 
+*  jan_warmr_maxdepth  :  100 (default) 
+*  jan_warmr_confirm_overwrite  :  on (default) 
+*  jan_warmr_cache_queries  :  off (default) 
+*  warmr_version  :  v2_2 (default) 
+************** 
+* sample size : 392 
+* 
+************************************************* 
+
+sample_size(392).
+c_counter(1,3).
+f_counter(1,3).
+   freq(1,1,[bongard(A,B),triangle(A,C)],0.778061224489796).
+   freq(2,1,[bongard(A,B),square(A,C)],0.783163265306122).
+   freq(3,1,[bongard(A,B),circle(A,C)],0.701530612244898).
+
+c_counter(2,18).
+f_counter(2,8).
+   freq(4,2,[bongard(A,B),triangle(A,C),square(A,D)],0.604591836734694).
+   freq(5,2,[bongard(A,B),triangle(A,C),circle(A,D)],0.510204081632653).
+   freq(6,2,[bongard(A,B),triangle(A,C),in(A,C,D)],0.459183673469388).
+   freq(7,2,[bongard(A,B),triangle(A,C),config(A,C,down)],0.489795918367347).
+   freq(8,2,[bongard(A,B),triangle(A,C),config(A,C,up)],0.533163265306122).
+   freq(9,2,[bongard(A,B),square(A,C),circle(A,D)],0.51530612244898).
+   freq(10,2,[bongard(A,B),square(A,C),in(A,C,D)],0.464285714285714).
+   freq(11,2,[bongard(A,B),circle(A,C),in(A,C,D)],0.522959183673469).
+
+c_counter(3,38).
+f_counter(3,17).
+   freq(12,3,[bongard(A,B),triangle(A,C),square(A,D),circle(A,E)],0.36734693877551).
+   freq(13,3,[bongard(A,B),triangle(A,C),square(A,D),in(A,D,C)],0.211734693877551).
+   freq(14,3,[bongard(A,B),triangle(A,C),square(A,D),in(A,D,E)],0.372448979591837).
+   freq(15,3,[bongard(A,B),triangle(A,C),square(A,D),in(A,C,D)],0.214285714285714).
+   freq(16,3,[bongard(A,B),triangle(A,C),square(A,D),in(A,C,E)],0.352040816326531).
+   freq(17,3,[bongard(A,B),triangle(A,C),square(A,D),config(A,C,down)],0.372448979591837).
+   freq(18,3,[bongard(A,B),triangle(A,C),square(A,D),config(A,C,up)],0.405612244897959).
+   freq(19,3,[bongard(A,B),triangle(A,C),circle(A,D),in(A,D,E)],0.331632653061224).
+   freq(20,3,[bongard(A,B),triangle(A,C),circle(A,D),in(A,C,E)],0.278061224489796).
+   freq(21,3,[bongard(A,B),triangle(A,C),circle(A,D),config(A,C,down)],0.321428571428571).
+   freq(22,3,[bongard(A,B),triangle(A,C),circle(A,D),config(A,C,up)],0.357142857142857).
+   freq(23,3,[bongard(A,B),triangle(A,C),in(A,C,D),triangle(A,D)],0.209183673469388).
+   freq(24,3,[bongard(A,B),triangle(A,C),in(A,C,D),config(A,C,down)],0.239795918367347).
+   freq(25,3,[bongard(A,B),triangle(A,C),in(A,C,D),config(A,C,up)],0.288265306122449).
+   freq(26,3,[bongard(A,B),square(A,C),circle(A,D),in(A,D,E)],0.380102040816327).
+   freq(27,3,[bongard(A,B),square(A,C),circle(A,D),in(A,C,E)],0.288265306122449).
+   freq(28,3,[bongard(A,B),circle(A,C),in(A,C,D),circle(A,D)],0.206632653061224).
+
+c_counter(4,31).
+f_counter(4,12).
+   freq(29,4,[bongard(A,B),triangle(A,C),square(A,D),circle(A,E),in(A,E,F)],0.232142857142857).
+   freq(30,4,[bongard(A,B),triangle(A,C),square(A,D),circle(A,E),in(A,D,F)],0.227040816326531).
+   freq(31,4,[bongard(A,B),triangle(A,C),square(A,D),circle(A,E),in(A,C,F)],0.201530612244898).
+   freq(32,4,[bongard(A,B),triangle(A,C),square(A,D),circle(A,E),config(A,C,down)],0.229591836734694).
+   freq(33,4,[bongard(A,B),triangle(A,C),square(A,D),circle(A,E),config(A,C,up)],0.247448979591837).
+   freq(34,4,[bongard(A,B),triangle(A,C),square(A,D),in(A,D,E),triangle(A,E)],0.211734693877551).
+   freq(35,4,[bongard(A,B),triangle(A,C),square(A,D),in(A,D,E),config(A,C,down)],0.229591836734694).
+   freq(36,4,[bongard(A,B),triangle(A,C),square(A,D),in(A,D,E),config(A,C,up)],0.25).
+   freq(37,4,[bongard(A,B),triangle(A,C),square(A,D),in(A,C,E),square(A,E)],0.214285714285714).
+   freq(38,4,[bongard(A,B),triangle(A,C),square(A,D),in(A,C,E),config(A,C,up)],0.224489795918367).
+   freq(39,4,[bongard(A,B),triangle(A,C),circle(A,D),in(A,D,E),config(A,C,down)],0.211734693877551).
+   freq(40,4,[bongard(A,B),triangle(A,C),circle(A,D),in(A,D,E),config(A,C,up)],0.211734693877551).
+
+c_counter(5,6).
+f_counter(5,0).
+
+c_counter(6,0).
+Time on timer total is 0.41
+Time on timer exec_queries is 0.16

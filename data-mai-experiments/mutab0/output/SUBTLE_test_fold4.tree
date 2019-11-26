@@ -1,0 +1,5 @@
+INode, query: [atm_cl(A,C,D,E)]
+	|-Leaf, class label: neg, [6/9]
+	\-INode, query: [atm_f(A,C,D,E)]
+		|-Leaf, class label: neg, [4/8]
+		\-Leaf, class label: pos, [104/152]

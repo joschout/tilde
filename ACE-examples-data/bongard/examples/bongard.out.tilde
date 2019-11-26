@@ -1,0 +1,122 @@
+--------------------------
+
+** Output of Tilde 2.2 (ilProlog) **
+Run on twoflower :  running linux
+
+Command: t
+Settings:
+** Common ** 
+*  classes  :  [pos,neg] (default) 
+*  leave_out  :  false (default) 
+*  load  :  examples 
+*  granularity  :  10 (default) 
+*  talking  :  3 (default) 
+*  outerloop  :  queries (default) 
+*  use_packs  :  0 
+*  huge  :  off (default) 
+*  odbc  :  off (default) 
+*  expert_implicit_language  :  off (default) 
+*  mi_distance_maxsample  :  100 (default) 
+*  generation_order  :  old (default) 
+*  old_expand  :  on (default) 
+*  default_preprocessing  :  off (default) 
+*  default_min  :  1 (default) 
+** Tilde ** 
+*  discretization  :  none (default) 
+*  tilde_mode  :  classify (default) 
+*  ftest  :  0.05 (default) 
+*  sampling_strategy  :  fixed(1000) (default) 
+*  multiscore  :  off (default) 
+*  minimal_cases  :  2 (default) 
+*  accuracy  :  1.0 (default) 
+*  pruning  :  c45 (default) 
+*  random_validation_set  :  0 (default) 
+*  confidence_level  :  0.25 (default) 
+*  output_options  :  [c45,prolog] (default) 
+*  heuristic  :  gainratio (default) 
+*  prune_rules  :  false (default) 
+*  resume  :  write (default) 
+*  precompute  :  [] (default) 
+*  complexity_penalty  :  1.0 (default) 
+************** 
+Language:
+  rmode(triangle(+-A))
+  rmode(square(+-A))
+  rmode(circle(+-A))
+  rmode(in(+A,+-B))
+  rmode(config(+A,#[up,down]))
+  type(triangle(obj))
+  type(square(obj))
+  type(circle(obj))
+  type(in(obj,obj))
+  type(config(obj,conf))
+  type(member(A,B))
+
+--------------------------
+
+
+Discretization time: 0.0 seconds.
+Induction time: 0.23 seconds.
+
+--------------------------
+
+after safe pruning:
+
+
+compact_complexity : 7 nodes (7 literals)
+compact_training_accuracy : 1.0=392/392
+compact_global_accuracy : 1.0=392/392
+compact_C4.5_error_estimation : 10.8626697437967 (relative: 0.0277108922035629)
+
+--------------------------
+
+after pruning:
+
+
+pruned_complexity : 7 nodes (7 literals)
+pruned_training_accuracy : 1.0=392/392
+pruned_global_accuracy : 1.0=392/392
+pruned_C4.5_error_estimation : 10.8626697437967 (relative: 0.0277108922035629)
+
+--------------------------
+
+Compact notation of pruned tree:
+
+triangle(A) ? 
++--yes: in(A,B) ? 
+|       +--yes: triangle(B) ? 
+|       |       +--yes: [pos] [82.0/82.0]
+|       |       +--no:  circle(D) ? 
+|       |               +--yes: in(D,E) ? 
+|       |               |       +--yes: [neg] [28.0/28.0]
+|       |               |       +--no:  [pos] [34.0/34.0]
+|       |               +--no:  [neg] [36.0/36.0]
+|       +--no:  circle(I) ? 
+|               +--yes: in(I,J) ? 
+|               |       +--yes: [neg] [79.0/79.0]
+|               |       +--no:  [pos] [12.0/12.0]
+|               +--no:  [neg] [34.0/34.0]
++--no:  [neg] [87.0/87.0]
+
+
+--------------------------
+
+Equivalent prolog program:
+
+class([pos]) :- triangle(A),in(A,B),triangle(B), !.
+% 82.0/82.0=1.0.
+class([neg]) :- triangle(A),in(A,B),circle(C),in(C,D), !.
+% 28.0/28.0=1.0.
+class([pos]) :- triangle(A),in(A,B),circle(C), !.
+% 34.0/34.0=1.0.
+class([neg]) :- triangle(A),in(A,B), !.
+% 36.0/36.0=1.0.
+class([neg]) :- triangle(A),circle(B),in(B,C), !.
+% 79.0/79.0=1.0.
+class([pos]) :- triangle(A),circle(B), !.
+% 12.0/12.0=1.0.
+class([neg]) :- triangle(A), !.
+% 34.0/34.0=1.0.
+class([neg]).
+% 87.0/87.0=1.0.
+

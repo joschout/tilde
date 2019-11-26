@@ -1,0 +1,31 @@
+===  MODEL VERIFICATION STATISTICS ===
+
+accuracy: 0.6666666666666666
+
+--- Classification report (scikit-learn) ---
+
+              precision    recall  f1-score   support
+
+         neg       0.75      0.30      0.43        10
+         pos       0.65      0.93      0.76        14
+
+    accuracy                           0.67        24
+   macro avg       0.70      0.61      0.60        24
+weighted avg       0.69      0.67      0.62        24
+
+--- confusion matrix: true/predicted --- :
+
+   |neg|pos|
+---------------
+neg|  3|  7|	actual: 10
+pos|  1| 13|	actual: 14
+---------------
+   |  4| 20|	total: 24
+
+nb of TRAINING ex: 206
+nb of TEST ex: 24
+
+total nb of nodes: 5
+nb of internal nodes: 2
+
+execution time of fold (ms): 2531.538486480713

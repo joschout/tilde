@@ -1,4 +1,5 @@
 import cProfile
+import os
 
 from mai_version.IO.parsing_settings.setting_parser import KeysSettingsParser
 from mai_version.representation.example import InternalExampleFormat
@@ -7,9 +8,16 @@ from mai_version.trees.TreeBuilder import TreeBuilderType
 
 
 def main():
-    file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys\\mach.kb'
-    file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys\\mach.s'
-    file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\keys\mach.bg'
+    project_dir = '/home/joschout/Repos/tilde'
+
+    dataset_name = 'mach'
+    data_dir = os.path.join(project_dir, 'ACE-examples-data', dataset_name)
+
+    keys_or_examples = 'keys'
+
+    file_name_settings = os.path.join(data_dir, keys_or_examples, dataset_name + '.s')
+    file_name_background = os.path.join(data_dir, keys_or_examples, dataset_name + '.bg')
+    file_name_labeled_examples = os.path.join(data_dir, keys_or_examples, dataset_name + '.kb')
 
     use_clausedb = True
     use_mle = False

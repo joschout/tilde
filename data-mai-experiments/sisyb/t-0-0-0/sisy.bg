@@ -1,0 +1,761 @@
+eq_a1(A, B) :- A == B.
+eq_a10(A, B) :- A == B.
+eq_a11(A, B) :- A == B.
+eq_a12(A, B) :- A == B.
+eq_a13(A, B) :- A == B.
+eq_a14(A, B) :- A == B.
+eq_a15(A, B) :- A == B.
+eq_a16(A, B) :- A == B.
+eq_a17(A, B) :- A == B.
+eq_a18(A, B) :- A == B.
+eq_a19(A, B) :- A == B.
+eq_a2(A, B) :- A == B.
+eq_a20(A, B) :- A == B.
+eq_a21(A, B) :- A == B.
+eq_a22(A, B) :- A == B.
+eq_a23(A, B) :- A == B.
+eq_a24(A, B) :- A == B.
+eq_a25(A, B) :- A == B.
+eq_a26(A, B) :- A == B.
+eq_a27(A, B) :- A == B.
+eq_a28(A, B) :- A == B.
+eq_a29(A, B) :- A == B.
+eq_a3(A, B) :- A == B.
+eq_a30(A, B) :- A == B.
+eq_a31(A, B) :- A == B.
+eq_a32(A, B) :- A == B.
+eq_a33(A, B) :- A == B.
+eq_a34(A, B) :- A == B.
+eq_a35(A, B) :- A == B.
+eq_a37(A, B) :- A == B.
+eq_a38(A, B) :- A == B.
+eq_a39(A, B) :- A == B.
+eq_a4(A, B) :- A == B.
+eq_a40(A, B) :- A == B.
+eq_a41(A, B) :- A == B.
+eq_a42(A, B) :- A == B.
+eq_a5(A, B) :- A == B.
+eq_a6(A, B) :- A == B.
+eq_a7(A, B) :- A == B.
+eq_a8(A, B) :- A == B.
+eq_a9(A, B) :- A == B.
+eq_azart(A, B) :- A == B.
+eq_eatyp(A, B) :- A == B.
+eq_epberuf(A, B) :- A == B.
+eq_eperweart(A, B) :- A == B.
+eq_epgebudat(A, B) :- A == B.
+eq_eplnamecd(A, B) :- A == B.
+eq_epsexcd(A, B) :- A == B.
+eq_epsta(A, B) :- A == B.
+eq_epzivstd(A, B) :- A == B.
+eq_gbeadmgeb(A, B) :- A == B.
+eq_kanton(A, B) :- A == B.
+eq_prtyp(A, B) :- A == B.
+eq_prtypnr(A, B) :- A == B.
+eq_tkausbcd(A, B) :- A == B.
+eq_tkbeg(A, B) :- A == B.
+eq_tkdyncd(A, B) :- A == B.
+eq_tkend(A, B) :- A == B.
+eq_tkerlleista(A, B) :- A == B.
+eq_tkeuleista(A, B) :- A == B.
+eq_tkexkzwei(A, B) :- A == B.
+eq_tkinkpre(A, B) :- A == B.
+eq_tkinkprl(A, B) :- A == B.
+eq_tkleist(A, B) :- A == B.
+eq_tkprfin(A, B) :- A == B.
+eq_tkrauv(A, B) :- A == B.
+eq_tkrenleista(A, B) :- A == B.
+eq_tkrizucd(A, B) :- A == B.
+eq_tksmed(A, B) :- A == B.
+eq_tkstacd(A, B) :- A == B.
+eq_tktarpra(A, B) :- A == B.
+eq_tktodleista(A, B) :- A == B.
+eq_tkuebvwsysl(A, B) :- A == B.
+eq_tkuebvwsysp(A, B) :- A == B.
+eq_tkunfleista(A, B) :- A == B.
+eq_trklauscd(A, B) :- A == B.
+eq_trricd(A, B) :- A == B.
+eq_trstafcd(A, B) :- A == B.
+eq_trteceinal(A, B) :- A == B.
+eq_truntcd(A, B) :- A == B.
+eq_vvabga(A, B) :- A == B.
+eq_vvabvb(A, B) :- A == B.
+eq_vvaendart(A, B) :- A == B.
+eq_vvaendat(A, B) :- A == B.
+eq_vvbeg(A, B) :- A == B.
+eq_vvbvgcd(A, B) :- A == B.
+eq_vvend(A, B) :- A == B.
+eq_vveucd(A, B) :- A == B.
+eq_vvinkpre(A, B) :- A == B.
+eq_vvinkprl(A, B) :- A == B.
+eq_vvinkzwei(A, B) :- A == B.
+eq_vvstacd(A, B) :- A == B.
+eq_vvstifcd(A, B) :- A == B.
+eq_vvversart(A, B) :- A == B.
+eq_vvvorscd(A, B) :- A == B.
+eq_vvwae(A, B) :- A == B.
+
+theorycte(a1, 0).
+theorycte(a1, 1).
+theorycte(a1, 10).
+theorycte(a1, 11).
+theorycte(a1, 13).
+theorycte(a1, 14).
+theorycte(a1, 15).
+theorycte(a1, 17).
+theorycte(a1, 18).
+theorycte(a1, 19).
+theorycte(a1, 2).
+theorycte(a1, 4).
+theorycte(a1, 5).
+theorycte(a1, 6).
+theorycte(a1, 66).
+theorycte(a1, 7).
+theorycte(a1, 8).
+theorycte(a1, 80).
+theorycte(a1, 81).
+theorycte(a1, 82).
+theorycte(a1, 83).
+theorycte(a1, 84).
+theorycte(a1, 85).
+theorycte(a1, 86).
+theorycte(a1, 87).
+theorycte(a1, 88).
+theorycte(a1, 89).
+theorycte(a1, 9).
+theorycte(a10, 1).
+theorycte(a10, 4).
+theorycte(a10, 8).
+theorycte(a11, 0).
+theorycte(a11, 10).
+theorycte(a11, 5).
+theorycte(a11, 6).
+theorycte(a11, 7).
+theorycte(a11, 8).
+theorycte(a11, 9).
+theorycte(a12, 10).
+theorycte(a12, 11).
+theorycte(a12, 12).
+theorycte(a12, 13).
+theorycte(a12, 14).
+theorycte(a12, 15).
+theorycte(a12, 5).
+theorycte(a12, 6).
+theorycte(a12, 7).
+theorycte(a12, 8).
+theorycte(a12, 9).
+theorycte(a13, 3).
+theorycte(a13, 4).
+theorycte(a13, 5).
+theorycte(a13, 6).
+theorycte(a13, 7).
+theorycte(a13, 8).
+theorycte(a14, 1).
+theorycte(a14, 2).
+theorycte(a14, 3).
+theorycte(a15, 1630).
+theorycte(a15, 1632).
+theorycte(a15, 3).
+theorycte(a15, 4364).
+theorycte(a15, 9784).
+theorycte(a16, 3).
+theorycte(a16, 44138).
+theorycte(a16, 44838).
+theorycte(a16, 48836).
+theorycte(a16, 88838).
+theorycte(a17, 23).
+theorycte(a17, 3).
+theorycte(a17, 618).
+theorycte(a17, 653).
+theorycte(a17, 83).
+theorycte(a18, 0).
+theorycte(a18, 1).
+theorycte(a18, 3).
+theorycte(a18, 4).
+theorycte(a18, 5).
+theorycte(a18, 7).
+theorycte(a18, 8).
+theorycte(a18, 9).
+theorycte(a19, 0).
+theorycte(a19, 1).
+theorycte(a19, 10).
+theorycte(a19, 11).
+theorycte(a19, 12).
+theorycte(a19, 13).
+theorycte(a19, 15).
+theorycte(a19, 16).
+theorycte(a19, 17).
+theorycte(a19, 19).
+theorycte(a19, 2).
+theorycte(a19, 23).
+theorycte(a19, 3).
+theorycte(a19, 30).
+theorycte(a19, 38).
+theorycte(a19, 4).
+theorycte(a19, 40).
+theorycte(a19, 44).
+theorycte(a19, 5).
+theorycte(a19, 6).
+theorycte(a19, 7).
+theorycte(a19, 8).
+theorycte(a19, 9).
+theorycte(a19, 99).
+theorycte(a2, 0).
+theorycte(a2, 18).
+theorycte(a2, 66).
+theorycte(a2, 7).
+theorycte(a2, 88).
+theorycte(a20, 0).
+theorycte(a20, 1).
+theorycte(a20, 2).
+theorycte(a20, 3).
+theorycte(a20, 5).
+theorycte(a21, 0).
+theorycte(a21, 1).
+theorycte(a21, 3).
+theorycte(a21, 4).
+theorycte(a21, 5).
+theorycte(a21, 7).
+theorycte(a21, 8).
+theorycte(a21, 9).
+theorycte(a22, 0).
+theorycte(a22, 56).
+theorycte(a22, 61).
+theorycte(a22, 65).
+theorycte(a22, 71).
+theorycte(a23, 0).
+theorycte(a23, 105).
+theorycte(a23, 112).
+theorycte(a23, 114).
+theorycte(a23, 116).
+theorycte(a24, 0).
+theorycte(a24, 1).
+theorycte(a24, 2).
+theorycte(a24, 5).
+theorycte(a24, 8).
+theorycte(a25, 0).
+theorycte(a25, 3).
+theorycte(a25, 6).
+theorycte(a25, 7).
+theorycte(a25, 8).
+theorycte(a26, 137).
+theorycte(a26, 15).
+theorycte(a26, 162).
+theorycte(a26, 187).
+theorycte(a26, 225).
+theorycte(a26, 275).
+theorycte(a26, 35).
+theorycte(a26, 350).
+theorycte(a26, 45).
+theorycte(a26, 55).
+theorycte(a26, 65).
+theorycte(a26, 75).
+theorycte(a26, 85).
+theorycte(a26, 95).
+theorycte(a27, 3).
+theorycte(a27, b).
+theorycte(a27, c).
+theorycte(a27, d).
+theorycte(a27, e).
+theorycte(a27, f).
+theorycte(a27, g).
+theorycte(a27, h).
+theorycte(a27, j).
+theorycte(a27, k).
+theorycte(a27, m).
+theorycte(a27, n).
+theorycte(a27, o).
+theorycte(a27, p).
+theorycte(a27, q).
+theorycte(a28, 0).
+theorycte(a28, a).
+theorycte(a28, b).
+theorycte(a28, c).
+theorycte(a28, d).
+theorycte(a28, e).
+theorycte(a28, f).
+theorycte(a29, 1).
+theorycte(a29, 3).
+theorycte(a29, 4).
+theorycte(a29, 8).
+theorycte(a3, 1).
+theorycte(a3, 4).
+theorycte(a3, 7).
+theorycte(a3, 8).
+theorycte(a30, 0).
+theorycte(a30, 1).
+theorycte(a30, 2).
+theorycte(a30, 3).
+theorycte(a30, 4).
+theorycte(a30, 5).
+theorycte(a30, 6).
+theorycte(a30, 7).
+theorycte(a30, 8).
+theorycte(a30, 9).
+theorycte(a31, 0).
+theorycte(a31, 1).
+theorycte(a31, 2).
+theorycte(a31, 3).
+theorycte(a32, 1).
+theorycte(a32, 3).
+theorycte(a32, 4).
+theorycte(a32, 7).
+theorycte(a32, 8).
+theorycte(a33, 0).
+theorycte(a33, 1).
+theorycte(a33, 2).
+theorycte(a33, 3).
+theorycte(a33, 4).
+theorycte(a33, 5).
+theorycte(a33, 6).
+theorycte(a33, 7).
+theorycte(a33, 8).
+theorycte(a33, 83).
+theorycte(a33, 88).
+theorycte(a33, 9).
+theorycte(a34, 1).
+theorycte(a34, 3).
+theorycte(a34, 4).
+theorycte(a34, 7).
+theorycte(a34, 8).
+theorycte(a35, 1).
+theorycte(a35, 3).
+theorycte(a35, 4).
+theorycte(a35, 7).
+theorycte(a35, 8).
+theorycte(a35, 9).
+theorycte(a37, 1).
+theorycte(a37, 3).
+theorycte(a37, 4).
+theorycte(a37, 7).
+theorycte(a37, 8).
+theorycte(a38, 1).
+theorycte(a38, 3).
+theorycte(a38, 4).
+theorycte(a38, 7).
+theorycte(a38, 8).
+theorycte(a39, 1).
+theorycte(a39, 3).
+theorycte(a39, 4).
+theorycte(a39, 8).
+theorycte(a4, 10).
+theorycte(a4, 11).
+theorycte(a4, 12).
+theorycte(a4, 14).
+theorycte(a4, 15).
+theorycte(a4, 16).
+theorycte(a4, 17).
+theorycte(a4, 18).
+theorycte(a4, 19).
+theorycte(a4, 41).
+theorycte(a4, 44).
+theorycte(a4, 47).
+theorycte(a4, 48).
+theorycte(a4, 66).
+theorycte(a4, 71).
+theorycte(a4, 74).
+theorycte(a4, 77).
+theorycte(a4, 78).
+theorycte(a4, 8).
+theorycte(a4, 80).
+theorycte(a4, 81).
+theorycte(a4, 84).
+theorycte(a4, 87).
+theorycte(a4, 88).
+theorycte(a4, 89).
+theorycte(a4, 98).
+theorycte(a40, 0).
+theorycte(a40, 1).
+theorycte(a40, 2).
+theorycte(a40, 3).
+theorycte(a40, 4).
+theorycte(a40, 7).
+theorycte(a40, 8).
+theorycte(a40, 9).
+theorycte(a41, 1).
+theorycte(a41, 3).
+theorycte(a41, 4).
+theorycte(a41, 7).
+theorycte(a41, 8).
+theorycte(a42, 1).
+theorycte(a42, 3).
+theorycte(a42, 4).
+theorycte(a42, 8).
+theorycte(a5, 241).
+theorycte(a5, 259).
+theorycte(a5, 274).
+theorycte(a5, 294).
+theorycte(a5, 634).
+theorycte(a6, 20).
+theorycte(a6, 21).
+theorycte(a6, 22).
+theorycte(a6, 24).
+theorycte(a6, 25).
+theorycte(a6, 26).
+theorycte(a6, 27).
+theorycte(a6, 28).
+theorycte(a6, 29).
+theorycte(a6, 3).
+theorycte(a6, 61).
+theorycte(a6, 63).
+theorycte(a6, 64).
+theorycte(a6, 68).
+theorycte(a7, 1).
+theorycte(a7, 3).
+theorycte(a7, 4).
+theorycte(a7, 8).
+theorycte(a8, 30).
+theorycte(a8, 31).
+theorycte(a8, 34).
+theorycte(a8, 38).
+theorycte(a8, 46).
+theorycte(a9, 1).
+theorycte(a9, 4).
+theorycte(a9, 7).
+theorycte(a9, 8).
+theorycte(azart, 1).
+theorycte(azart, 3).
+theorycte(azart, 4).
+theorycte(azart, 5).
+theorycte(azart, 6).
+theorycte(azart, 8).
+theorycte(azart, 9).
+theorycte(eatyp, 1).
+theorycte(eatyp, 2).
+theorycte(eatyp, 3).
+theorycte(eatyp, 4).
+theorycte(eatyp, 5).
+theorycte(epberuf, 55).
+theorycte(epberuf, 58).
+theorycte(epberuf, 90).
+theorycte(epberuf, 92).
+theorycte(epberuf, 99).
+theorycte(eperweart, 0).
+theorycte(eperweart, 1).
+theorycte(eperweart, 2).
+theorycte(eperweart, 3).
+theorycte(epgebudat, 'a0=_inf<x<=1935_5').
+theorycte(epgebudat, 'a0=1935_5<x<=1944_5').
+theorycte(epgebudat, 'a0=1944_5<x<=1954_5').
+theorycte(epgebudat, 'a0=1954_5<x<=1965_5').
+theorycte(epgebudat, 'a0=1965_5<x<=+inf').
+theorycte(epgebudat, a0=null).
+theorycte(eplnamecd, 0).
+theorycte(eplnamecd, 1).
+theorycte(eplnamecd, 2).
+theorycte(epsexcd, 1).
+theorycte(epsexcd, 2).
+theorycte(epsta, 0).
+theorycte(epsta, 1).
+theorycte(epzivstd, 0).
+theorycte(epzivstd, 1).
+theorycte(epzivstd, 2).
+theorycte(epzivstd, 3).
+theorycte(epzivstd, 4).
+theorycte(epzivstd, 5).
+theorycte(gbeadmgeb, 83204).
+theorycte(gbeadmgeb, 84304).
+theorycte(gbeadmgeb, 85511).
+theorycte(gbeadmgeb, 90405).
+theorycte(gbeadmgeb, 93107).
+theorycte(kanton, ag).
+theorycte(kanton, be).
+theorycte(kanton, lu).
+theorycte(kanton, sg).
+theorycte(kanton, zh).
+theorycte(prtyp, 10).
+theorycte(prtyp, 11).
+theorycte(prtyp, 12).
+theorycte(prtyp, 14).
+theorycte(prtyp, 15).
+theorycte(prtyp, 17).
+theorycte(prtyp, 18).
+theorycte(prtyp, 6).
+theorycte(prtyp, 9).
+theorycte(prtypnr, 0).
+theorycte(prtypnr, 1).
+theorycte(prtypnr, 2).
+theorycte(prtypnr, 3).
+theorycte(prtypnr, 4).
+theorycte(tkausbcd, 0).
+theorycte(tkausbcd, 1).
+theorycte(tkausbcd, 2).
+theorycte(tkausbcd, 3).
+theorycte(tkausbcd, 4).
+theorycte(tkausbcd, 7).
+theorycte(tkausbcd, 8).
+theorycte(tkbeg, 'a1=_inf<x<=1983_5').
+theorycte(tkbeg, 'a1=1983_5<x<=1991_5').
+theorycte(tkbeg, 'a1=1991_5<x<=1995_5').
+theorycte(tkbeg, 'a1=1995_5<x<=1996_5').
+theorycte(tkbeg, 'a1=1996_5<x<=+inf').
+theorycte(tkdyncd, 0).
+theorycte(tkdyncd, 1).
+theorycte(tkdyncd, 2).
+theorycte(tkend, 'a2=_inf<x<=2000_5').
+theorycte(tkend, 'a2=2000_5<x<=2005_5').
+theorycte(tkend, 'a2=2005_5<x<=2011_5').
+theorycte(tkend, 'a2=2011_5<x<=2020_5').
+theorycte(tkend, 'a2=2020_5<x<=+inf').
+theorycte(tkend, a2=null).
+theorycte(tkerlleista, 'a8=_inf<x<=4').
+theorycte(tkerlleista, 'a8=10000_5<x<=30000_5').
+theorycte(tkerlleista, 'a8=30000_5<x<=75669').
+theorycte(tkerlleista, 'a8=4<x<=10000_5').
+theorycte(tkerlleista, 'a8=75669<x<=+inf').
+theorycte(tkeuleista, 'a10=_inf<x<=0_9').
+theorycte(tkeuleista, 'a10=0_9<x<=1217_55').
+theorycte(tkeuleista, 'a10=1217_55<x<=3645_65').
+theorycte(tkeuleista, 'a10=3645_65<x<=7517').
+theorycte(tkeuleista, 'a10=7517<x<=+inf').
+theorycte(tkexkzwei, 0).
+theorycte(tkexkzwei, 1).
+theorycte(tkexkzwei, 2).
+theorycte(tkexkzwei, 3).
+theorycte(tkexkzwei, 4).
+theorycte(tkexkzwei, 5).
+theorycte(tkinkpre, 'a5=_62_4<x<=24_35').
+theorycte(tkinkpre, 'a5=_inf<x<=_62_4').
+theorycte(tkinkpre, 'a5=24_35<x<=25001').
+theorycte(tkinkpre, 'a5=25001<x<=70000_5').
+theorycte(tkinkpre, 'a5=70000_5<x<=+inf').
+theorycte(tkinkpre, a5=null).
+theorycte(tkinkprl, 'a4=_inf<x<=0_05').
+theorycte(tkinkprl, 'a4=0_05<x<=84_05').
+theorycte(tkinkprl, 'a4=1705_45<x<=+inf').
+theorycte(tkinkprl, 'a4=388_45<x<=1705_45').
+theorycte(tkinkprl, 'a4=84_05<x<=388_45').
+theorycte(tkleist, 'a3=_2<x<=1_4').
+theorycte(tkleist, 'a3=_inf<x<=_2').
+theorycte(tkleist, 'a3=1_4<x<=6352_9').
+theorycte(tkleist, 'a3=25000_5<x<=+inf').
+theorycte(tkleist, 'a3=6352_9<x<=25000_5').
+theorycte(tkprfin, 0).
+theorycte(tkprfin, 1).
+theorycte(tkprfin, 2).
+theorycte(tkrauv, 1).
+theorycte(tkrauv, 2).
+theorycte(tkrauv, 4).
+theorycte(tkrauv, 5).
+theorycte(tkrauv, 6).
+theorycte(tkrauv, 7).
+theorycte(tkrauv, 8).
+theorycte(tkrenleista, 'a9=_2<x<=1_4').
+theorycte(tkrenleista, 'a9=_inf<x<=_2').
+theorycte(tkrenleista, 'a9=1_4<x<=2596').
+theorycte(tkrenleista, 'a9=2596<x<=9423_6').
+theorycte(tkrenleista, 'a9=9423_6<x<=+inf').
+theorycte(tkrenleista, a9=null).
+theorycte(tkrizucd, 0).
+theorycte(tkrizucd, 1).
+theorycte(tksmed, 1).
+theorycte(tkstacd, 0).
+theorycte(tkstacd, 1).
+theorycte(tkstacd, 2).
+theorycte(tktarpra, 'a6=_inf<x<=79_95').
+theorycte(tktarpra, 'a6=25001<x<=+inf').
+theorycte(tktarpra, 'a6=2913_4<x<=25001').
+theorycte(tktarpra, 'a6=491_65<x<=2913_4').
+theorycte(tktarpra, 'a6=79_95<x<=491_65').
+theorycte(tktarpra, a6=null).
+theorycte(tktodleista, 'a7=_112_25<x<=4').
+theorycte(tktodleista, 'a7=_inf<x<=_112_25').
+theorycte(tktodleista, 'a7=10000_5<x<=43494').
+theorycte(tktodleista, 'a7=43494<x<=+inf').
+theorycte(tktodleista, 'a7=4<x<=10000_5').
+theorycte(tkuebvwsysl, 3000).
+theorycte(tkuebvwsysl, 41).
+theorycte(tkuebvwsysl, 43).
+theorycte(tkuebvwsysl, 45).
+theorycte(tkuebvwsysl, 46).
+theorycte(tkuebvwsysp, 3005).
+theorycte(tkuebvwsysp, 41).
+theorycte(tkuebvwsysp, 43).
+theorycte(tkuebvwsysp, 45).
+theorycte(tkuebvwsysp, 46).
+theorycte(tkunfleista, 'a11=_inf<x<=1500').
+theorycte(tkunfleista, 'a11=10187_5<x<=26770').
+theorycte(tkunfleista, 'a11=1500<x<=10187_5').
+theorycte(tkunfleista, 'a11=26770<x<=50837_5').
+theorycte(tkunfleista, 'a11=50837_5<x<=+inf').
+theorycte(trklauscd, 0).
+theorycte(trklauscd, 1).
+theorycte(trricd, 0).
+theorycte(trricd, 1).
+theorycte(trstafcd, 1).
+theorycte(trstafcd, 2).
+theorycte(trteceinal, 'a12=_inf<x<=28_5').
+theorycte(trteceinal, 'a12=28_5<x<=35_5').
+theorycte(trteceinal, 'a12=35_5<x<=43_5').
+theorycte(trteceinal, 'a12=43_5<x<=52_5').
+theorycte(trteceinal, 'a12=52_5<x<=+inf').
+theorycte(truntcd, 0).
+theorycte(truntcd, 1).
+theorycte(truntcd, 2).
+theorycte(vvabga, 10308).
+theorycte(vvabga, 13955).
+theorycte(vvabga, 15416).
+theorycte(vvabga, 17490).
+theorycte(vvabga, 3330).
+theorycte(vvabvb, 11082).
+theorycte(vvabvb, 13696).
+theorycte(vvabvb, 15024).
+theorycte(vvabvb, 251618).
+theorycte(vvabvb, 39965).
+theorycte(vvaendart, 1007).
+theorycte(vvaendart, 15).
+theorycte(vvaendart, 2).
+theorycte(vvaendart, 32).
+theorycte(vvaendart, 54).
+theorycte(vvaendat, 'a17=_inf<x<=1992_5').
+theorycte(vvaendat, 'a17=1992_5<x<=1996_5').
+theorycte(vvaendat, 'a17=1996_5<x<=+inf').
+theorycte(vvaendat, a17=null).
+theorycte(vvbeg, 'a13=_inf<x<=1985_5').
+theorycte(vvbeg, 'a13=1985_5<x<=1992_5').
+theorycte(vvbeg, 'a13=1992_5<x<=1996_5').
+theorycte(vvbeg, 'a13=1996_5<x<=1997_5').
+theorycte(vvbeg, 'a13=1997_5<x<=+inf').
+theorycte(vvbeg, a13=null).
+theorycte(vvbvgcd, 0).
+theorycte(vvbvgcd, 1).
+theorycte(vvbvgcd, 2).
+theorycte(vvbvgcd, 3).
+theorycte(vvend, 'a14=_inf<x<=2000_5').
+theorycte(vvend, 'a14=2000_5<x<=2003_5').
+theorycte(vvend, 'a14=2003_5<x<=2008_5').
+theorycte(vvend, 'a14=2008_5<x<=2017_5').
+theorycte(vvend, 'a14=2017_5<x<=+inf').
+theorycte(vvend, a14=null).
+theorycte(vveucd, 0).
+theorycte(vveucd, 1).
+theorycte(vvinkpre, 'a16=_inf<x<=130').
+theorycte(vvinkpre, 'a16=130<x<=18538').
+theorycte(vvinkpre, 'a16=18538<x<=39932_5').
+theorycte(vvinkpre, 'a16=39932_5<x<=83211_5').
+theorycte(vvinkpre, 'a16=83211_5<x<=+inf').
+theorycte(vvinkpre, a16=null).
+theorycte(vvinkprl, 'a15=_inf<x<=23').
+theorycte(vvinkprl, 'a15=1999_97<x<=4173').
+theorycte(vvinkprl, 'a15=23<x<=904_8').
+theorycte(vvinkprl, 'a15=4173<x<=+inf').
+theorycte(vvinkprl, 'a15=904_8<x<=1999_97').
+theorycte(vvinkzwei, 0).
+theorycte(vvinkzwei, 1).
+theorycte(vvinkzwei, 2).
+theorycte(vvinkzwei, 3).
+theorycte(vvinkzwei, 4).
+theorycte(vvinkzwei, 5).
+theorycte(vvstacd, 4).
+theorycte(vvstacd, 5).
+theorycte(vvstifcd, 0).
+theorycte(vvstifcd, 1).
+theorycte(vvstifcd, 2).
+theorycte(vvversart, 1).
+theorycte(vvversart, 2).
+theorycte(vvversart, 3).
+theorycte(vvversart, 6).
+theorycte(vvvorscd, 0).
+theorycte(vvvorscd, 1).
+theorycte(vvvorscd, 2).
+theorycte(vvvorscd, 3).
+theorycte(vvwae, 756).
+theorycte(vvwae, 954).
+
+phb_ignore(eq_a1/2).
+phb_ignore(eq_a10/2).
+phb_ignore(eq_a11/2).
+phb_ignore(eq_a12/2).
+phb_ignore(eq_a13/2).
+phb_ignore(eq_a14/2).
+phb_ignore(eq_a15/2).
+phb_ignore(eq_a16/2).
+phb_ignore(eq_a17/2).
+phb_ignore(eq_a18/2).
+phb_ignore(eq_a19/2).
+phb_ignore(eq_a2/2).
+phb_ignore(eq_a20/2).
+phb_ignore(eq_a21/2).
+phb_ignore(eq_a22/2).
+phb_ignore(eq_a23/2).
+phb_ignore(eq_a24/2).
+phb_ignore(eq_a25/2).
+phb_ignore(eq_a26/2).
+phb_ignore(eq_a27/2).
+phb_ignore(eq_a28/2).
+phb_ignore(eq_a29/2).
+phb_ignore(eq_a3/2).
+phb_ignore(eq_a30/2).
+phb_ignore(eq_a31/2).
+phb_ignore(eq_a32/2).
+phb_ignore(eq_a33/2).
+phb_ignore(eq_a34/2).
+phb_ignore(eq_a35/2).
+phb_ignore(eq_a37/2).
+phb_ignore(eq_a38/2).
+phb_ignore(eq_a39/2).
+phb_ignore(eq_a4/2).
+phb_ignore(eq_a40/2).
+phb_ignore(eq_a41/2).
+phb_ignore(eq_a42/2).
+phb_ignore(eq_a5/2).
+phb_ignore(eq_a6/2).
+phb_ignore(eq_a7/2).
+phb_ignore(eq_a8/2).
+phb_ignore(eq_a9/2).
+phb_ignore(eq_azart/2).
+phb_ignore(eq_eatyp/2).
+phb_ignore(eq_epberuf/2).
+phb_ignore(eq_eperweart/2).
+phb_ignore(eq_epgebudat/2).
+phb_ignore(eq_eplnamecd/2).
+phb_ignore(eq_epsexcd/2).
+phb_ignore(eq_epsta/2).
+phb_ignore(eq_epzivstd/2).
+phb_ignore(eq_gbeadmgeb/2).
+phb_ignore(eq_kanton/2).
+phb_ignore(eq_prtyp/2).
+phb_ignore(eq_prtypnr/2).
+phb_ignore(eq_tkausbcd/2).
+phb_ignore(eq_tkbeg/2).
+phb_ignore(eq_tkdyncd/2).
+phb_ignore(eq_tkend/2).
+phb_ignore(eq_tkerlleista/2).
+phb_ignore(eq_tkeuleista/2).
+phb_ignore(eq_tkexkzwei/2).
+phb_ignore(eq_tkinkpre/2).
+phb_ignore(eq_tkinkprl/2).
+phb_ignore(eq_tkleist/2).
+phb_ignore(eq_tkprfin/2).
+phb_ignore(eq_tkrauv/2).
+phb_ignore(eq_tkrenleista/2).
+phb_ignore(eq_tkrizucd/2).
+phb_ignore(eq_tksmed/2).
+phb_ignore(eq_tkstacd/2).
+phb_ignore(eq_tktarpra/2).
+phb_ignore(eq_tktodleista/2).
+phb_ignore(eq_tkuebvwsysl/2).
+phb_ignore(eq_tkuebvwsysp/2).
+phb_ignore(eq_tkunfleista/2).
+phb_ignore(eq_trklauscd/2).
+phb_ignore(eq_trricd/2).
+phb_ignore(eq_trstafcd/2).
+phb_ignore(eq_trteceinal/2).
+phb_ignore(eq_truntcd/2).
+phb_ignore(eq_vvabga/2).
+phb_ignore(eq_vvabvb/2).
+phb_ignore(eq_vvaendart/2).
+phb_ignore(eq_vvaendat/2).
+phb_ignore(eq_vvbeg/2).
+phb_ignore(eq_vvbvgcd/2).
+phb_ignore(eq_vvend/2).
+phb_ignore(eq_vveucd/2).
+phb_ignore(eq_vvinkpre/2).
+phb_ignore(eq_vvinkprl/2).
+phb_ignore(eq_vvinkzwei/2).
+phb_ignore(eq_vvstacd/2).
+phb_ignore(eq_vvstifcd/2).
+phb_ignore(eq_vvversart/2).
+phb_ignore(eq_vvvorscd/2).
+phb_ignore(eq_vvwae/2).
+

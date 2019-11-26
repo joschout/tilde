@@ -1,0 +1,7 @@
+eq_dir(A, B) :- A == B.
+
+theorycte(dir, down).
+theorycte(dir, up).
+
+phb_ignore(eq_dir/2).
+

@@ -1,0 +1,7 @@
+INode, query: [atm_s(A,C,D,E)]
+	|-INode, query: [atm_s(A,C,D,E), atm_p(A,F,G,H)]
+	|	|-Leaf, class label: neg, [9/9]
+	|	\-INode, query: [atm_s(A,C,D,E), atm_cl(A,F,G,H)]
+	|		|-Leaf, class label: pos, [4/6]
+	|		\-Leaf, class label: neg, [22/34]
+	\-Leaf, class label: pos, [148/248]

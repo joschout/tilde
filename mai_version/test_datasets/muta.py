@@ -1,3 +1,5 @@
+import os
+
 from mai_version.IO.parsing_settings.setting_parser import KeysSettingsParser
 
 from mai_version.representation.example import InternalExampleFormat
@@ -5,14 +7,14 @@ from mai_version.run.run_keys import run_keys
 from mai_version.trees.TreeBuilder import TreeBuilderType
 from mai_version.trees.stop_criterion import StopCriterionMinimalCoverage
 
-file_name_labeled_examples = "/home/joschout/Documents/tilde_data/ACE-examples-data/ace/muta/muta.kb"
-file_name_settings = "/home/joschout/Documents/tilde_data/ACE-examples-data/ace/muta/muta.s"
-file_name_background = "/home/joschout/Documents/tilde_data/ACE-examples-data/ace/muta/\muta.bg"
+project_dir = '/home/joschout/Repos/tilde'
 
-# file_name_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.kb'
-# file_name_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.s'
-# file_name_background = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\muta\\muta.bg'
+data_dir = os.path.join(project_dir, 'ACE-examples-data/muta')
+dataset_name = 'muta'
 
+file_name_labeled_examples = os.path.join(data_dir, dataset_name + ".kb")
+file_name_settings = os.path.join(data_dir, dataset_name + ".s")
+file_name_background = os.path.join(data_dir, dataset_name + ".bg")
 
 debug_printing_example_parsing = True
 debug_printing_tree_building = True

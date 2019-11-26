@@ -1,0 +1,87 @@
+************************************************* 
+******************* W A R M R ******************* 
+************************************************* 
+* Version : 1.1.10-s2 
+* Runtime : no 
+* 
+* Date : dd/mm/yyyy 
+* 
+* Application : mach 
+* Configuration :  
+* Background file : /home/jan/paper/presentaties/ace-intro-thesis-stud/ace/mach/keys/mach.bg -- loaded 
+* Settings file : /home/jan/paper/presentaties/ace-intro-thesis-stud/ace/mach/keys/mach.s -- loaded 
+* Theory file : mach.t -- not found 
+* 
+* 
+*** SETTINGS *** 
+** Common ** 
+*  classes  :  [pos,neg] (default) 
+*  leave_out  :  false (default) 
+*  load  :  key (default) 
+*  granularity  :  10 (default) 
+*  talking  :  3 (default) 
+*  outerloop  :  queries (default) 
+*  use_packs  :  0 
+*  huge  :  off (default) 
+*  odbc  :  off (default) 
+*  expert_implicit_language  :  off (default) 
+*  mi_distance_maxsample  :  100 (default) 
+*  generation_order  :  old (default) 
+*  old_expand  :  on (default) 
+*  default_preprocessing  :  off (default) 
+*  default_min  :  1 (default) 
+** Tilde ** 
+*  discretization  :  none (default) 
+*  tilde_mode  :  classify (default) 
+*  ftest  :  0.05 (default) 
+*  sampling_strategy  :  none 
+*  multiscore  :  off (default) 
+*  minimal_cases  :  2 (default) 
+*  accuracy  :  1.0 (default) 
+*  pruning  :  c45 (default) 
+*  random_validation_set  :  0 (default) 
+*  confidence_level  :  0.25 (default) 
+*  output_options  :  [c45,prolog] (default) 
+*  heuristic  :  gainratio (default) 
+*  prune_rules  :  false (default) 
+*  resume  :  off 
+*  precompute  :  [] (default) 
+*  complexity_penalty  :  1.0 (default) 
+** Warmr ** 
+*  bias  :  warmode (default) 
+*  minfreq  :  0.01 (default) 
+*  minconf  :  0.01 (default) 
+*  addclass  :  off (default) 
+*  bw_cell  :  on (default) 
+*  bw_disj  :  off (default) 
+*  bw_regression  :  off (default) 
+*  jan_warmr_make_freq_files  :  on (default) 
+*  jan_warmr_output_to_disk  :  on (default) 
+*  jan_warmr_output_to_memory  :  off (default) 
+*  jan_warmr_incremental_base  :  [] (default) 
+*  jan_warmr_sig_constraint  :  A,true 
+*  jan_warmr_maxdepth  :  100 (default) 
+*  jan_warmr_confirm_overwrite  :  on (default) 
+*  jan_warmr_cache_queries  :  off (default) 
+*  warmr_version  :  v2_2 (default) 
+************** 
+* sample size : 15 
+* 
+************************************************* 
+
+sample_size(15).
+c_counter(1,1).
+f_counter(1,1).
+   freq(1,1,[machine(A,B),worn(A,C)],0.8).
+
+c_counter(2,2).
+f_counter(2,2).
+   freq(2,2,[machine(A,B),worn(A,C),replaceable(C)],0.666666666666667).
+   freq(3,2,[machine(A,B),worn(A,C),not_replaceable(C)],0.4).
+
+c_counter(3,1).
+f_counter(3,0).
+
+c_counter(4,0).
+Time on timer total is 0.02
+Time on timer exec_queries is 0.0

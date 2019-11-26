@@ -3,7 +3,7 @@ from typing import Set, List, Tuple
 from problog.logic import Constant
 
 from mai_experiments.fold_control import FoldInfoController, FoldInfo
-from mai_experiments.run_experiments.example_preprocessing_refactor import Experiment
+from mai_experiments.run_experiments_refactor.example_preprocessing_refactor import Experiment
 from mai_version.representation.example import ClauseDBExampleWrapper, ExampleWrapper
 from mai_version.representation.example_collection import ExampleCollection
 

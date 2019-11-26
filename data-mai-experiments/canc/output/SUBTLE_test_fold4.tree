@@ -1,0 +1,3 @@
+INode, query: [atm_s(A,C,D,E)]
+	|-Leaf, class label: neg, [30/44]
+	\-Leaf, class label: pos, [150/253]

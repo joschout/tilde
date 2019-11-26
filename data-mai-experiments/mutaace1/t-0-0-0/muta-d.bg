@@ -1,0 +1,49 @@
+eq_atmnum(A, B) :- A == B.
+eq_charge(A, B) :- A == B.
+
+theorycte(atmnum, c0_1).
+theorycte(atmnum, c0_10).
+theorycte(atmnum, c0_14).
+theorycte(atmnum, c0_16).
+theorycte(atmnum, c0_19).
+theorycte(atmnum, c0_194).
+theorycte(atmnum, c0_195).
+theorycte(atmnum, c0_21).
+theorycte(atmnum, c0_22).
+theorycte(atmnum, c0_230).
+theorycte(atmnum, c0_232).
+theorycte(atmnum, c0_25).
+theorycte(atmnum, c0_26).
+theorycte(atmnum, c0_27).
+theorycte(atmnum, c0_28).
+theorycte(atmnum, c0_29).
+theorycte(atmnum, c0_3).
+theorycte(atmnum, c0_31).
+theorycte(atmnum, c0_32).
+theorycte(atmnum, c0_34).
+theorycte(atmnum, c0_35).
+theorycte(atmnum, c0_36).
+theorycte(atmnum, c0_38).
+theorycte(atmnum, c0_40).
+theorycte(atmnum, c0_41).
+theorycte(atmnum, c0_42).
+theorycte(atmnum, c0_45).
+theorycte(atmnum, c0_49).
+theorycte(atmnum, c0_50).
+theorycte(atmnum, c0_51).
+theorycte(atmnum, c0_52).
+theorycte(atmnum, c0_72).
+theorycte(atmnum, c0_8).
+theorycte(atmnum, c0_92).
+theorycte(atmnum, c0_93).
+theorycte(atmnum, c0_94).
+theorycte(atmnum, c0_95).
+theorycte(charge, 'c2_a0=_0_1115<x<=0_049').
+theorycte(charge, 'c2_a0=_0_1265<x<=_0_1115').
+theorycte(charge, 'c2_a0=_inf<x<=_0_1265').
+theorycte(charge, 'c2_a0=0_049<x<=0_1425').
+theorycte(charge, 'c2_a0=0_1425<x<=+inf').
+
+phb_ignore(eq_atmnum/2).
+phb_ignore(eq_charge/2).
+

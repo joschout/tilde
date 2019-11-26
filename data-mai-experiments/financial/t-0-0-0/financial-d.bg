@@ -1,0 +1,273 @@
+eq_amount(A, B) :- A == B.
+eq_avgsal(A, B) :- A == B.
+eq_balance(A, B) :- A == B.
+eq_bank_to(A, B) :- A == B.
+eq_card_type(A, B) :- A == B.
+eq_cities(A, B) :- A == B.
+eq_crimes95(A, B) :- A == B.
+eq_crimes96(A, B) :- A == B.
+eq_disp_type(A, B) :- A == B.
+eq_district_name(A, B) :- A == B.
+eq_duration(A, B) :- A == B.
+eq_enterpreneurs(A, B) :- A == B.
+eq_frequency(A, B) :- A == B.
+eq_inhabitants(A, B) :- A == B.
+eq_mun1(A, B) :- A == B.
+eq_mun2(A, B) :- A == B.
+eq_mun3(A, B) :- A == B.
+eq_mun4(A, B) :- A == B.
+eq_operation(A, B) :- A == B.
+eq_payments(A, B) :- A == B.
+eq_ratio(A, B) :- A == B.
+eq_region(A, B) :- A == B.
+eq_symbol(A, B) :- A == B.
+eq_trans_char(A, B) :- A == B.
+eq_trans_type(A, B) :- A == B.
+eq_unemploy95(A, B) :- A == B.
+eq_unemploy96(A, B) :- A == B.
+
+theorycte(amount, 'a13=_inf<x<=38772').
+theorycte(amount, 'a13=155028<x<=+inf').
+theorycte(amount, 'a13=38772<x<=68952').
+theorycte(amount, 'a13=68952<x<=93288').
+theorycte(amount, 'a13=93288<x<=155028').
+theorycte(amount, 'a16=_inf<x<=1292').
+theorycte(amount, 'a16=1292<x<=3018_35').
+theorycte(amount, 'a16=3018_35<x<=4379_85').
+theorycte(amount, 'a16=4379_85<x<=6822_5').
+theorycte(amount, 'a16=6822_5<x<=+inf').
+theorycte(amount, 'a17=_inf<x<=132_25').
+theorycte(amount, 'a17=132_25<x<=1973').
+theorycte(amount, 'a17=13932_5<x<=+inf').
+theorycte(amount, 'a17=1973<x<=5613_6').
+theorycte(amount, 'a17=5613_6<x<=13932_5').
+theorycte(avgsal, 'a7=_inf<x<=8402_5').
+theorycte(avgsal, 'a7=8402_5<x<=8691_5').
+theorycte(avgsal, 'a7=8691_5<x<=8966_5').
+theorycte(avgsal, 'a7=8966_5<x<=9637').
+theorycte(avgsal, 'a7=9637<x<=+inf').
+theorycte(balance, 'a18=_inf<x<=25048_7').
+theorycte(balance, 'a18=25048_7<x<=35687_1').
+theorycte(balance, 'a18=35687_1<x<=47669_9').
+theorycte(balance, 'a18=47669_9<x<=66077_4').
+theorycte(balance, 'a18=66077_4<x<=+inf').
+theorycte(bank_to, ab).
+theorycte(bank_to, cd).
+theorycte(bank_to, ef).
+theorycte(bank_to, gh).
+theorycte(bank_to, ij).
+theorycte(bank_to, kl).
+theorycte(bank_to, mn).
+theorycte(bank_to, op).
+theorycte(bank_to, qr).
+theorycte(bank_to, st).
+theorycte(bank_to, uv).
+theorycte(bank_to, wx).
+theorycte(bank_to, yz).
+theorycte(card_type, classic).
+theorycte(card_type, gold).
+theorycte(card_type, junior).
+theorycte(cities, 'a5=_inf<x<=4_5').
+theorycte(cities, 'a5=4_5<x<=5_5').
+theorycte(cities, 'a5=5_5<x<=6_5').
+theorycte(cities, 'a5=6_5<x<=8_5').
+theorycte(cities, 'a5=8_5<x<=+inf').
+theorycte(crimes95, 'a11=_inf<x<=1847_5').
+theorycte(crimes95, 'a11=1847_5<x<=2646_5').
+theorycte(crimes95, 'a11=2646_5<x<=3694').
+theorycte(crimes95, 'a11=3694<x<=5089').
+theorycte(crimes95, 'a11=5089<x<=+inf').
+theorycte(crimes96, 'a12=_inf<x<=1906_5').
+theorycte(crimes96, 'a12=1906_5<x<=2758_5').
+theorycte(crimes96, 'a12=2758_5<x<=3635_5').
+theorycte(crimes96, 'a12=3635_5<x<=5024_5').
+theorycte(crimes96, 'a12=5024_5<x<=+inf').
+theorycte(disp_type, disponent).
+theorycte(disp_type, owner).
+theorycte(district_name, benesov).
+theorycte(district_name, beroun).
+theorycte(district_name, blansko).
+theorycte(district_name, breclav).
+theorycte(district_name, brno_mesto).
+theorycte(district_name, brno_venkov).
+theorycte(district_name, bruntal).
+theorycte(district_name, ceska_lipa).
+theorycte(district_name, ceske_budejovice).
+theorycte(district_name, cesky_krumlov).
+theorycte(district_name, cheb).
+theorycte(district_name, chomutov).
+theorycte(district_name, chrudim).
+theorycte(district_name, decin).
+theorycte(district_name, frydek_mistek).
+theorycte(district_name, havlickuv_brod).
+theorycte(district_name, hl_m_praha).
+theorycte(district_name, hodonin).
+theorycte(district_name, hradec_kralove).
+theorycte(district_name, jablonec_n_nisou).
+theorycte(district_name, jesenik).
+theorycte(district_name, jicin).
+theorycte(district_name, jindrichuv_hradec).
+theorycte(district_name, karlovy_vary).
+theorycte(district_name, karvina).
+theorycte(district_name, kladno).
+theorycte(district_name, kolin).
+theorycte(district_name, kromeriz).
+theorycte(district_name, kutna_hora).
+theorycte(district_name, litomerice).
+theorycte(district_name, louny).
+theorycte(district_name, melnik).
+theorycte(district_name, most).
+theorycte(district_name, nachod).
+theorycte(district_name, novy_jicin).
+theorycte(district_name, nymburk).
+theorycte(district_name, olomouc).
+theorycte(district_name, opava).
+theorycte(district_name, ostrava_mesto).
+theorycte(district_name, pardubice).
+theorycte(district_name, pelhrimov).
+theorycte(district_name, pisek).
+theorycte(district_name, plzen_jih).
+theorycte(district_name, plzen_mesto).
+theorycte(district_name, plzen_sever).
+theorycte(district_name, prachatice).
+theorycte(district_name, praha_vychod).
+theorycte(district_name, praha_zapad).
+theorycte(district_name, prerov).
+theorycte(district_name, pribram).
+theorycte(district_name, prostejov).
+theorycte(district_name, rakovnik).
+theorycte(district_name, rokycany).
+theorycte(district_name, rychnov_nad_kneznou).
+theorycte(district_name, semily).
+theorycte(district_name, sokolov).
+theorycte(district_name, strakonice).
+theorycte(district_name, sumperk).
+theorycte(district_name, svitavy).
+theorycte(district_name, tabor).
+theorycte(district_name, tachov).
+theorycte(district_name, teplice).
+theorycte(district_name, trebic).
+theorycte(district_name, trutnov).
+theorycte(district_name, uherske_hradiste).
+theorycte(district_name, usti_nad_labem).
+theorycte(district_name, usti_nad_orlici).
+theorycte(district_name, vsetin).
+theorycte(district_name, vyskov).
+theorycte(district_name, zdar_nad_sazavou).
+theorycte(district_name, zlin).
+theorycte(district_name, znojmo).
+theorycte(duration, 'a14=_inf<x<=18').
+theorycte(duration, 'a14=18<x<=30').
+theorycte(duration, 'a14=30<x<=42').
+theorycte(duration, 'a14=42<x<=54').
+theorycte(duration, 'a14=54<x<=+inf').
+theorycte(enterpreneurs, 'a10=_inf<x<=101').
+theorycte(enterpreneurs, 'a10=101<x<=109_5').
+theorycte(enterpreneurs, 'a10=109_5<x<=118_5').
+theorycte(enterpreneurs, 'a10=118_5<x<=130_5').
+theorycte(enterpreneurs, 'a10=130_5<x<=+inf').
+theorycte(frequency, poplatek_mesicne).
+theorycte(frequency, poplatek_po_obratu).
+theorycte(frequency, poplatek_tydne).
+theorycte(inhabitants, 'a0=_inf<x<=76801').
+theorycte(inhabitants, 'a0=119272<x<=159134').
+theorycte(inhabitants, 'a0=159134<x<=+inf').
+theorycte(inhabitants, 'a0=76801<x<=99258').
+theorycte(inhabitants, 'a0=99258<x<=119272').
+theorycte(mun1, 'a1=_inf<x<=16').
+theorycte(mun1, 'a1=16<x<=34_5').
+theorycte(mun1, 'a1=34_5<x<=57').
+theorycte(mun1, 'a1=57<x<=74_5').
+theorycte(mun1, 'a1=74_5<x<=+inf').
+theorycte(mun2, 'a2=_inf<x<=13_5').
+theorycte(mun2, 'a2=13_5<x<=21_5').
+theorycte(mun2, 'a2=21_5<x<=27_5').
+theorycte(mun2, 'a2=27_5<x<=35_5').
+theorycte(mun2, 'a2=35_5<x<=+inf').
+theorycte(mun3, 'a3=_inf<x<=3_5').
+theorycte(mun3, 'a3=3_5<x<=4_5').
+theorycte(mun3, 'a3=4_5<x<=6_5').
+theorycte(mun3, 'a3=6_5<x<=9_5').
+theorycte(mun3, 'a3=9_5<x<=+inf').
+theorycte(mun4, 'a4=_inf<x<=0_5').
+theorycte(mun4, 'a4=0_5<x<=1_5').
+theorycte(mun4, 'a4=1_5<x<=2_5').
+theorycte(mun4, 'a4=2_5<x<=3_5').
+theorycte(mun4, 'a4=3_5<x<=+inf').
+theorycte(operation, prevod_na_ucet).
+theorycte(operation, prevod_z_uctu).
+theorycte(operation, vklad).
+theorycte(operation, vyber).
+theorycte(operation, vyber_kartou).
+theorycte(operation, none).
+theorycte(payments, 'a15=_inf<x<=2163').
+theorycte(payments, 'a15=2163<x<=3537_5').
+theorycte(payments, 'a15=3537_5<x<=4974_5').
+theorycte(payments, 'a15=4974_5<x<=6717').
+theorycte(payments, 'a15=6717<x<=+inf').
+theorycte(ratio, 'a6=_inf<x<=49_45').
+theorycte(ratio, 'a6=49_45<x<=56').
+theorycte(ratio, 'a6=56<x<=62_45').
+theorycte(ratio, 'a6=62_45<x<=80_25').
+theorycte(ratio, 'a6=80_25<x<=+inf').
+theorycte(region, prague).
+theorycte(region, central_bohemia).
+theorycte(region, east_bohemia).
+theorycte(region, north_bohemia).
+theorycte(region, north_moravia).
+theorycte(region, south_bohemia).
+theorycte(region, south_moravia).
+theorycte(region, west_bohemia).
+theorycte(symbol, pojistne).
+theorycte(symbol, sipo).
+theorycte(symbol, uver).
+theorycte(symbol, none).
+theorycte(trans_char, pojistne).
+theorycte(trans_char, sankc_urok).
+theorycte(trans_char, sipo).
+theorycte(trans_char, sluzby).
+theorycte(trans_char, urok).
+theorycte(trans_char, uver).
+theorycte(trans_char, none).
+theorycte(trans_type, prijem).
+theorycte(trans_type, vyber).
+theorycte(trans_type, vydaj).
+theorycte(unemploy95, 'a8=_inf<x<=1_645').
+theorycte(unemploy95, 'a8=1_645<x<=2_585').
+theorycte(unemploy95, 'a8=2_585<x<=3_355').
+theorycte(unemploy95, 'a8=3_355<x<=4_71').
+theorycte(unemploy95, 'a8=4_71<x<=+inf').
+theorycte(unemploy96, 'a9=_inf<x<=2_14').
+theorycte(unemploy96, 'a9=2_14<x<=3_24').
+theorycte(unemploy96, 'a9=3_24<x<=4_07').
+theorycte(unemploy96, 'a9=4_07<x<=5_505').
+theorycte(unemploy96, 'a9=5_505<x<=+inf').
+
+phb_ignore(eq_amount/2).
+phb_ignore(eq_avgsal/2).
+phb_ignore(eq_balance/2).
+phb_ignore(eq_bank_to/2).
+phb_ignore(eq_card_type/2).
+phb_ignore(eq_cities/2).
+phb_ignore(eq_crimes95/2).
+phb_ignore(eq_crimes96/2).
+phb_ignore(eq_disp_type/2).
+phb_ignore(eq_district_name/2).
+phb_ignore(eq_duration/2).
+phb_ignore(eq_enterpreneurs/2).
+phb_ignore(eq_frequency/2).
+phb_ignore(eq_inhabitants/2).
+phb_ignore(eq_mun1/2).
+phb_ignore(eq_mun2/2).
+phb_ignore(eq_mun3/2).
+phb_ignore(eq_mun4/2).
+phb_ignore(eq_operation/2).
+phb_ignore(eq_payments/2).
+phb_ignore(eq_ratio/2).
+phb_ignore(eq_region/2).
+phb_ignore(eq_symbol/2).
+phb_ignore(eq_trans_char/2).
+phb_ignore(eq_trans_type/2).
+phb_ignore(eq_unemploy95/2).
+phb_ignore(eq_unemploy96/2).
+

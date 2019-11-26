@@ -1,0 +1,48 @@
+eq_atomtype(A, B) :- A == B.
+eq_charge(A, B) :- A == B.
+
+theorycte(atomtype, 1).
+theorycte(atomtype, 10).
+theorycte(atomtype, 14).
+theorycte(atomtype, 16).
+theorycte(atomtype, 19).
+theorycte(atomtype, 194).
+theorycte(atomtype, 195).
+theorycte(atomtype, 21).
+theorycte(atomtype, 22).
+theorycte(atomtype, 230).
+theorycte(atomtype, 232).
+theorycte(atomtype, 25).
+theorycte(atomtype, 26).
+theorycte(atomtype, 27).
+theorycte(atomtype, 28).
+theorycte(atomtype, 29).
+theorycte(atomtype, 3).
+theorycte(atomtype, 31).
+theorycte(atomtype, 32).
+theorycte(atomtype, 34).
+theorycte(atomtype, 35).
+theorycte(atomtype, 36).
+theorycte(atomtype, 38).
+theorycte(atomtype, 40).
+theorycte(atomtype, 41).
+theorycte(atomtype, 42).
+theorycte(atomtype, 45).
+theorycte(atomtype, 49).
+theorycte(atomtype, 50).
+theorycte(atomtype, 51).
+theorycte(atomtype, 52).
+theorycte(atomtype, 8).
+theorycte(atomtype, 92).
+theorycte(atomtype, 93).
+theorycte(atomtype, 94).
+theorycte(atomtype, 95).
+theorycte(charge, 'a0=_0_1115<x<=0_049').
+theorycte(charge, 'a0=_0_1255<x<=_0_1115').
+theorycte(charge, 'a0=_inf<x<=_0_1255').
+theorycte(charge, 'a0=0_049<x<=0_1425').
+theorycte(charge, 'a0=0_1425<x<=+inf').
+
+phb_ignore(eq_atomtype/2).
+phb_ignore(eq_charge/2).
+

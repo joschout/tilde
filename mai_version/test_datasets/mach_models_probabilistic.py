@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from problog.program import PrologFile
@@ -13,9 +14,22 @@ from mai_version.representation.language import TypeModeLanguage
 from mai_version.trees.TreeBuilder import ProbabilisticTreeBuilder
 from mai_version.trees.tree_converter import convert_tree_to_simple_program
 
-fname_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.s'
-fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.bg'
-fname_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.kb'
+
+project_dir = '/home/joschout/Repos/tilde'
+
+dataset_name = 'mach'
+data_dir = os.path.join(project_dir, 'ACE-examples-data', dataset_name)
+
+keys_or_examples = 'examples-experimental'
+
+fname_settings = os.path.join(data_dir, keys_or_examples, dataset_name + '.s')
+fname_background_knowledge = os.path.join(data_dir, keys_or_examples, dataset_name + '.bg')
+fname_labeled_examples = os.path.join(data_dir, keys_or_examples, dataset_name + '.kb')
+
+
+# fname_settings = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.s'
+# fname_background_knowledge = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.bg'
+# fname_labeled_examples = 'D:\\KUL\\KUL MAI\\Masterproef\\data\\ACE-examples-data\\ace\\mach\\examples-experimental\\mach.kb'
 
 # SETINGS for MODELS format
 settings = ModelsSettingsParser().parse(fname_settings)  # type: FileSettings

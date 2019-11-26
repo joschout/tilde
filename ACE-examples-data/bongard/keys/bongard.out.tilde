@@ -1,0 +1,125 @@
+--------------------------
+
+** Output of Tilde 2.2 (ilProlog) **
+Run on twoflower : i686 running Linux
+
+Command: t
+Settings:
+** Common ** 
+*  classes  :  [neg,pos] 
+*  leave_out  :  false (default) 
+*  load  :  key (default) 
+*  granularity  :  10 (default) 
+*  talking  :  3 (default) 
+*  outerloop  :  queries (default) 
+*  use_packs  :  0 
+*  huge  :  off (default) 
+*  odbc  :  off (default) 
+*  expert_implicit_language  :  off (default) 
+*  mi_distance_maxsample  :  100 (default) 
+*  generation_order  :  old (default) 
+*  old_expand  :  on (default) 
+*  default_preprocessing  :  off (default) 
+*  default_min  :  1 (default) 
+** Tilde ** 
+*  discretization  :  none (default) 
+*  tilde_mode  :  classify (default) 
+*  ftest  :  0.05 (default) 
+*  sampling_strategy  :  none 
+*  multiscore  :  off (default) 
+*  minimal_cases  :  2 (default) 
+*  accuracy  :  1.0 (default) 
+*  pruning  :  c45 (default) 
+*  random_validation_set  :  0 (default) 
+*  confidence_level  :  0.25 (default) 
+*  output_options  :  [c45,prolog] (default) 
+*  heuristic  :  gain 
+*  prune_rules  :  false (default) 
+*  resume  :  off 
+*  precompute  :  [] (default) 
+*  complexity_penalty  :  1.0 (default) 
+************** 
+Language:
+  predict(bongard(+pic,-class))
+  rmode(5:triangle(+A,+-B))
+  rmode(5:square(+A,+-B))
+  rmode(5:circle(+A,+-B))
+  rmode(5:in(+A,+B,+-C))
+  rmode(5:config(+A,+B,#[up,down]))
+  type(triangle(pic,obj))
+  type(square(pic,obj))
+  type(circle(pic,obj))
+  type(in(pic,obj,obj))
+  type(config(pic,obj,conf))
+  type(bongard(pic,class))
+  type(member(A,B))
+
+--------------------------
+
+
+Discretization time: 0.0 seconds.
+Induction time: 0.23 seconds.
+
+--------------------------
+
+after safe pruning:
+
+
+compact_complexity : 7 nodes (7 literals)
+compact_training_accuracy : 1.0=392/392
+compact_global_accuracy : 1.0=392/392
+compact_C4.5_error_estimation : 10.8626697437967 (relative: 0.0277108922035629)
+
+--------------------------
+
+after pruning:
+
+
+pruned_complexity : 7 nodes (7 literals)
+pruned_training_accuracy : 1.0=392/392
+pruned_global_accuracy : 1.0=392/392
+pruned_C4.5_error_estimation : 10.8626697437967 (relative: 0.0277108922035629)
+
+--------------------------
+
+Compact notation of pruned tree:
+
+bongard(A,B)
+triangle(A,C) ? 
++--yes: in(A,C,D) ? 
+|       +--yes: triangle(A,D) ? 
+|       |       +--yes: [pos] [82.0/82.0]
+|       |       +--no:  circle(A,F) ? 
+|       |               +--yes: in(A,F,G) ? 
+|       |               |       +--yes: [neg] [28.0/28.0]
+|       |               |       +--no:  [pos] [34.0/34.0]
+|       |               +--no:  [neg] [36.0/36.0]
+|       +--no:  circle(A,K) ? 
+|               +--yes: in(A,K,L) ? 
+|               |       +--yes: [neg] [79.0/79.0]
+|               |       +--no:  [pos] [12.0/12.0]
+|               +--no:  [neg] [34.0/34.0]
++--no:  [neg] [87.0/87.0]
+
+
+--------------------------
+
+Equivalent prolog program:
+
+bongard(A,pos) :- triangle(A,B),in(A,B,C),triangle(A,C), !.
+% 82.0/82.0=1.0.
+bongard(A,neg) :- triangle(A,B),in(A,B,C),circle(A,D),in(A,D,E), !.
+% 28.0/28.0=1.0.
+bongard(A,pos) :- triangle(A,B),in(A,B,C),circle(A,D), !.
+% 34.0/34.0=1.0.
+bongard(A,neg) :- triangle(A,B),in(A,B,C), !.
+% 36.0/36.0=1.0.
+bongard(A,neg) :- triangle(A,B),circle(A,C),in(A,C,D), !.
+% 79.0/79.0=1.0.
+bongard(A,pos) :- triangle(A,B),circle(A,C), !.
+% 12.0/12.0=1.0.
+bongard(A,neg) :- triangle(A,B), !.
+% 34.0/34.0=1.0.
+bongard(A,neg).
+% 87.0/87.0=1.0.
+
