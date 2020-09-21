@@ -1,3 +1,12 @@
+data.tar.gz
+featuretools_experiments/
+venv
+.idea/modules.xml
+ACE-examples-data/muta/*.keycode
+ACE-examples-data/muta/*w
+
+
+data-mai-experiments/bongard4/output/
 results/
 config.json
 libs/

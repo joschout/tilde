@@ -26,7 +26,8 @@ def preprocessing_examples_keys(
         fname_examples: str, settings: FileSettings, internal_ex_format: InternalExampleFormat,
         fname_background_knowledge: Optional[str] = None,
         debug_printing_example_parsing=False,
-        filter_out_unlabeled_examples = False, fold_data: Optional['FoldData'] = None) \
+        filter_out_unlabeled_examples = False, fold_data: Optional['FoldData'] = None,
+        engine: Optional[GenericEngine]= None) \
         -> Tuple[ExampleCollection, Term, int, List[Label], BackgroundKnowledgeWrapper]:
     prediction_goal_handler = settings.get_prediction_goal_handler()  # type: KeysPredictionGoalHandler
     prediction_goal = prediction_goal_handler.get_prediction_goal()  # type: Term
@@ -45,7 +46,8 @@ def preprocessing_examples_keys(
 
     # LABELS
     index_of_label_var = prediction_goal_handler.get_predicate_goal_index_of_label_var()  # type: int
-    label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var,engine=engine)
+    label_collector = LabelCollectorMapper.get_label_collector(internal_ex_format, prediction_goal, index_of_label_var,
+                                                               engine=engine)
 
     keys_of_unlabeled_examples = label_collector.extract_labels(training_examples_collection)
 

@@ -1,3 +1,4 @@
+import os
 from typing import TYPE_CHECKING, Optional, List, Set
 
 from problog.engine import GenericEngine
@@ -132,7 +133,8 @@ class FoldData:
             preprocessing_examples_keys(fname_examples, fd.parsed_settings, fd.internal_ex_format,
                                         fname_background, debug_printing_example_parsing,
                                         filter_out_unlabeled_examples=filter_out_unlabeled_examples,
-                                        fold_data=fd)
+                                        fold_data=fd,
+                                        engine=fd.engine)
 
         fd.total_nb_of_labeled_examples = len(fd.examples_collection_usable_for_training.example_wrappers_sp)
 
@@ -169,7 +171,7 @@ def get_fold_info_filenames(fold_start_index: int, nb_folds: int, dir_fold_files
                             fold_suffix: str) -> List[str]:
     fnames = []
     for i in range(fold_start_index, fold_start_index + nb_folds):
-        fname = dir_fold_files + fname_prefix_fold + str(i) + fold_suffix
+        fname = os.path.join(dir_fold_files, fname_prefix_fold + str(i) + fold_suffix)
         fnames.append(fname)
     return fnames
 

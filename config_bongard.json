@@ -1,0 +1,7 @@
+{
+    "S_FILE": "/home/joschout/Repos/tilde/ACE-examples-data/bongard/keys/bongard.s",
+    "KB_FILE": "/home/joschout/Repos/tilde/ACE-examples-data/bongard/keys/bongard.kb",
+    "BG_FILE": "",
+    "SUBTLE_PATH": "/home/joschout/Repos/tilde/libs/subtle-2.2.pl",
+    "SPLIT_CRITERION": "entropy"
+}

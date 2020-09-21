@@ -12,12 +12,13 @@ from refactor.io.parsing_background_knowledge import parse_background_knowledge_
 from refactor.io.parsing_examples import KeysExampleBuilder
 from refactor.io.parsing_settings.setting_parser import KeysSettingsParser
 from refactor.representation.example import InternalExampleFormat
-from tilde_config import kb_file, s_file
+from tilde_config import kb_file, s_file, bg_file
 
 # default_handler = get_back_end_default(QueryBackEnd.DJANGO)
 
 file_name_labeled_examples = kb_file()
 file_name_settings = s_file()
+fname_background_knowledge = bg_file()
 
 parsed_settings = KeysSettingsParser().parse(file_name_settings)
 
@@ -27,7 +28,7 @@ debug_printing_tree_pruning = False
 debug_printing_program_conversion = True
 debug_printing_get_classifier = False
 debug_printing_classification = False
-fname_background_knowledge = None
+# fname_background_knowledge = None
 
 internal_ex_format = InternalExampleFormat.CLAUSEDB
 

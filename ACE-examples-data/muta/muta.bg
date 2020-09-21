@@ -1,13 +1,15 @@
 
 equals(X,X).
 
-dmuta(Mol,Class) :- 
-	logmutag(Mol, L), 
-	(L>0 -> 
-		Class=pos
-	;
-		Class=neg
-	).
+% dmuta(Mol,Class) :-
+% 	logmutag(Mol, L),
+% 	(L>0 ->
+% 		Class=pos
+% 	;
+% 		Class=neg
+% 	).
+dmuta(Mol, pos) :- logmutag(Mol, L), L> 0.
+dmuta(Mol, neg) :- logmutag(Mol, L), L =< 0.
 
 sbond(M,X,Y,Z) :- bond(M,X,Y,Z); bond(M,Y,X,Z).
 
