@@ -1,0 +1,179 @@
+/** -------------------------------------------------
+ ** Algorithm:   Tilde
+ ** Output type: out
+ ** Date:        9/18/2020 13:39:34
+ ** ACE version: 1.2.20
+ ** Hardware:    joschout-XPS-15-9570 : x86_64 running Linux
+ ** -------------------------------------------------
+ ** Settings:
+ **
+ ** Common ** 
+ *  heuristic : gain 
+ *  tilde_mode : classify (default) 
+ *  intra_literal_sharing : yes (default) 
+ *  query_batch_size : default (default) 
+ *  single_query_generation : no (default) 
+ *  inst_generation_prob : 1.0 (default) 
+ *  rmode_inst_generation_prob : 1.0 (default) 
+ *  query_sample_probability : 1.0 (default) 
+ *  query_sample_algo : smart (default) 
+ *  aggregate_refiners : no (default) 
+ *  aggregate_recursion : no (default) 
+ *  aggregate_maxconjuncts : 2 (default) 
+ *  aggregate_lookahead : no (default) 
+ *  aggregate_refinement : no (default) 
+ *  example_cache : 102400 (default) 
+ *  select_root_models : on (default) 
+ *  write_predictions : [] (default) 
+ *  compatibility : ace1.1 (default) 
+ *  max_query_len : inf (default) 
+ *  log_pid : off (default) 
+ *  nsplit_unsorted_fractions : 0 (default) 
+ *  nsplit_sorting : basic (default) 
+ *  nsplit_version : basic (default) 
+ *  nsplit_talking : off (default) 
+ *  discretize : entropy (default) 
+ *  transform_queries : once (default) 
+ *  output_dir : default (default) 
+ *  bg_file : default (default) 
+ *  kb_file : default (default) 
+ *  randomise : none (default) 
+ *  report_timings : off (default) 
+ *  default_prefix : off (default) 
+ *  default_min : 1 (default) 
+ *  default_preprocessing : off (default) 
+ *  mi_distance_maxsample : 100 (default) 
+ *  language_warnings : on (default) 
+ *  expert_implicit_language : off (default) 
+ *  granularity : 10 (default) 
+ *  leave_out : false (default) 
+ *  classes : [pos,neg] 
+ *  use_packs : none 
+ *  outerloop : queries (default) 
+ *  talking : 3 (default) 
+ *  load : key (default) 
+ ** Tilde ** 
+ *  combining_rules_EMiters : 10 (default) 
+ *  combining_rules_EMruns : 5 (default) 
+ *  combining_rules : off (default) 
+ *  write_ensemble_models : [] (default) 
+ *  tilde_maxdepth : inf (default) 
+ *  exhaustive_lookahead : 0 (default) 
+ *  query_length_bias : short (default) 
+ *  special_min : 0.0 (default) 
+ *  out_of_bag : no (default) 
+ *  roulette_wheel_selection : no (default) 
+ *  tilde_rst_optimization : no (default) 
+ *  repeat_exec_time : 1 (default) 
+ *  combination_rule : sum (default) 
+ *  show_averages : 1 (default) 
+ *  classify_mode : 0 (default) 
+ *  complexity_penalty : 1.0 (default) 
+ *  precompute : [] (default) 
+ *  resume : off (default) 
+ *  m_estimate : none (default) 
+ *  output_options : [c45,prolog] (default) 
+ *  prune_rules : false (default) 
+ *  confidence_level : 0.25 (default) 
+ *  random_test_set : 0 (default) 
+ *  random_validation_set : 0 (default) 
+ *  stopping_criterion : mincases (default) 
+ *  pruning : c45 (default) 
+ *  discretization : none (default) 
+ *  multiscore_2 : off (default) 
+ *  multiscore : off (default) 
+ *  sampling_strategy : none 
+ *  max_querytime : 100 (default) 
+ *  accuracy : 1.0 (default) 
+ *  tilde_test_eval_model : std (default) 
+ *  minimal_cases : 2 (default) 
+ *  ftest : 0.05 (default) 
+ *  tilde_version : 3.0 (default) 
+ ************** 
+ ** Language:
+ **
+ ** WARMODE BIAS ** 
+ *  warmode_key(bongard(+pic,-class)) 
+ ** RMODE BIAS ** 
+ *  rmode_key(bongard(+A,-B)) 
+ *  root(bongard(A,B)) 
+ *  rmode(5:triangle(+A,+-B)) 
+ *  rmode(5:square(+A,+-B)) 
+ *  rmode(5:circle(+A,+-B)) 
+ *  rmode(5:in(+A,+B,+-C)) 
+ *  rmode(5:config(+A,+B,#[up,down])) 
+ *  max_lookahead(1) 
+ *  typed_language(yes) 
+ *  type(triangle(pic,obj)) 
+ *  type(square(pic,obj)) 
+ *  type(circle(pic,obj)) 
+ *  type(in(pic,obj,obj)) 
+ *  type(config(pic,obj,conf)) 
+ *  type(bongard(pic,class)) 
+ *  type(member(A,B)) 
+ *  type(for_int(A,B,C)) 
+ ******************** 
+ **/
+
+Average discretization time: 0.0
+Average induction time: 0.02
+
+Model:
+    Complexity: 7.0 nodes, 7.0 literals
+    C4.5 error estimate: 10.8626697437967, relative: 0.0277108922035629
+Training:
+    Number of examples: 392
+
+    REAL\PRED | pos       neg       
+    ----------------------------------------------
+    pos       | 128       0         | 128
+    neg       | 0         264       | 264
+    ----------------------------------------------
+              | 128       264       | 392
+
+    Accuracy: 1.0 (stderr: 0.0, default: 0.673469387755102)
+    Cramer's coefficient: 1.0
+    Class: pos: TP = 1.0, FP = 0.0
+Testing:
+    No examples available.
+
+
+Compact notation of tree:
+
+bongard(-A,-B)
+triangle(A,-C) ? 
++--yes: in(A,C,-D) ? 
+|       +--yes: triangle(A,D) ? 
+|       |       +--yes: [pos] 82.0 [[pos:82.0,neg:0.0]]
+|       |       +--no:  circle(A,-E) ? 
+|       |               +--yes: in(A,E,-F) ? 
+|       |               |       +--yes: [neg] 28.0 [[pos:0.0,neg:28.0]]
+|       |               |       +--no:  [pos] 34.0 [[pos:34.0,neg:0.0]]
+|       |               +--no:  [neg] 36.0 [[pos:0.0,neg:36.0]]
+|       +--no:  circle(A,-G) ? 
+|               +--yes: in(A,G,-H) ? 
+|               |       +--yes: [neg] 79.0 [[pos:0.0,neg:79.0]]
+|               |       +--no:  [pos] 12.0 [[pos:12.0,neg:0.0]]
+|               +--no:  [neg] 34.0 [[pos:0.0,neg:34.0]]
++--no:  [neg] 87.0 [[pos:0.0,neg:87.0]]
+
+Equivalent prolog program:
+
+bongard(A,[pos]) :- triangle(A,B),in(A,B,C),triangle(A,C), !.
+% 82.0/82.0=1.0
+bongard(A,[neg]) :- triangle(A,B),in(A,B,C),circle(A,D),in(A,D,E), !.
+% 28.0/28.0=1.0
+bongard(A,[pos]) :- triangle(A,B),in(A,B,C),circle(A,D), !.
+% 34.0/34.0=1.0
+bongard(A,[neg]) :- triangle(A,B),in(A,B,C), !.
+% 36.0/36.0=1.0
+bongard(A,[neg]) :- triangle(A,B),circle(A,C),in(A,C,D), !.
+% 79.0/79.0=1.0
+bongard(A,[pos]) :- triangle(A,B),circle(A,C), !.
+% 12.0/12.0=1.0
+bongard(A,[neg]) :- triangle(A,B), !.
+% 34.0/34.0=1.0
+bongard(A,[neg]).
+% 87.0/87.0=1.0
+
+

@@ -1,0 +1,16 @@
+bongard(-A,-B)
+triangle(A,-C) ? 
++--yes: in(A,C,-D) ? 
+|       +--yes: triangle(A,D) ? 
+|       |       +--yes: [pos] 82.0 [[pos:82.0,neg:0.0]]
+|       |       +--no:  circle(A,-E) ? 
+|       |               +--yes: in(A,E,-F) ? 
+|       |               |       +--yes: [neg] 28.0 [[pos:0.0,neg:28.0]]
+|       |               |       +--no:  [pos] 34.0 [[pos:34.0,neg:0.0]]
+|       |               +--no:  [neg] 36.0 [[pos:0.0,neg:36.0]]
+|       +--no:  circle(A,-G) ? 
+|               +--yes: in(A,G,-H) ? 
+|               |       +--yes: [neg] 79.0 [[pos:0.0,neg:79.0]]
+|               |       +--no:  [pos] 12.0 [[pos:12.0,neg:0.0]]
+|               +--no:  [neg] 34.0 [[pos:0.0,neg:34.0]]
++--no:  [neg] 87.0 [[pos:0.0,neg:87.0]]

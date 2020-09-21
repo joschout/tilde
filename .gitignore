@@ -1,9 +1,12 @@
+
 data.tar.gz
 featuretools_experiments/
 venv
 .idea/modules.xml
 ACE-examples-data/muta/*.keycode
 ACE-examples-data/muta/*w
+ACE-examples-data/bongard/keys/*.w
+ACE-examples-data/bongard/keys/*.keycode
 
 
 data-mai-experiments/bongard4/output/

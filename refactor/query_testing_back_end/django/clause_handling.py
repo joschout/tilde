@@ -3,7 +3,7 @@ from problog.logic import Term
 from refactor.tilde_essentials.tree_node import TreeNode
 try:
     from src.ClauseWrapper import ClauseWrapper, HypothesisWrapper
-except ImportError as err:
+except (ImportError, ModuleNotFoundError) as err:
     from refactor.query_testing_back_end.django.django_wrapper.ClauseWrapper import ClauseWrapper, HypothesisWrapper
 
 from refactor.representation.TILDE_query import TILDEQuery
